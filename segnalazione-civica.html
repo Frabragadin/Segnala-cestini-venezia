@@ -1282,6 +1282,15 @@ async function sendReport() {
   const siteUrl = CONFIG.comune.siteUrl
     || window.location.href.replace('segnalazione-civica.html', 'index.html').split('?')[0];
 
+  // URL atteso dell'immagine su GitHub Pages (pattern fisso: img/{ticketId}.jpg)
+  // Viene incluso nel payload anche se la risposta Apps Script è opaca (no-cors)
+  const siteBase = siteUrl.endsWith('index.html')
+    ? siteUrl.slice(0, -'index.html'.length)
+    : siteUrl.replace(/\/?$/, '/');
+  const predictedImgUrl = reportData.hasPhoto
+    ? siteBase + 'img/' + ticketId + '.jpg'
+    : null;
+
   // URL che la PA può aprire per segnare la segnalazione come risolta
   const resolveUrl = window.location.href.split('segnalazione-civica.html')[0] + 'index.html?risolvi=' + token;
 
@@ -1334,7 +1343,9 @@ async function sendReport() {
       URL_Segnalazione:  siteUrl,
       Stato:             'Nuova',
       Token_Risoluzione: token,
-      // Immagine in base64 — Apps Script la carica in img/ del repo GitHub tramite GitHub API
+      // URL già calcolato lato browser — finisce in Google Sheets anche con risposta no-cors opaca
+      ...(predictedImgUrl ? { URL_Immagine: predictedImgUrl } : {}),
+      // Immagine in base64 — Apps Script la carica su GitHub tramite GitHub API
       ...(reportData.photoResized ? { imageBase64: reportData.photoResized } : {}),
     };
 
