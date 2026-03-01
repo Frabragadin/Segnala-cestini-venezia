@@ -93,6 +93,11 @@
 
   .btn-report:hover { background: #b8700a; }
 
+  .btn-resolve {
+    background: var(--sage);
+  }
+  .btn-resolve:hover { background: #2d4435; }
+
   /* INFO BUTTON */
   .btn-info {
     background: none;
@@ -200,7 +205,10 @@
 
   /* MODAL RISOLUZIONE */
   .resolve-id-box {
+    display: block;
+    width: 100%;
     background: var(--mist);
+    border: 1.5px solid rgba(26,18,8,0.15);
     border-radius: 8px;
     padding: 0.7rem 1rem;
     font-family: monospace;
@@ -208,8 +216,11 @@
     letter-spacing: 0.03em;
     color: var(--ink);
     margin: 0.7rem 0 1rem;
-    word-break: break-all;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
   }
+  .resolve-id-box:focus { border-color: var(--sage); }
   .resolve-confirm-btn {
     width: 100%;
     background: var(--sage);
@@ -543,6 +554,7 @@
   </div>
   <div class="header-right">
     <a href="segnalazione-civica.html" class="btn-report">+ Nuova segnalazione</a>
+    <button class="btn-report btn-resolve" onclick="openResolve('')">✅ Segna risolta</button>
     <button class="btn-info" onclick="openInfo()" title="Informazioni sul progetto">
       <i class="fa-solid fa-circle-info"></i>
     </button>
@@ -581,8 +593,11 @@
       <i class="fa-solid fa-xmark"></i>
     </button>
     <h2 style="color:var(--sage)">✅ Segna come risolta</h2>
-    <p>Vuoi segnare come risolta la segnalazione:</p>
-    <div class="resolve-id-box" id="resolveIdDisplay">—</div>
+    <p>Incolla o digita l'ID della segnalazione (ricevuto via email):</p>
+    <input class="resolve-id-box" id="resolveIdDisplay" type="text"
+      placeholder="Es. SGN-20250301-A1B2C3D4"
+      autocomplete="off" spellcheck="false"
+      onkeydown="if(event.key==='Enter')confirmResolve()">
     <p style="font-size:0.82rem;color:#777;margin-bottom:1rem">
       Questa azione aggiorna lo stato nel sistema. La segnalazione sarà visibile nella sezione <em>Risolte</em> entro 1–3 minuti.
     </p>
@@ -988,8 +1003,8 @@ function closeInfo() { document.getElementById('infoOverlay').classList.remove('
 
 // ─── RISOLUZIONE SEGNALAZIONE ─────────────────
 function openResolve(id) {
-  resolveId = id;
-  document.getElementById('resolveIdDisplay').textContent = id;
+  const input = document.getElementById('resolveIdDisplay');
+  input.value = id || '';
   const res = document.getElementById('resolveResult');
   res.className = 'resolve-result';
   res.textContent = '';
@@ -997,6 +1012,7 @@ function openResolve(id) {
   btn.disabled = false;
   btn.textContent = '✅ Conferma risoluzione';
   document.getElementById('resolveOverlay').classList.add('open');
+  if (!id) setTimeout(() => input.focus(), 80);
 }
 
 function closeResolve() {
@@ -1005,24 +1021,34 @@ function closeResolve() {
 }
 
 function confirmResolve() {
+  const id = document.getElementById('resolveIdDisplay').value.trim();
+  const res = document.getElementById('resolveResult');
+
+  if (!id) {
+    res.className = 'resolve-result err';
+    res.textContent = '⚠️ Inserisci l\'ID della segnalazione.';
+    document.getElementById('resolveIdDisplay').focus();
+    return;
+  }
+
   const btn = document.getElementById('resolveConfirmBtn');
   btn.disabled = true;
   btn.textContent = 'Invio in corso…';
+  res.className = 'resolve-result';
+  res.textContent = '';
 
   fetch(APPS_SCRIPT_URL, {
     method: 'POST',
     mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'risolvi', ID_Segnalazione: resolveId })
+    body: JSON.stringify({ action: 'risolvi', ID_Segnalazione: id })
   })
   .then(() => {
-    const res = document.getElementById('resolveResult');
     res.className = 'resolve-result ok';
     res.textContent = '✅ Richiesta inviata. La segnalazione sarà visibile nella sezione Risolte entro 1–3 minuti.';
     btn.textContent = 'Inviato ✓';
   })
   .catch(() => {
-    const res = document.getElementById('resolveResult');
     res.className = 'resolve-result err';
     res.textContent = '❌ Errore di rete. Riprova tra qualche istante.';
     btn.disabled = false;
