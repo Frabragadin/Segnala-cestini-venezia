@@ -1,13 +1,25 @@
 ID_Segnalazione,Timestamp_UTC,Data,Ora,Categoria,Categoria_Emoji,Urgenza,Descrizione,Nome_Segnalante,Email_Segnalante,Lat,Long,Indirizzo_Completo,Via,Numero_Civico,CAP,Comune,Provincia,Regione,Fonte_Posizione,Accuratezza_GPS_m,Destinatari,Canale_Email,Canale_WhatsApp,Canale_Twitter,Canale_Facebook,Ha_Immagine,Dimensioni_Immagine,Testo_Messaggio,URL_Segnalazione,URL_Immagine,Stato,Note_Ufficio,Operatore,Data_Presa_Carico,Data_Risoluzione
-SGN-1772372506497,2026-03-01T13:41:46.497Z,01/03/2026,14:41,Alberi e verde pubblico,🌳,Alta,"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget eros quis lacus volutpat condimentum ut sit amet justo. Sed et tempor lacus. Sed imperdiet posuere metus. Fusce sed fermentum sem, eget dignissim nunc. Nam lectus est, egestas quis rutrum a, convallis vel nibh.",Gianni,gbvitrano@gmail.com,38.118748,13.367937,"Via della Cala, La Loggia, I Circoscrizione, Palermo, Sicilia, 90133, Italia",Via della Cala,,90133,Palermo,Palermo,Sicilia,Manuale,,email,Sì,No,No,No,Sì,1024x1024,"📍 Segnalazione Civica — 🔴 URGENTE — Alberi e verde pubblico
+SGN-1772375481444,2026-03-01T14:31:21.444Z,01/03/2026,15:31,Illuminazione pubblica guasta,💡,Alta,"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget eros quis lacus volutpat condimentum ut sit amet justo. Sed et tempor lacus. Sed imperdiet posuere metus. Fusce sed fermentum sem, eget dignissim nunc. Nam lectus est, egestas quis rutrum a, convallis vel nibh.",Gianni,gvitrano@gmail.com,38.119018,13.368452,"Via della Cala, La Loggia, I Circoscrizione, Palermo, Sicilia, 90133, Italia",Via della Cala,,90133,Palermo,Palermo,Sicilia,Manuale,,email,Sì,No,No,No,Sì,1024x1024,"📍 Segnalazione Civica — 🔴 URGENTE — Illuminazione pubblica guasta
 📌 Luogo: Via della Cala, La Loggia, I Circoscrizione, Palermo, Sicilia, 90133, Italia
 📝 Note: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget eros quis lacus volutpat condimentum ut sit amet justo. Sed et tempor lacus. Sed imperdiet posuere metus. Fusce sed fermentum sem, eget dignissim nunc. Nam lectus est, egestas quis rutrum a, convallis vel nibh.
 👤 Segnalato da: Gianni
-🕐 01/03/2026, 14:41:46
-#SegnalaOra #Alberieverdepubblico
-SGN-1772372506497
+🕐 01/03/2026, 15:31:21
+#SegnalaOra #Illuminazionepubblicaguasta
+SGN-1772375481444
 
 ──────────────────────────────────────
 Per segnare questa segnalazione come RISOLTA:
-https://gbvitrano.github.io/Segnalazioni/index.html?risolvi=c3b04ada-9201-4c92-affa-b1cc65306cdf
-──────────────────────────────────────",https://gbvitrano.github.io/Segnalazioni/segnalazione-civica.html,Risolta,,,,01/03/2026,c3b04ada-9201-4c92-affa-b1cc65306cdf
+https://gbvitrano.github.io/Segnalazioni/index.html?risolvi=35b26626-fef3-4475-98a6-e64fa0bee33e
+──────────────────────────────────────",https://gbvitrano.github.io/Segnalazioni/index.html,,Nuova,,,,
+SGN-1772375680405,2026-03-01T14:34:40.405Z,01/03/2026,15:34,Rifiuti abbandonati,🗑️,Normale,Quisque ac mollis eros. Curabitur aliquet sem sed massa condimentum efficitur non eu lorem. Cras tincidunt mauris dolor. Duis at tempus lectus. ,Gianni,gbvitrano@gmail.com,38.121453,13.36593,"Via Francesco Crispi, La Loggia, I Circoscrizione, Palermo, Sicilia, 90133, Italia",Via Francesco Crispi,,90133,Palermo,Palermo,Sicilia,Manuale,,email,Sì,No,No,No,Sì,1024x1024,"📍 Segnalazione Civica — 🟡 Rifiuti abbandonati
+📌 Luogo: Via Francesco Crispi, La Loggia, I Circoscrizione, Palermo, Sicilia, 90133, Italia
+📝 Note: Quisque ac mollis eros. Curabitur aliquet sem sed massa condimentum efficitur non eu lorem. Cras tincidunt mauris dolor. Duis at tempus lectus. 
+👤 Segnalato da: Gianni
+🕐 01/03/2026, 15:34:40
+#SegnalaOra #Rifiutiabbandonati
+SGN-1772375680405
+
+──────────────────────────────────────
+Per segnare questa segnalazione come RISOLTA:
+https://gbvitrano.github.io/Segnalazioni/index.html?risolvi=a04dbbe6-e696-43a4-8772-8c18d2219921
+──────────────────────────────────────",https://gbvitrano.github.io/Segnalazioni/index.html,,Risolta,,,,01/03/2026
