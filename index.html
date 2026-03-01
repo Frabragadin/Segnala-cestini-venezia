@@ -174,17 +174,17 @@
       <div class="filters" id="filtersPanel">
         <span class="filter-label">Urgenza</span>
         <div class="filter-chips" id="urgFilter">
-          <div class="chip active"       data-val="all"          onclick="setFilter('urgenza','all',this)">Tutte</div>
-          <div class="chip chip-alta"    data-val="Alta"         onclick="setFilter('urgenza','Alta',this)">🔴 Alta</div>
-          <div class="chip chip-normale" data-val="Normale"      onclick="setFilter('urgenza','Normale',this)">🟠 Normale</div>
-          <div class="chip chip-bassa"   data-val="Bassa"        onclick="setFilter('urgenza','Bassa',this)">🔵 Bassa</div>
+          <button type="button" class="chip active"       data-val="all"     onclick="setFilter('urgenza','all',this)">Tutte</button>
+          <button type="button" class="chip chip-alta"    data-val="Alta"    onclick="setFilter('urgenza','Alta',this)">🔴 Alta</button>
+          <button type="button" class="chip chip-normale" data-val="Normale" onclick="setFilter('urgenza','Normale',this)">🟠 Normale</button>
+          <button type="button" class="chip chip-bassa"   data-val="Bassa"   onclick="setFilter('urgenza','Bassa',this)">🔵 Bassa</button>
         </div>
 
         <span class="filter-label">Stato</span>
         <div class="filter-chips" id="statoFilter">
-          <div class="chip active" data-val="all"            onclick="setFilter('stato','all',this)">Tutti</div>
-          <div class="chip"        data-val="Nuova"          onclick="setFilter('stato','Nuova',this)">Nuova</div>
-          <div class="chip"        data-val="In lavorazione" onclick="setFilter('stato','In lavorazione',this)">In lavorazione</div>
+          <button type="button" class="chip active" data-val="all"            onclick="setFilter('stato','all',this)">Tutti</button>
+          <button type="button" class="chip"        data-val="Nuova"          onclick="setFilter('stato','Nuova',this)">Nuova</button>
+          <button type="button" class="chip"        data-val="In lavorazione" onclick="setFilter('stato','In lavorazione',this)">In lavorazione</button>
         </div>
       </div>
     </div>

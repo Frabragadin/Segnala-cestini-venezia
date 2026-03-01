@@ -390,6 +390,8 @@ header p {
   background: white;
   color: var(--ink);
   white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1;
 }
 
 .chip:hover              { border-color: var(--amber); }
@@ -785,4 +787,12 @@ footer a:hover { text-decoration: underline; color: #fcc96e; }
 
   /* Footer nascosto su mobile per non togliere spazio alla mappa */
   footer { display: none; }
+
+  /* Touch target chip filtri — WCAG 2.5.5 min 44px */
+  .chip {
+    min-height: 44px;
+    padding: 0.45rem 0.85rem;
+    display: inline-flex;
+    align-items: center;
+  }
 }

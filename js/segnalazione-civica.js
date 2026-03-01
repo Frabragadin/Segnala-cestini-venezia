@@ -491,6 +491,14 @@ function goStep(n) {
 // ─────────────────────────────────────────────
 //  ANTEPRIMA MESSAGGIO
 // ─────────────────────────────────────────────
+function updateCatHint() {
+  const sel   = document.getElementById('categoria');
+  const hint  = document.getElementById('catHint');
+  if (!hint) return;
+  const opt   = sel.selectedOptions[0];
+  hint.textContent = (opt && opt.title) ? opt.title : '';
+}
+
 function updatePreview() {
   const cat = document.getElementById('categoria').value || '[categoria]';
   const descr = document.getElementById('descr').value;
