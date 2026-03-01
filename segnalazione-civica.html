@@ -422,6 +422,20 @@
     background: white;
   }
 
+  input.invalid, textarea.invalid {
+    border-color: var(--rust) !important;
+    background: #fff5f5;
+  }
+
+  .field-error {
+    font-size: 0.78rem;
+    color: var(--rust);
+    margin-top: 0.25rem;
+    display: none;
+  }
+
+  .field-error.visible { display: block; }
+
   textarea { resize: vertical; min-height: 90px; }
 
   .select-wrap { position: relative; }
@@ -769,10 +783,14 @@
       <textarea id="descr" placeholder="Es: La buca si trova all'angolo con Via Roma, è larga circa 40cm..." oninput="updatePreview()"></textarea>
 
       <label>Nome o Nickname *</label>
-      <input type="text" id="nome" placeholder="Il tuo nome o nickname" oninput="updatePreview()" required>
+      <input type="text" id="nome" placeholder="Il tuo nome o nickname" oninput="updatePreview(); clearFieldError('nome')" required>
+      <div class="field-error" id="nome-error">Inserisci il tuo nome o nickname.</div>
 
       <label>Email * <span style="font-weight:300;font-size:0.75rem;">(ricevi la conferma di invio)</span></label>
-      <input type="email" id="email" placeholder="tua@email.it" required>
+      <input type="email" id="email" placeholder="tua@email.it" required
+        oninput="clearFieldError('email')"
+        onblur="validateEmailField()">
+      <div class="field-error" id="email-error">Inserisci un indirizzo email valido (es: nome@dominio.it).</div>
 
       <div class="nav-next">
         <button class="btn-next" onclick="goStep(4)">Avanti — Destinatari →</button>
@@ -899,6 +917,7 @@ const CONFIG = {
   // URL del Google Sheet pubblicato come CSV (per la mappa pubblica)
   sheetsCSV: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSsv5emsudeZOCiaREWWRFP14r5ZSmMW-WzwBTNv-aUitRaEb8mOy5dbm4KmBjpSwSSn2A-GAL7UGYz/pub?gid=0&single=true&output=csv',
   // Foglio sorgente: https://docs.google.com/spreadsheets/d/1Wy86M342so7EHLi3F-G5UNvXFq058Zr5EKAPhjNS3FM/edit
+
 };
 
 // ─────────────────────────────────────────────
@@ -1096,6 +1115,32 @@ function reverseGeocode(lat, lng) {
 }
 
 // ─────────────────────────────────────────────
+//  VALIDAZIONE INLINE CAMPI
+// ─────────────────────────────────────────────
+function showFieldError(fieldId, msg) {
+  const el = document.getElementById(fieldId);
+  const err = document.getElementById(fieldId + '-error');
+  if (el)  el.classList.add('invalid');
+  if (err) { if (msg) err.textContent = msg; err.classList.add('visible'); }
+}
+
+function clearFieldError(fieldId) {
+  const el = document.getElementById(fieldId);
+  const err = document.getElementById(fieldId + '-error');
+  if (el)  el.classList.remove('invalid');
+  if (err) err.classList.remove('visible');
+}
+
+function validateEmailField() {
+  const val = document.getElementById('email').value.trim();
+  if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+    if (val) showFieldError('email'); // mostra errore solo se ha digitato qualcosa
+  } else {
+    clearFieldError('email');
+  }
+}
+
+// ─────────────────────────────────────────────
 //  STEP NAVIGATION
 // ─────────────────────────────────────────────
 function goStep(n) {
@@ -1104,16 +1149,20 @@ function goStep(n) {
       alert('Seleziona una categoria prima di continuare.');
       return;
     }
+    let hasError = false;
     const _nome = document.getElementById('nome').value.trim();
     if (!_nome) {
-      alert('Inserisci il tuo nome o nickname prima di continuare.');
-      document.getElementById('nome').focus();
-      return;
+      showFieldError('nome', 'Inserisci il tuo nome o nickname.');
+      hasError = true;
     }
     const _email = document.getElementById('email').value.trim();
     if (!_email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(_email)) {
-      alert('Inserisci un indirizzo email valido — ti servirà per ricevere la conferma di invio.');
-      document.getElementById('email').focus();
+      showFieldError('email', _email ? 'Indirizzo email non valido (es: nome@dominio.it).' : 'L\'email è obbligatoria per ricevere la conferma di invio.');
+      hasError = true;
+    }
+    if (hasError) {
+      if (!_nome) document.getElementById('nome').focus();
+      else document.getElementById('email').focus();
       return;
     }
   }
@@ -1184,7 +1233,8 @@ async function sendReport() {
   const nome = document.getElementById('nome').value.trim();
   const emailSegnalante = document.getElementById('email').value.trim();
   if (!nome || !emailSegnalante || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailSegnalante)) {
-    alert('Nome ed email sono obbligatori.');
+    if (!nome) showFieldError('nome');
+    if (!emailSegnalante || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailSegnalante)) showFieldError('email');
     return;
   }
 

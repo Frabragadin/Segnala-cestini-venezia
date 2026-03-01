@@ -12,16 +12,13 @@ const SHEET_ID = '1Wy86M342so7EHLi3F-G5UNvXFq058Zr5EKAPhjNS3FM';
 const SHEET_NAME = 'Main';
 
 // ─── Configurazione GitHub per upload immagini ───────────────
-//  Le immagini vengono scritte direttamente nella cartella img/
-//  del repository tramite GitHub API.
-//
 //  SETUP (una tantum):
-//  1. Vai su github.com → Settings → Developer settings →
-//     Personal access tokens → Tokens (classic) → Generate new token
-//     Scope richiesto: ✅ repo
-//  2. In Apps Script → Impostazioni progetto → Proprietà script →
-//     aggiungi:  GITHUB_TOKEN = <il tuo token>
-//     (il token non va MAI scritto nel codice sorgente)
+//  1. Genera un fine-grained PAT su github.com → Settings → Developer settings →
+//     Personal access tokens → Fine-grained tokens → Repository: Segnalazioni
+//     Permissions: Contents → Read and write
+//  2. In Apps Script → Impostazioni progetto → Proprietà script → aggiungi:
+//     GITHUB_TOKEN = <il tuo token>
+//     (il token NON va mai scritto nel codice sorgente)
 const GITHUB_OWNER  = 'gbvitrano';
 const GITHUB_REPO   = 'Segnalazioni';
 const GITHUB_BRANCH = 'master';
@@ -252,8 +249,8 @@ function uploadImageToGitHub(id, imageBase64) {
   const token = PropertiesService.getScriptProperties().getProperty('GITHUB_TOKEN');
   if (!token) return null;   // token non configurato → skip silenzioso
 
-  const b64     = imageBase64.replace(/^data:image\/\w+;base64,/, '');
-  const apiUrl  = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/img/${id}.jpg`;
+  const b64    = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+  const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/img/${id}.jpg`;
 
   const response = UrlFetchApp.fetch(apiUrl, {
     method: 'PUT',
