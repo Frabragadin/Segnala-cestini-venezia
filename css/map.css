@@ -16,7 +16,7 @@
   /* Colori urgenza segnalazioni */
   --urg-alta:    #e53535;
   --urg-normale: #ff9900;
-  --urg-bassa:   #f0c040;
+  --urg-bassa:   #3cb4d8;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -394,7 +394,7 @@ header p {
 .chip.active             { background: var(--ink);  color: white; border-color: var(--ink);  }
 .chip.chip-alta.active   { background: var(--urg-alta);    color: white; border-color: var(--urg-alta);    }
 .chip.chip-normale.active{ background: var(--urg-normale); color: white; border-color: var(--urg-normale); }
-.chip.chip-bassa.active  { background: var(--urg-bassa);   color: var(--ink); border-color: var(--urg-bassa); }
+.chip.chip-bassa.active  { background: var(--urg-bassa);   color: white; border-color: var(--urg-bassa); }
 
 /* ── LISTA SEGNALAZIONI ──────────────────────────────── */
 .report-list { flex: 1; padding: 0.8rem; }
