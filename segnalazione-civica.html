@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SegnalaOra — Segnalazioni Civiche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
+<style>
+  :root {
+    --ink: #1a1208;
+    --paper: #f5f0e8;
+    --amber: #d4820a;
+    --amber-light: #f0a93a;
+    --sage: #3d5a47;
+    --rust: #c0392b;
+    --mist: #e8e2d6;
+    --shadow: rgba(26,18,8,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.2rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px var(--shadow);
+  }
+
+  .logo-mark {
+    width: 38px;
+    height: 38px;
+    background: var(--amber);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .header-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+  }
+
+  .btn-map-link {
+    background: rgba(255,255,255,0.12);
+    color: var(--paper);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.78rem;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+
+  .btn-map-link:hover { background: rgba(255,255,255,0.2); }
+
+  .steps-bar {
+    background: var(--mist);
+    border-bottom: 1px solid rgba(26,18,8,0.1);
+    padding: 0.8rem 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #8a7f70;
+    white-space: nowrap;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    transition: all 0.3s;
+  }
+
+  .step.active { background: var(--amber); color: white; }
+  .step.done { color: var(--sage); }
+
+  .step-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: currentColor;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    opacity: 0.7;
+  }
+
+  .step.active .step-num { background: white; color: var(--amber); opacity: 1; }
+  .step-arrow { color: #c5bcad; margin: 0 0.2rem; font-size: 0.7rem; }
+
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  .section-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid rgba(26,18,8,0.08);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 12px var(--shadow);
+    display: none;
+    animation: slideIn 0.4s ease;
+  }
+
+  .section-card.visible { display: block; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .card-header .icon { font-size: 1.4rem; }
+
+  .card-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .card-header p {
+    font-size: 0.78rem;
+    color: #a8a090;
+    font-weight: 300;
+    margin-top: 0.1rem;
+  }
+
+  .card-body { padding: 1.5rem; }
+
+  /* PHOTO */
+  .photo-zone {
+    border: 2px dashed rgba(26,18,8,0.15);
+    border-radius: 12px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .photo-zone:hover { border-color: var(--amber); background: rgba(212,130,10,0.03); }
+  .photo-zone input { display: none; }
+  .photo-zone .big-icon { font-size: 2.5rem; margin-bottom: 0.8rem; display: block; }
+
+  .photo-zone h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .photo-zone p { font-size: 0.82rem; color: #8a7f70; }
+
+  .photo-preview { display: none; position: relative; }
+
+  .photo-preview img {
+    width: 100%;
+    border-radius: 10px;
+    max-height: 280px;
+    object-fit: cover;
+  }
+
+  .photo-preview .change-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(26,18,8,0.7);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    backdrop-filter: blur(4px);
+  }
+
+  .photo-info {
+    margin-top: 0.8rem;
+    padding: 0.6rem 0.9rem;
+    background: rgba(61,90,71,0.08);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    color: var(--sage);
+    display: none;
+  }
+
+  .photo-info.visible { display: flex; align-items: center; gap: 0.5rem; }
+
+  .btn-row {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-sm {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    border: 1.5px solid rgba(26,18,8,0.15);
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: all 0.2s;
+  }
+
+  .btn-sm:hover { border-color: var(--amber); color: var(--amber); }
+
+  .btn-sm.primary { background: var(--amber); border-color: var(--amber); color: white; }
+  .btn-sm.primary:hover { background: #b8700a; border-color: #b8700a; color: white; }
+
+  /* MAP */
+  #map { height: 320px; border-radius: 10px; overflow: hidden; margin-bottom: 1rem; border: 1px solid rgba(26,18,8,0.1); }
+
+  .geo-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    background: rgba(61,90,71,0.08);
+    color: var(--sage);
+    margin-bottom: 1rem;
+  }
+
+  .geo-status .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sage);
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* FORM */
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #5a5040;
+    margin-bottom: 0.4rem;
+    margin-top: 1rem;
+  }
+
+  label:first-child { margin-top: 0; }
+
+  select, input[type="text"], input[type="email"], textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid rgba(26,18,8,0.15);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    background: var(--paper);
+    color: var(--ink);
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+
+  select:focus, input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--amber);
+    background: white;
+  }
+
+  textarea { resize: vertical; min-height: 90px; }
+
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #8a7f70;
+    font-size: 0.9rem;
+  }
+
+  /* DESTINATARI */
+  .recipient-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  .recipient-item {
+    border: 1.5px solid rgba(26,18,8,0.12);
+    border-radius: 10px;
+    padding: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    user-select: none;
+  }
+
+  .recipient-item:hover { border-color: var(--amber-light); }
+
+  .recipient-item.selected {
+    border-color: var(--amber);
+    background: rgba(212,130,10,0.06);
+  }
+
+  .recipient-item .ri-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .recipient-item .ri-name { font-size: 0.78rem; font-weight: 600; }
+  .recipient-item .ri-sub { font-size: 0.7rem; color: #8a7f70; }
+  .recipient-item input[type="checkbox"] { display: none; }
+
+  /* ANTEPRIMA */
+  .preview-box {
+    background: var(--mist);
+    border-radius: 10px;
+    padding: 1.2rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    border-left: 3px solid var(--amber);
+    color: #3a3020;
+    word-break: break-word;
+  }
+
+  /* BOTTONI INVIO */
+  .send-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 12px;
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    transition: all 0.25s;
+    letter-spacing: -0.01em;
+    margin-top: 1rem;
+  }
+
+  .send-btn:hover {
+    background: var(--amber);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(212,130,10,0.3);
+  }
+
+  .send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* SUCCESSO */
+  .success-card {
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+
+  .success-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    display: block;
+    animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  @keyframes pop {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+
+  .success-card h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+  }
+
+  .success-card p { color: #8a7f70; font-size: 0.9rem; max-width: 360px; margin: 0 auto 1rem; }
+
+  .tag-id {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-family: monospace;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+  }
+
+  .channels-sent {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+  }
+
+  .channel-badge {
+    background: var(--mist);
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.78rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  /* NOTA CONFIG */
+  .config-notice {
+    background: #fff8e1;
+    border: 1.5px solid #ffd54f;
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    color: #5a4000;
+  }
+
+  .config-notice strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; }
+
+  /* NAV */
+  .nav-next { display: flex; justify-content: flex-end; margin-top: 1.2rem; }
+
+  .btn-next {
+    padding: 0.8rem 1.8rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s;
+  }
+
+  .btn-next:hover { background: var(--amber); }
+
+  @media (max-width: 480px) {
+    main { padding: 1rem; }
+    .recipient-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">📍</div>
+  <div>
+    <h1>SegnalaOra</h1>
+  </div>
+  <div class="header-actions">
+    <a href="index.html" class="btn-map-link">🗺 Mappa segnalazioni</a>
+  </div>
+</header>
+
+<div class="steps-bar">
+  <div class="step active" id="s1"><span class="step-num">1</span> Foto</div>
+  <div class="step-arrow">›</div>
+  <div class="step" id="s2"><span class="step-num">2</span> Posizione</div>
+  <div class="step-arrow">›</div>
+  <div class="step" id="s3"><span class="step-num">3</span> Dettagli</div>
+  <div class="step-arrow">›</div>
+  <div class="step" id="s4"><span class="step-num">4</span> Invia</div>
+</div>
+
+<main>
+
+  <!-- STEP 1: FOTO -->
+  <div class="section-card visible" id="card1">
+    <div class="card-header">
+      <span class="icon">📷</span>
+      <div>
+        <h2>Scatta o carica una foto</h2>
+        <p>La foto documenterà il problema segnalato</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="photo-zone" id="photoZone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" accept="image/*">
+        <span class="big-icon">🖼️</span>
+        <h3>Tocca per scattare o scegliere</h3>
+        <p>Accetta: JPG, PNG, HEIC · Ridimensionata a 1280px</p>
+      </div>
+      <div class="photo-preview" id="photoPreview">
+        <img id="previewImg" src="" alt="Anteprima">
+        <button class="change-btn" onclick="document.getElementById('fileInput').click()">✎ Cambia</button>
+      </div>
+
+      <div class="photo-info" id="photoInfo"></div>
+
+      <div class="btn-row" style="margin-top:1rem;">
+        <button class="btn-sm" onclick="openCamera()">📷 Fotocamera</button>
+        <button class="btn-sm" onclick="openGallery()">🗂️ Galleria</button>
+      </div>
+
+      <div class="nav-next">
+        <button class="btn-next" onclick="goStep(2)">Avanti — Posizione →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: MAPPA -->
+  <div class="section-card" id="card2">
+    <div class="card-header">
+      <span class="icon">🗺️</span>
+      <div>
+        <h2>Dove si trova il problema?</h2>
+        <p>Trascina il marker o clicca sulla mappa per riposizionarlo</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="geo-status" id="geoStatus">
+        <div class="dot"></div>
+        <span id="geoText">In attesa di posizione...</span>
+      </div>
+
+      <div id="map"></div>
+
+      <label>Indirizzo rilevato</label>
+      <input type="text" id="addressInput" placeholder="Via/Piazza, Numero Civico — Città">
+
+      <div class="btn-row">
+        <button class="btn-sm" onclick="getGPS()">📡 Usa GPS</button>
+        <button class="btn-sm" onclick="useExifGps()" id="btnExif" style="display:none">📸 Da foto EXIF</button>
+      </div>
+
+      <div class="nav-next">
+        <button class="btn-next" onclick="goStep(3)">Avanti — Dettagli →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: DETTAGLI -->
+  <div class="section-card" id="card3">
+    <div class="card-header">
+      <span class="icon">📝</span>
+      <div>
+        <h2>Descrivi il problema</h2>
+        <p>Più dettagli fornisci, più rapida sarà la risposta</p>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <label>Categoria segnalazione *</label>
+      <div class="select-wrap">
+        <select id="categoria" onchange="updatePreview()">
+          <option value="">— Seleziona categoria —</option>
+          <option value="Buche e dissesti stradali">🕳️ Buche e dissesti stradali</option>
+          <option value="Illuminazione pubblica guasta">💡 Illuminazione pubblica guasta</option>
+          <option value="Rifiuti abbandonati">🗑️ Rifiuti abbandonati</option>
+          <option value="Alberi e verde pubblico">🌳 Alberi e verde pubblico</option>
+          <option value="Perdite idriche">🚰 Perdite idriche</option>
+          <option value="Deiezioni non raccolte">🐕 Deiezioni non raccolte</option>
+          <option value="Segnaletica danneggiata">🚧 Segnaletica danneggiata</option>
+          <option value="Immobile pericolante">🏚️ Immobile pericolante</option>
+          <option value="Barriere architettoniche">♿ Barriere architettoniche</option>
+          <option value="Inquinamento acustico">🔊 Inquinamento acustico</option>
+          <option value="Veicoli abbandonati">🛺 Veicoli abbandonati</option>
+          <option value="Degrado e sicurezza">💊 Degrado e sicurezza</option>
+          <option value="Altro">📦 Altro</option>
+        </select>
+      </div>
+
+      <label>Urgenza</label>
+      <div class="select-wrap">
+        <select id="urgenza" onchange="updatePreview()">
+          <option value="Normale">🟡 Normale</option>
+          <option value="Alta">🔴 Alta — pericolo immediato</option>
+          <option value="Bassa">🟢 Bassa — segnalazione informativa</option>
+        </select>
+      </div>
+
+      <label>Descrizione (opzionale)</label>
+      <textarea id="descr" placeholder="Es: La buca si trova all'angolo con Via Roma, è larga circa 40cm..." oninput="updatePreview()"></textarea>
+
+      <label>Nome o Nickname (opzionale)</label>
+      <input type="text" id="nome" placeholder="Cittadino anonimo" oninput="updatePreview()">
+
+      <label>Email (opzionale — per aggiornamenti)</label>
+      <input type="email" id="email" placeholder="tua@email.it">
+
+      <div class="nav-next">
+        <button class="btn-next" onclick="goStep(4)">Avanti — Destinatari →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: INVIA -->
+  <div class="section-card" id="card4">
+    <div class="card-header">
+      <span class="icon">📤</span>
+      <div>
+        <h2>Scegli dove inviare</h2>
+        <p>Seleziona uno o più canali di invio</p>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <div class="config-notice" id="configNotice">
+        <strong>⚙️ Configurazione richiesta</strong>
+        Apri il file HTML e compila la sezione <code>CONFIG</code> con i dati del tuo comune
+        (email uffici, numeri WhatsApp, handle social, URL Apps Script).
+        <a href="#" onclick="showConfigHelp(); return false;" style="color: var(--amber);">Come fare →</a>
+      </div>
+
+      <label>Destinatari</label>
+      <div class="recipient-grid" id="recipientGrid">
+        <label class="recipient-item selected" onclick="toggleRec(this)" data-channel="email">
+          <input type="checkbox" checked>
+          <span class="ri-icon">🏛️</span>
+          <div>
+            <div class="ri-name">Comune</div>
+            <div class="ri-sub" id="rec-email-sub">Email ufficio tecnico</div>
+          </div>
+        </label>
+        <label class="recipient-item" onclick="toggleRec(this)" data-channel="whatsapp">
+          <input type="checkbox">
+          <span class="ri-icon">💬</span>
+          <div>
+            <div class="ri-name">WhatsApp</div>
+            <div class="ri-sub" id="rec-wa-sub">Numero segnalazioni</div>
+          </div>
+        </label>
+        <label class="recipient-item" onclick="toggleRec(this)" data-channel="twitter">
+          <input type="checkbox">
+          <span class="ri-icon">🐦</span>
+          <div>
+            <div class="ri-name">X / Twitter</div>
+            <div class="ri-sub" id="rec-tw-sub">Account comune</div>
+          </div>
+        </label>
+        <label class="recipient-item" onclick="toggleRec(this)" data-channel="facebook">
+          <input type="checkbox">
+          <span class="ri-icon">📘</span>
+          <div>
+            <div class="ri-name">Facebook</div>
+            <div class="ri-sub">Condividi sulla pagina</div>
+          </div>
+        </label>
+        <label class="recipient-item" onclick="toggleRec(this)" data-channel="polizia">
+          <input type="checkbox">
+          <span class="ri-icon">🚓</span>
+          <div>
+            <div class="ri-name">Polizia Locale</div>
+            <div class="ri-sub" id="rec-pol-sub">Email ufficio</div>
+          </div>
+        </label>
+      </div>
+
+      <label style="margin-top:1.5rem;">Anteprima messaggio</label>
+      <div class="preview-box" id="previewBox">
+        Compila i dettagli nei passi precedenti per vedere il messaggio.
+      </div>
+
+      <button class="send-btn" id="sendBtn" onclick="sendReport()">
+        ✉️ Invia Segnalazione
+      </button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="section-card" id="cardSuccess">
+    <div class="success-card">
+      <span class="success-icon">✅</span>
+      <h2>Segnalazione inviata!</h2>
+      <p>Il tuo report è stato trasmesso. Conserva l'ID per seguire l'evoluzione.</p>
+      <div class="tag-id" id="ticketId">SGN-000000</div>
+      <p id="successDetail" style="margin-bottom:1rem;"></p>
+      <div class="channels-sent" id="channelsSent"></div>
+      <br>
+      <button class="btn-next" onclick="resetAll()" style="margin:0 auto;">+ Nuova segnalazione</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ─────────────────────────────────────────────
+//  CONFIGURAZIONE — compila con i dati del tuo comune
+// ─────────────────────────────────────────────
+const CONFIG = {
+  // URL del Google Apps Script distribuito come Web App
+  // Istruzioni: apri dati/apps-script.gs → incollalo su script.google.com
+  // → Distribuisci → Nuova distribuzione → App web → Chiunque → copia URL
+  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbwiLYj4k102Vamc5PuqYp6euSVnYJh61RtkgTGvXufbLV3R_r-j2MRCdlavPu2nCFvpmw/exec',
+
+  // Dati del comune (personalizza)
+  comune: {
+    nome:         'Comune di [NOME]',
+    emailTecnico: 'ufficio.tecnico@comune.it',
+    emailPolizia: 'polizialocale@comune.it',
+    whatsapp:     '',           // es: '+390000000000'
+    twitter:      '@ComuneXX', // handle Twitter/X
+    facebookPage: 'https://www.facebook.com/ComuneXX',
+    siteUrl:      '',           // URL pubblico dell'app (per link nella segnalazione)
+  },
+
+  // URL del Google Sheet pubblicato come CSV (per la mappa pubblica)
+  sheetsCSV: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSsv5emsudeZOCiaREWWRFP14r5ZSmMW-WzwBTNv-aUitRaEb8mOy5dbm4KmBjpSwSSn2A-GAL7UGYz/pub?gid=0&single=true&output=csv',
+  // Foglio sorgente: https://docs.google.com/spreadsheets/d/1Wy86M342so7EHLi3F-G5UNvXFq058Zr5EKAPhjNS3FM/edit
+};
+
+// ─────────────────────────────────────────────
+//  STATO APP
+// ─────────────────────────────────────────────
+let map, marker;
+let currentStep = 1;
+let reportData = {
+  lat: 41.9028,
+  lng: 12.4964,
+  address: '',
+  via: '',
+  civico: '',
+  cap: '',
+  comune: '',
+  provincia: '',
+  regione: '',
+  fontePosizione: 'Manuale',
+  accuratezza: '',
+  exifLat: null,
+  exifLng: null,
+  photoResized: null,
+  photoDims: '',
+  hasPhoto: false,
+};
+
+// Aggiorna sub-label destinatari con CONFIG
+function initRecipientLabels() {
+  if (CONFIG.comune.emailTecnico) {
+    document.getElementById('rec-email-sub').textContent = CONFIG.comune.emailTecnico;
+  }
+  if (CONFIG.comune.whatsapp) {
+    document.getElementById('rec-wa-sub').textContent = CONFIG.comune.whatsapp;
+  }
+  if (CONFIG.comune.twitter) {
+    document.getElementById('rec-tw-sub').textContent = CONFIG.comune.twitter;
+  }
+  if (CONFIG.comune.emailPolizia) {
+    document.getElementById('rec-pol-sub').textContent = CONFIG.comune.emailPolizia;
+  }
+  // Nascondi avviso config se form URL è configurato
+  if (CONFIG.googleFormUrl) {
+    document.getElementById('configNotice').style.display = 'none';
+  }
+}
+
+// ─────────────────────────────────────────────
+//  FOTO + RESIZE + EXIF
+// ─────────────────────────────────────────────
+function openCamera() {
+  const input = document.getElementById('fileInput');
+  input.setAttribute('capture', 'environment');
+  input.click();
+}
+
+function openGallery() {
+  const input = document.getElementById('fileInput');
+  input.removeAttribute('capture');
+  input.click();
+}
+
+document.getElementById('fileInput').addEventListener('change', async function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  // 1. Leggi EXIF GPS
+  let exifInfo = '';
+  try {
+    const gps = await exifr.gps(file);
+    if (gps && gps.latitude && gps.longitude) {
+      reportData.exifLat = gps.latitude;
+      reportData.exifLng = gps.longitude;
+      document.getElementById('btnExif').style.display = 'flex';
+      exifInfo = ' · 📸 GPS EXIF trovato!';
+    }
+  } catch(err) {
+    // exifr non disponibile o nessun EXIF
+  }
+
+  // 2. Ridimensiona a max 1280px
+  const img = new Image();
+  const reader = new FileReader();
+  reader.onload = ev => {
+    img.onload = () => {
+      const MAX = 1280;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const resized = canvas.toDataURL('image/jpeg', 0.85);
+      reportData.photoResized = resized;
+      reportData.photoDims = `${w}x${h}`;
+      reportData.hasPhoto = true;
+
+      document.getElementById('previewImg').src = resized;
+      document.getElementById('photoZone').style.display = 'none';
+      document.getElementById('photoPreview').style.display = 'block';
+
+      const info = document.getElementById('photoInfo');
+      info.textContent = `✓ ${w}×${h}px${exifInfo} · ${(resized.length * 0.75 / 1024).toFixed(0)} KB`;
+      info.classList.add('visible');
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+// ─────────────────────────────────────────────
+//  MAPPA + GPS + GEOCODING
+// ─────────────────────────────────────────────
+function initMap() {
+  if (map) return;
+  map = L.map('map').setView([reportData.lat, reportData.lng], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+
+  marker = L.marker([reportData.lat, reportData.lng], { draggable: true }).addTo(map);
+  marker.on('dragend', e => {
+    const p = e.target.getLatLng();
+    setPosition(p.lat, p.lng, 'Manuale');
+  });
+
+  map.on('click', e => {
+    marker.setLatLng(e.latlng);
+    setPosition(e.latlng.lat, e.latlng.lng, 'Manuale');
+  });
+
+  // Priorità: EXIF → GPS device
+  if (reportData.exifLat) {
+    useExifGps();
+  } else {
+    getGPS();
+  }
+}
+
+function setPosition(lat, lng, fonte, accuratezza) {
+  reportData.lat = lat;
+  reportData.lng = lng;
+  reportData.fontePosizione = fonte || 'Manuale';
+  reportData.accuratezza = accuratezza || '';
+  if (map) {
+    map.setView([lat, lng], 17);
+    marker.setLatLng([lat, lng]);
+  }
+  reverseGeocode(lat, lng);
+}
+
+function getGPS() {
+  document.getElementById('geoText').textContent = 'Rilevamento GPS in corso...';
+  if (!navigator.geolocation) {
+    document.getElementById('geoText').textContent = 'GPS non disponibile — clicca sulla mappa';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(pos => {
+    const { latitude: lat, longitude: lng, accuracy } = pos.coords;
+    setPosition(lat, lng, 'GPS', Math.round(accuracy));
+    document.getElementById('geoText').textContent =
+      `✓ Posizione GPS rilevata (±${Math.round(accuracy)}m)`;
+  }, () => {
+    document.getElementById('geoText').textContent =
+      '⚠ GPS non disponibile — clicca sulla mappa per posizionare';
+  }, { enableHighAccuracy: true, timeout: 10000 });
+}
+
+function useExifGps() {
+  if (!reportData.exifLat) return;
+  setPosition(reportData.exifLat, reportData.exifLng, 'EXIF');
+  document.getElementById('geoText').textContent = '✓ Coordinate estratte dai metadati EXIF della foto';
+}
+
+function reverseGeocode(lat, lng) {
+  fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`)
+    .then(r => r.json())
+    .then(data => {
+      const a = data.address || {};
+      reportData.via = a.road || a.pedestrian || a.footway || '';
+      reportData.civico = a.house_number || '';
+      reportData.cap = a.postcode || '';
+      reportData.comune = a.city || a.town || a.village || a.municipality || '';
+      reportData.provincia = a.county || a.state_district || '';
+      reportData.regione = a.state || '';
+      reportData.address = data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      document.getElementById('addressInput').value = reportData.address;
+      updatePreview();
+    })
+    .catch(() => {
+      reportData.address = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      document.getElementById('addressInput').value = reportData.address;
+    });
+}
+
+// ─────────────────────────────────────────────
+//  STEP NAVIGATION
+// ─────────────────────────────────────────────
+function goStep(n) {
+  if (n === 4) {
+    if (!document.getElementById('categoria').value) {
+      alert('Seleziona una categoria prima di continuare.');
+      return;
+    }
+  }
+
+  currentStep = n;
+  const cards = document.querySelectorAll('.section-card');
+  cards.forEach((c, i) => c.classList.toggle('visible', i === n - 1));
+
+  const steps = document.querySelectorAll('.step');
+  steps.forEach((s, i) => {
+    s.classList.remove('active', 'done');
+    const stepNum = Math.floor(i / 2) + 1;
+    if (stepNum < n) s.classList.add('done');
+    if (stepNum === n) s.classList.add('active');
+  });
+
+  if (n === 2) setTimeout(initMap, 150);
+  if (n === 4) updatePreview();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─────────────────────────────────────────────
+//  DESTINATARI
+// ─────────────────────────────────────────────
+function toggleRec(el) {
+  el.classList.toggle('selected');
+}
+
+function getSelectedChannels() {
+  const selected = [];
+  document.querySelectorAll('.recipient-item.selected').forEach(el => {
+    selected.push(el.dataset.channel);
+  });
+  return selected;
+}
+
+// ─────────────────────────────────────────────
+//  ANTEPRIMA MESSAGGIO
+// ─────────────────────────────────────────────
+function updatePreview() {
+  const cat = document.getElementById('categoria').value || '[categoria]';
+  const descr = document.getElementById('descr').value;
+  const nome = document.getElementById('nome').value || 'Un cittadino';
+  const addr = document.getElementById('addressInput')?.value || reportData.address || '[posizione]';
+  const urgenza = document.getElementById('urgenza')?.value || 'Normale';
+
+  const urgLabel = urgenza === 'Alta' ? '🔴 URGENTE — ' : urgenza === 'Bassa' ? '🟢 ' : '🟡 ';
+  const addrShort = addr.length > 80 ? addr.substring(0, 80) + '...' : addr;
+
+  let msg = `📍 <strong>Segnalazione Civica — ${urgLabel}${cat}</strong><br>`;
+  msg += `📌 Luogo: ${addrShort}<br>`;
+  if (descr) msg += `📝 Note: ${descr}<br>`;
+  msg += `👤 Segnalato da: ${nome}<br>`;
+  msg += `🕐 ${new Date().toLocaleString('it-IT')}<br>`;
+  msg += `<br><em>#SegnalaOra #${cat.replace(/[^a-zA-Z]/g,'')}</em>`;
+
+  document.getElementById('previewBox').innerHTML = msg;
+}
+
+// ─────────────────────────────────────────────
+//  INVIO
+// ─────────────────────────────────────────────
+async function sendReport() {
+  const cat = document.getElementById('categoria').value;
+  if (!cat) { alert('Seleziona una categoria.'); return; }
+
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Invio in corso...';
+
+  const now = new Date();
+  const ticketId = 'SGN-' + now.getTime();
+  const nome = document.getElementById('nome').value || 'Cittadino anonimo';
+  const emailSegnalante = document.getElementById('email').value || '';
+  const descr = document.getElementById('descr').value;
+  const urgenza = document.getElementById('urgenza').value;
+  const addr = document.getElementById('addressInput').value || reportData.address;
+  const channels = getSelectedChannels();
+
+  // Emoji categoria
+  const emojiMap = {
+    'Buche e dissesti stradali': '🕳️',
+    'Illuminazione pubblica guasta': '💡',
+    'Rifiuti abbandonati': '🗑️',
+    'Alberi e verde pubblico': '🌳',
+    'Perdite idriche': '🚰',
+    'Deiezioni non raccolte': '🐕',
+    'Segnaletica danneggiata': '🚧',
+    'Immobile pericolante': '🏚️',
+    'Barriere architettoniche': '♿',
+    'Inquinamento acustico': '🔊',
+    'Veicoli abbandonati': '🛺',
+    'Degrado e sicurezza': '💊',
+    'Altro': '📦'
+  };
+  const catEmoji = emojiMap[cat] || '📌';
+  const urgLabel = urgenza === 'Alta' ? '🔴 URGENTE — ' : urgenza === 'Bassa' ? '🟢 ' : '🟡 ';
+
+  const testoMessaggio = [
+    `📍 Segnalazione Civica — ${urgLabel}${cat}`,
+    `📌 Luogo: ${addr}`,
+    descr ? `📝 Note: ${descr}` : '',
+    `👤 Segnalato da: ${nome}`,
+    `🕐 ${now.toLocaleString('it-IT')}`,
+    `#SegnalaOra #${cat.replace(/[^a-zA-Z]/g,'')}`,
+    ticketId
+  ].filter(Boolean).join('\n');
+
+  const siteUrl = CONFIG.comune.siteUrl || window.location.href.split('?')[0];
+
+  // 1. POST JSON ad Apps Script (se configurato)
+  if (CONFIG.appsScriptUrl) {
+    const payload = {
+      ID_Segnalazione:   ticketId,
+      Timestamp_UTC:     now.toISOString(),
+      Data:              now.toLocaleDateString('it-IT'),
+      Ora:               now.toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'}),
+      Categoria:         cat,
+      Categoria_Emoji:   catEmoji,
+      Urgenza:           urgenza,
+      Descrizione:       descr,
+      Nome_Segnalante:   nome,
+      Email_Segnalante:  emailSegnalante,
+      Lat:               reportData.lat.toFixed(6),
+      Long:              reportData.lng.toFixed(6),
+      Indirizzo_Completo: addr,
+      Via:               reportData.via,
+      Numero_Civico:     reportData.civico,
+      CAP:               reportData.cap,
+      Comune:            reportData.comune,
+      Provincia:         reportData.provincia,
+      Regione:           reportData.regione,
+      Fonte_Posizione:   reportData.fontePosizione,
+      Accuratezza_GPS_m: String(reportData.accuratezza),
+      Destinatari:       channels.join(';'),
+      Canale_Email:      channels.includes('email') ? 'Sì' : 'No',
+      Canale_WhatsApp:   channels.includes('whatsapp') ? 'Sì' : 'No',
+      Canale_Twitter:    channels.includes('twitter') ? 'Sì' : 'No',
+      Canale_Facebook:   channels.includes('facebook') ? 'Sì' : 'No',
+      Ha_Immagine:       reportData.hasPhoto ? 'Sì' : 'No',
+      Dimensioni_Immagine: reportData.photoDims,
+      Testo_Messaggio:   testoMessaggio,
+      URL_Segnalazione:  siteUrl,
+      Stato:             'Nuova',
+    };
+
+    try {
+      await fetch(CONFIG.appsScriptUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    } catch(e) {
+      // no-cors: risposta opaque, il dato arriva ugualmente
+    }
+  }
+
+  // 2. Apri canali selezionati
+  const channelsBadges = [];
+  const testoBreve = encodeURIComponent(testoMessaggio.substring(0, 280));
+  const urlEnc = encodeURIComponent(siteUrl);
+
+  // Piccola pausa tra le aperture per evitare popup blocker
+  const delay = ms => new Promise(r => setTimeout(r, ms));
+
+  if (channels.includes('email')) {
+    const subject = encodeURIComponent(`[SegnalaOra] ${cat} — ${ticketId}`);
+    const body = encodeURIComponent(testoMessaggio + '\n\nInviato tramite SegnalaOra');
+    window.location.href = `mailto:${CONFIG.comune.emailTecnico}?subject=${subject}&body=${body}`;
+    channelsBadges.push('🏛️ Email Comune');
+    await delay(800);
+  }
+
+  if (channels.includes('polizia')) {
+    const subject = encodeURIComponent(`[SegnalaOra] ${cat} — ${ticketId}`);
+    const body = encodeURIComponent(testoMessaggio);
+    window.open(`mailto:${CONFIG.comune.emailPolizia}?subject=${subject}&body=${body}`, '_blank');
+    channelsBadges.push('🚓 Polizia Locale');
+    await delay(500);
+  }
+
+  if (channels.includes('whatsapp') && CONFIG.comune.whatsapp) {
+    const waNum = CONFIG.comune.whatsapp.replace(/\D/g, '');
+    window.open(`https://wa.me/${waNum}?text=${testoBreve}`, '_blank');
+    channelsBadges.push('💬 WhatsApp');
+    await delay(500);
+  }
+
+  if (channels.includes('twitter')) {
+    const tweetText = encodeURIComponent(
+      `${urgLabel}${cat}\n📌 ${reportData.via || reportData.comune}\n${CONFIG.comune.twitter}\n#SegnalaOra\n${ticketId}`
+    );
+    window.open(`https://twitter.com/intent/tweet?text=${tweetText}&url=${urlEnc}`, '_blank');
+    channelsBadges.push('🐦 Twitter/X');
+    await delay(500);
+  }
+
+  if (channels.includes('facebook')) {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${urlEnc}&quote=${testoBreve}`, '_blank');
+    channelsBadges.push('📘 Facebook');
+  }
+
+  // 3. Schermata di successo
+  document.getElementById('ticketId').textContent = ticketId;
+  const detail = CONFIG.googleFormUrl
+    ? 'Segnalazione registrata nell\'archivio e canali di comunicazione aperti.'
+    : 'Canali di comunicazione aperti. Configura Google Form per l\'archiviazione automatica.';
+  document.getElementById('successDetail').textContent = detail;
+
+  const badgesEl = document.getElementById('channelsSent');
+  badgesEl.innerHTML = channelsBadges.map(b => `<span class="channel-badge">${b}</span>`).join('');
+
+  document.querySelectorAll('.section-card').forEach(c => c.classList.remove('visible'));
+  document.getElementById('cardSuccess').classList.add('visible');
+  document.querySelectorAll('.step').forEach(s => { s.classList.remove('active'); s.classList.add('done'); });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetAll() { location.reload(); }
+
+// ─────────────────────────────────────────────
+//  HELP CONFIG
+// ─────────────────────────────────────────────
+function showConfigHelp() {
+  alert(
+    'Come configurare SegnalaOra:\n\n' +
+    '1. Vai su script.google.com → Nuovo progetto\n' +
+    '2. Incolla il contenuto del file dati/apps-script.gs\n' +
+    '3. Clicca "Distribuisci" → "Nuova distribuzione"\n' +
+    '4. Tipo: App web | Esegui come: Me | Accesso: Chiunque\n' +
+    '5. Autorizza l\'app con il tuo account Google\n' +
+    '6. Copia l\'URL della distribuzione (finisce con /exec)\n' +
+    '7. Incollalo nel campo appsScriptUrl del CONFIG in questo file\n' +
+    '8. Aggiorna i dati del comune (email, WhatsApp, Twitter, Facebook)\n\n' +
+    'Il foglio Google Sheets viene popolato automaticamente ad ogni segnalazione.'
+  );
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+initRecipientLabels();
+document.getElementById('s1').classList.add('active');
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+name: Scarica e ridimensiona immagini
+
+# ─────────────────────────────────────────────────────────────
+#  Questo workflow legge la colonna URL_Immagine dal CSV
+#  già scaricato in  dati/segnalazioni.csv,  scarica ogni
+#  immagine pubblica, la ridimensiona a max 1280px e la
+#  salva in  img/{ID_Segnalazione}.jpg  nel repository.
+#
+#  ⚠️  PREREQUISITI prima di attivare la pianificazione:
+#
+#  1. Aggiungi la colonna  URL_Immagine  al tuo Google Sheet
+#     (dopo  Ha_Immagine / Dimensioni_Immagine)
+#
+#  2. Aggiungi  'URL_Immagine'  alla lista COLUMNS in
+#     dati/apps-script.gs  e ri-distribuisci lo script
+#
+#  3. Scegli dove caricare le foto (servizi gratuiti):
+#     - imgbb.com  → API key gratuita, URL permanente
+#     - Cloudinary → piano free 25 GB
+#     - Google Drive → cartella pubblica "Anyone with link"
+#       Nota: per Drive usare URL diretto tipo:
+#       https://drive.google.com/uc?export=download&id=FILE_ID
+#
+#  4. Fai caricare l'URL dal form/app e scrivilo nello Sheet
+#     in  URL_Immagine  (lo script Apps Script lo copierà
+#     automaticamente se è nella lista COLUMNS)
+#
+#  5. Attiva la pianificazione cambiando i trigger qui sotto
+#     (rimuovi i commenti #  davanti a  schedule / workflow_run)
+#
+#  Le immagini già presenti in  img/  vengono saltate
+#  (nessun riscaricare doppio).
+# ─────────────────────────────────────────────────────────────
+
+on:
+  # -- Attiva queste righe dopo aver configurato URL_Immagine --
+  # schedule:
+  #   - cron: '15 */2 * * *'   # ogni 2 ore (offset di 15 min rispetto a sync-sheets)
+  # workflow_run:
+  #   workflows: ["Sincronizza Google Sheets"]
+  #   types: [completed]
+  # ------------------------------------------------------------
+  workflow_dispatch:            # manuale da GitHub → Actions
+
+permissions:
+  contents: write
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    name: Scarica immagini e commit
+    # Se attivato da workflow_run, esegui solo se sync-sheets è riuscito
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Installa dipendenze Python
+        run: pip install --quiet Pillow requests
+
+      - name: Scarica e ridimensiona immagini
+        run: |
+          python3 << 'PYEOF'
+          import csv, os, sys
+          import requests
+          from PIL import Image
+          from io import BytesIO
+
+          CSV_FILE  = "dati/segnalazioni.csv"
+          IMG_DIR   = "img"
+          MAX_SIZE  = 1280    # px lato lungo massimo
+          QUALITY   = 85      # qualità JPEG (0-95)
+          TIMEOUT   = 20      # secondi per download
+
+          os.makedirs(IMG_DIR, exist_ok=True)
+
+          if not os.path.exists(CSV_FILE):
+              print("⚠️  dati/segnalazioni.csv non trovato.")
+              print("   Esegui prima il workflow 'Sincronizza Google Sheets'.")
+              sys.exit(0)
+
+          with open(CSV_FILE, newline='', encoding='utf-8') as f:
+              reader = csv.DictReader(f)
+              rows = list(reader)
+
+          # Controlla che la colonna URL_Immagine esista
+          if rows and 'URL_Immagine' not in rows[0]:
+              print("⚠️  Colonna 'URL_Immagine' non trovata nel CSV.")
+              print("   Aggiungi la colonna al Google Sheet e aggiorna apps-script.gs.")
+              print("   Colonne disponibili:", list(rows[0].keys()))
+              sys.exit(0)
+
+          downloaded, skipped, errors = 0, 0, 0
+
+          for row in rows:
+              url    = row.get('URL_Immagine', '').strip()
+              id_seg = row.get('ID_Segnalazione', '').strip()
+
+              if not url or not id_seg:
+                  skipped += 1
+                  continue
+
+              out_path = os.path.join(IMG_DIR, f"{id_seg}.jpg")
+              if os.path.exists(out_path):
+                  skipped += 1
+                  continue
+
+              try:
+                  print(f"↓ {id_seg}: {url[:60]}...")
+                  resp = requests.get(url, timeout=TIMEOUT)
+                  resp.raise_for_status()
+
+                  img = Image.open(BytesIO(resp.content)).convert('RGB')
+                  w, h = img.size
+
+                  # Ridimensiona solo se necessario
+                  if w > MAX_SIZE or h > MAX_SIZE:
+                      ratio = min(MAX_SIZE / w, MAX_SIZE / h)
+                      new_w = int(w * ratio)
+                      new_h = int(h * ratio)
+                      img = img.resize((new_w, new_h), Image.LANCZOS)
+
+                  img.save(out_path, 'JPEG', quality=QUALITY, optimize=True)
+                  size_kb = os.path.getsize(out_path) // 1024
+                  print(f"  ✓ salvata: {img.size[0]}×{img.size[1]}px  {size_kb}KB")
+                  downloaded += 1
+
+              except Exception as e:
+                  print(f"  ✗ errore: {e}")
+                  errors += 1
+
+          print(f"\n── Riepilogo ──────────────────────")
+          print(f"  Scaricate:  {downloaded}")
+          print(f"  Saltate:    {skipped}")
+          print(f"  Errori:     {errors}")
+          PYEOF
+
+      - name: Commit e push nuove immagini
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add img/
+
+          if git diff --cached --quiet; then
+            echo "Nessuna nuova immagine da committare — skip."
+          else
+            COUNT=$(git diff --cached --name-only | grep -c . 2>/dev/null || echo "?")
+            git commit -m "sync: aggiunge ${COUNT} immagini [skip ci]"
+            git push
+            echo "Commit eseguito: ${COUNT} nuove immagini."
+          fi
