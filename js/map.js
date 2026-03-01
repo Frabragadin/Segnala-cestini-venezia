@@ -20,6 +20,7 @@ const MAP_DEFAULT = { lat: 38.1157, lng: 13.3615, zoom: 13 };
 let allReports      = [];
 let filteredReports = [];
 let markers         = [];
+let markerById      = {};   // ID_Segnalazione → Leaflet marker
 let map;
 let activeFilters = { urgenza: 'all', stato: 'all' };
 let highlightedId = null;
@@ -290,7 +291,8 @@ function makeMarkerIcon(urgenza, stato) {
 
 function renderMarkers() {
   markers.forEach(m => map.removeLayer(m));
-  markers = [];
+  markers    = [];
+  markerById = {};
 
   filteredReports.forEach(report => {
     const lat = parseFloat(report.Lat);
@@ -302,6 +304,7 @@ function renderMarkers() {
     m.on('click', () => highlightListItem(report.ID_Segnalazione));
     m.addTo(map);
     markers.push(m);
+    markerById[report.ID_Segnalazione] = m;
   });
 
   if (markers.length > 0) {
@@ -377,8 +380,8 @@ function focusReport(id) {
   const lng = parseFloat(report.Long);
   if (!isNaN(lat) && !isNaN(lng)) {
     map.setView([lat, lng], 17, { animate: true });
-    const idx = filteredReports.indexOf(report);
-    if (markers[idx]) markers[idx].openPopup();
+    const m = markerById[id];
+    if (m) setTimeout(() => m.openPopup(), 250);
   }
   highlightListItem(id);
 }
