@@ -426,6 +426,10 @@ input.invalid, textarea.invalid, select.invalid {
   border-color: var(--rust) !important;
   background: #fff5f5;
 }
+.photo-zone.invalid {
+  border-color: var(--rust) !important;
+  background: rgba(192,57,43,0.04);
+}
 
 input.valid {
   border-color: var(--sage) !important;
@@ -944,6 +948,7 @@ html.dark textarea:focus { background: #1e1812; border-color: var(--amber); }
 html.dark input.invalid, html.dark textarea.invalid, html.dark select.invalid {
   background: rgba(192,57,43,0.12) !important;
 }
+html.dark .photo-zone.invalid { border-color: var(--rust) !important; background: rgba(192,57,43,0.08) !important; }
 
 html.dark .dest-btn { background: #1a1208; border-color: rgba(255,255,255,0.1); }
 html.dark .dest-btn:hover    { border-color: var(--amber-light); background: rgba(212,130,10,0.08); }

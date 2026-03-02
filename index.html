@@ -138,6 +138,7 @@
       <button class="btn-sm" type="button" onclick="openCamera()"><i class="fa-solid fa-camera"></i> Fotocamera</button>
       <button class="btn-sm" type="button" onclick="openGallery()"><i class="fa-solid fa-images"></i> Galleria</button>
     </div>
+    <div class="field-error" id="photoZone-error">⚠️ La foto è obbligatoria.</div>
   </section>
 
   <!-- ③ DESTINATARIO -->
@@ -168,8 +169,9 @@
       </select>
     </div>
 
-    <label>Descrizione (opzionale)</label>
-    <textarea id="descr" placeholder="Es: La buca si trova all'angolo con Via Roma, è larga circa 40 cm…"></textarea>
+    <label>Descrizione *</label>
+    <textarea id="descr" placeholder="Es: La buca si trova all'angolo con Via Roma, è larga circa 40 cm…" oninput="clearFieldError('descr')"></textarea>
+    <div class="field-error" id="descr-error">Inserisci una breve descrizione del problema.</div>
   </section>
 
   <!-- ⑤ MITTENTE -->

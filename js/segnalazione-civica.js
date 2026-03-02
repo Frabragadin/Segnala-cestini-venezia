@@ -161,6 +161,8 @@ document.getElementById('fileInput').addEventListener('change', async function(e
       reportData.photoResized = resized;
       reportData.photoDims    = `${w}x${h}`;
       reportData.hasPhoto     = true;
+      clearFieldError('photoZone');
+      document.getElementById('photoZone-error').classList.remove('visible');
 
       document.getElementById('previewImg').src             = resized;
       document.getElementById('photoZone').style.display    = 'none';
@@ -338,6 +340,15 @@ async function sendReport() {
   // Validazioni
   let hasError = false;
 
+  const descr = document.getElementById('descr').value.trim();
+
+  if (!reportData.hasPhoto) {
+    document.getElementById('photoZone').classList.add('invalid');
+    document.getElementById('photoZone-error').classList.add('visible');
+    if (!hasError) document.getElementById('photoZone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    hasError = true;
+  }
+
   if (!_selectedDest) {
     document.getElementById('dest-error').classList.add('visible');
     if (!hasError) document.querySelector('.form-section:has(#destGrid)') && document.querySelector('.form-section:has(#destGrid)').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -354,6 +365,11 @@ async function sendReport() {
     } else {
       toEmail = customEmail;
     }
+  }
+
+  if (!descr) {
+    showFieldError('descr', 'Inserisci una breve descrizione del problema.');
+    hasError = true;
   }
 
   const nome = document.getElementById('nome').value.trim();
@@ -398,7 +414,6 @@ async function sendReport() {
     ? crypto.randomUUID()
     : 'xxxx-xxxx-xxxx-xxxx'.replace(/x/g, () => (Math.random() * 16 | 0).toString(16));
 
-  const descr   = document.getElementById('descr').value;
   const cat      = _selectedDest ? (_selectedDest.categoria || _selectedDest.nome) : 'Altro';
   const catEmoji = _selectedDest ? _selectedDest.icon : '📌';
   const urgenza  = document.getElementById('urgenza').value;
@@ -417,10 +432,12 @@ async function sendReport() {
   const testoMessaggio = [
     `📍 Segnalazione Civica — ${urgLabel}${cat}`,
     `📌 Luogo: ${addr}`,
-    descr ? `📝 Note: ${descr}` : '',
+    `📝 Descrizione: ${descr}`,
     destNome ? `🏛️ Destinatario: ${destNome}` : '',
     `👤 Segnalato da: ${nome}`,
+    `📧 Email: ${emailSegnalante}`,
     `🕐 ${now.toLocaleString('it-IT')}`,
+    predictedImgUrl ? `📷 Foto: ${predictedImgUrl}` : '',
     `#SegnalaOra #${cat.replace(/[^a-zA-Z]/g,'')}`,
     ticketId,
     `\n──────────────────────────────────────`,
