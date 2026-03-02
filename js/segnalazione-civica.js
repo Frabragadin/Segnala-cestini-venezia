@@ -418,14 +418,12 @@ async function sendReport() {
   const urgLabel = urgenza === 'Alta' ? '🔴 URGENTE — ' : urgenza === 'Bassa' ? '🟢 ' : '🟡 ';
 
   const siteUrl = CONFIG.siteUrl
-    || window.location.href.replace('segnalazione-civica.html', 'index.html').split('?')[0];
+    || window.location.href.replace('index.html', '').split('?')[0];
 
-  const siteBase = siteUrl.endsWith('index.html')
-    ? siteUrl.slice(0, -'index.html'.length)
-    : siteUrl.replace(/\/?$/, '/');
+  const siteBase = siteUrl.replace(/\/?$/, '/');
   const predictedImgUrl = reportData.hasPhoto ? siteBase + 'img/' + ticketId + '.jpg' : null;
 
-  const resolveUrl = siteBase + 'index.html?risolvi=' + token;
+  const resolveUrl = siteBase + 'mappa.html?risolvi=' + token;
 
   const destNome = _selectedDest ? _selectedDest.nome : '';
   const testoMessaggio = [
