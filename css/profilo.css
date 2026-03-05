@@ -364,3 +364,102 @@ html.dark .bnav-item   { color: rgba(245,240,232,0.35); }
 html.dark .bnav-item.bnav-active { color: var(--amber); }
 html.dark .search-results-header { color: rgba(245,240,232,0.4); }
 html.dark .search-results-header strong { color: #f5f0e8; }
+
+
+/* ── INFO BUTTON ─────────────────────────────────────── */
+.btn-info {
+  background: none;
+  border: 1px solid rgba(60,40,20,0.20);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  color: #9a8f80;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.btn-info:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ── THEME TOGGLE ────────────────────────────────────── */
+.btn-theme {
+  background: none;
+  border: 1px solid rgba(60,40,20,0.20);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  color: #9a8f80;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.btn-theme:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ── OVERLAY / MODAL GENERICO ────────────────────────── */
+.info-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26,18,8,0.65);
+  z-index: 9000;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+}
+.info-overlay.open { display: flex; }
+
+.info-modal {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 14px;
+  max-width: 500px;
+  width: 100%;
+  padding: 2rem 2rem 1.6rem;
+  position: relative;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.45);
+}
+
+.info-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--ink);
+  opacity: 0.45;
+  transition: opacity 0.2s;
+  line-height: 1;
+  padding: 0.2rem 0.4rem;
+}
+.info-modal-close:hover { opacity: 1; }
+
+.info-modal h2 {
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 1.35rem;
+  margin-bottom: 0.8rem;
+  color: var(--amber);
+}
+.info-modal p  { font-size: 0.87rem; line-height: 1.65; margin-bottom: 0.7rem; }
+.info-modal ol { padding-left: 1.3rem; font-size: 0.87rem; line-height: 1.75; margin-bottom: 0.7rem; }
+
+.info-modal .credits {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--mist);
+  font-size: 0.78rem;
+  color: #777;
+  line-height: 1.7;
+}
+.info-modal .credits strong { color: var(--ink); }
+.info-modal .credits a { color: var(--amber); text-decoration: none; }
+.info-modal .credits a:hover { text-decoration: underline; }
