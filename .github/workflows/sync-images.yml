@@ -1,31 +1,18 @@
 name: Scarica e ridimensiona immagini
 
 # ─────────────────────────────────────────────────────────────
-#  Questo workflow legge la colonna URL_Immagine dal CSV
+#  Questo workflow legge la colonna URL_Immagini dal CSV
 #  già scaricato in  dati/segnalazioni.csv,  scarica ogni
 #  immagine pubblica, la ridimensiona a max 1280px e la
-#  salva in  img/{ID_Segnalazione}.jpg  nel repository.
+#  salva in  img/{ID_Segnalazione}/foto_N.jpg  nel repository.
 #
 #  ⚠️  PREREQUISITI prima di attivare la pianificazione:
 #
-#  1. Aggiungi la colonna  URL_Immagine  al tuo Google Sheet
-#     (dopo  Ha_Immagine / Dimensioni_Immagine)
+#  1. Le colonne  URL_Immagine  e  URL_Immagini  devono
+#     essere presenti nel Google Sheet e in COLUMNS di
+#     dati/apps-script.gs
 #
-#  2. Aggiungi  'URL_Immagine'  alla lista COLUMNS in
-#     dati/apps-script.gs  e ri-distribuisci lo script
-#
-#  3. Scegli dove caricare le foto (servizi gratuiti):
-#     - imgbb.com  → API key gratuita, URL permanente
-#     - Cloudinary → piano free 25 GB
-#     - Google Drive → cartella pubblica "Anyone with link"
-#       Nota: per Drive usare URL diretto tipo:
-#       https://drive.google.com/uc?export=download&id=FILE_ID
-#
-#  4. Fai caricare l'URL dal form/app e scrivilo nello Sheet
-#     in  URL_Immagine  (lo script Apps Script lo copierà
-#     automaticamente se è nella lista COLUMNS)
-#
-#  5. Attiva la pianificazione cambiando i trigger qui sotto
+#  2. Attiva la pianificazione cambiando i trigger qui sotto
 #     (rimuovi i commenti #  davanti a  schedule / workflow_run)
 #
 #  Le immagini già presenti in  img/  vengono saltate
@@ -84,51 +71,52 @@ jobs:
               reader = csv.DictReader(f)
               rows = list(reader)
 
-          # Controlla che la colonna URL_Immagine esista
-          if rows and 'URL_Immagine' not in rows[0]:
-              print("⚠️  Colonna 'URL_Immagine' non trovata nel CSV.")
-              print("   Aggiungi la colonna al Google Sheet e aggiorna apps-script.gs.")
-              print("   Colonne disponibili:", list(rows[0].keys()))
+          if not rows:
+              print("⚠️  CSV vuoto.")
               sys.exit(0)
 
           downloaded, skipped, errors = 0, 0, 0
 
-          for row in rows:
-              url    = row.get('URL_Immagine', '').strip()
-              id_seg = row.get('ID_Segnalazione', '').strip()
-
-              if not url or not id_seg:
-                  skipped += 1
-                  continue
-
-              out_path = os.path.join(IMG_DIR, f"{id_seg}.jpg")
+          def download_and_save(url, out_path, label):
+              global downloaded, skipped, errors
               if os.path.exists(out_path):
                   skipped += 1
-                  continue
-
+                  return
               try:
-                  print(f"↓ {id_seg}: {url[:60]}...")
+                  print(f"↓ {label}: {url[:70]}...")
                   resp = requests.get(url, timeout=TIMEOUT)
                   resp.raise_for_status()
-
                   img = Image.open(BytesIO(resp.content)).convert('RGB')
                   w, h = img.size
-
-                  # Ridimensiona solo se necessario
                   if w > MAX_SIZE or h > MAX_SIZE:
                       ratio = min(MAX_SIZE / w, MAX_SIZE / h)
-                      new_w = int(w * ratio)
-                      new_h = int(h * ratio)
-                      img = img.resize((new_w, new_h), Image.LANCZOS)
-
+                      img = img.resize((int(w * ratio), int(h * ratio)), Image.LANCZOS)
+                  os.makedirs(os.path.dirname(out_path), exist_ok=True)
                   img.save(out_path, 'JPEG', quality=QUALITY, optimize=True)
                   size_kb = os.path.getsize(out_path) // 1024
-                  print(f"  ✓ salvata: {img.size[0]}×{img.size[1]}px  {size_kb}KB")
+                  print(f"  ✓ {img.size[0]}×{img.size[1]}px  {size_kb}KB → {out_path}")
                   downloaded += 1
-
               except Exception as e:
                   print(f"  ✗ errore: {e}")
                   errors += 1
+
+          for row in rows:
+              id_seg = row.get('ID_Segnalazione', '').strip()
+              if not id_seg:
+                  continue
+
+              # Leggi URL_Immagini (comma-separated, più foto) o URL_Immagine (singola)
+              urls_raw = row.get('URL_Immagini', '').strip() or row.get('URL_Immagine', '').strip()
+              if not urls_raw:
+                  skipped += 1
+                  continue
+
+              urls = [u.strip() for u in urls_raw.split(',') if u.strip()]
+              folder = os.path.join(IMG_DIR, id_seg)
+
+              for i, url in enumerate(urls, start=1):
+                  out_path = os.path.join(folder, f"foto_{i}.jpg")
+                  download_and_save(url, out_path, f"{id_seg}/foto_{i}")
 
           print(f"\n── Riepilogo ──────────────────────")
           print(f"  Scaricate:  {downloaded}")

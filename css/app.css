@@ -362,52 +362,85 @@ body.page-form .section-title {
 }
 
 /* ── Foto ── */
-body.page-form .photo-zone {
-  border: 2px dashed rgba(26,18,8,0.15);
-  border-radius: 12px;
-  padding: 2.5rem 1.5rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-  overflow: hidden;
-}
-body.page-form .photo-zone:hover { border-color: var(--amber); background: rgba(212,130,10,0.03); }
-body.page-form .photo-zone input { display: none; }
-body.page-form .photo-zone .big-icon { font-size: 2.5rem; margin-bottom: 0.8rem; display: block; }
-
-body.page-form .photo-zone h3 {
-  font-family: 'Titillium Web', sans-serif;
-  font-size: 1.1rem;
+body.page-form .section-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  background: rgba(212,130,10,0.12);
+  color: var(--amber);
+  border-radius: 20px;
+  font-size: 0.72rem;
   font-weight: 600;
-  margin-bottom: 0.3rem;
+  vertical-align: middle;
 }
-body.page-form .photo-zone p { font-size: 0.82rem; color: #8a7f70; }
 
-body.page-form .photo-preview { display: none; position: relative; }
-body.page-form .photo-preview img {
-  width: 100%;
-  border-radius: 10px;
-  max-height: 280px;
-  object-fit: cover;
+body.page-form .photo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin-top: 0.5rem;
 }
-body.page-form .photo-preview .change-btn {
+@media (max-width: 480px) {
+  body.page-form .photo-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+body.page-form .photo-thumb {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1.5px solid rgba(26,18,8,0.12);
+}
+body.page-form .photo-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+body.page-form .photo-thumb-del {
   position: absolute;
-  top: 10px; right: 10px;
-  background: rgba(26,18,8,0.7);
+  top: 5px; right: 5px;
+  width: 24px; height: 24px;
+  background: rgba(26,18,8,0.65);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.75rem;
+  border-radius: 50%;
+  font-size: 0.7rem;
   cursor: pointer;
-  font-family: 'Titillium Web', sans-serif;
-  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(3px);
+}
+body.page-form .photo-thumb-num {
+  position: absolute;
+  bottom: 5px; left: 7px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
 
+body.page-form .photo-add-slot {
+  aspect-ratio: 1;
+  border: 2px dashed rgba(26,18,8,0.2);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  color: #8a7f70;
+  font-size: 0.78rem;
+  transition: all 0.2s;
+  text-align: center;
+  padding: 0.5rem;
+}
+body.page-form .photo-add-slot i { font-size: 1.4rem; color: var(--amber); }
+body.page-form .photo-add-slot small { font-size: 0.65rem; color: #b0a898; line-height: 1.2; }
+body.page-form .photo-add-slot:hover { border-color: var(--amber); background: rgba(212,130,10,0.04); }
+
 body.page-form .photo-info {
-  margin-top: 0.8rem;
-  padding: 0.6rem 0.9rem;
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.9rem;
   background: rgba(61,90,71,0.08);
   border-radius: 8px;
   font-size: 0.78rem;
@@ -546,7 +579,7 @@ body.page-form input.invalid,
 body.page-form textarea.invalid,
 body.page-form select.invalid { border-color: var(--rust) !important; background: #fff5f5; }
 
-body.page-form .photo-zone.invalid { border-color: var(--rust) !important; background: rgba(192,57,43,0.04); }
+body.page-form .photo-add-slot.invalid { border-color: var(--rust) !important; background: rgba(192,57,43,0.04); }
 
 body.page-form input.valid { border-color: var(--sage) !important; background: #f0fff4; }
 
@@ -963,7 +996,9 @@ html.dark body.page-form textarea:focus { background: #1e1812; border-color: var
 html.dark body.page-form input.invalid,
 html.dark body.page-form textarea.invalid,
 html.dark body.page-form select.invalid { background: rgba(192,57,43,0.12) !important; }
-html.dark body.page-form .photo-zone.invalid { border-color: var(--rust) !important; background: rgba(192,57,43,0.08) !important; }
+html.dark body.page-form .photo-add-slot { border-color: rgba(255,255,255,0.15); color: rgba(245,240,232,0.45); }
+html.dark body.page-form .photo-add-slot:hover { border-color: var(--amber); background: rgba(212,130,10,0.08); }
+html.dark body.page-form .photo-thumb { border-color: rgba(255,255,255,0.1); }
 
 html.dark body.page-form .dest-btn { background: #1a1208; border-color: rgba(255,255,255,0.1); }
 html.dark body.page-form .dest-btn:hover    { border-color: var(--amber-light); background: rgba(212,130,10,0.08); }
@@ -980,10 +1015,7 @@ html.dark body.page-form .social-chip:hover { border-color: var(--amber); color:
 html.dark body.page-form .section-hint,
 html.dark body.page-form .field-hint { color: rgba(245,240,232,0.38); }
 
-html.dark body.page-form .photo-zone { border-color: rgba(255,255,255,0.1); }
-html.dark body.page-form .photo-zone:hover { background: rgba(212,130,10,0.06); }
-html.dark body.page-form .photo-zone h3 { color: #f5f0e8; }
-html.dark body.page-form .photo-zone p  { color: rgba(245,240,232,0.38); }
+html.dark body.page-form .section-badge { background: rgba(212,130,10,0.2); }
 
 html.dark body.page-form .btn-sm { border-color: rgba(255,255,255,0.1); background: #1e1812; color: rgba(245,240,232,0.7); }
 html.dark body.page-form .btn-sm:hover { border-color: var(--amber); color: var(--amber); }

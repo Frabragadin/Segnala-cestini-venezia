@@ -26,7 +26,8 @@ const COLUMNS = [
   'Indirizzo_Completo','Via','Numero_Civico','CAP','Comune','Provincia','Regione',
   'Fonte_Posizione','Accuratezza_GPS_m','Destinatari','Canale_Email',
   'Canale_WhatsApp','Canale_Twitter','Canale_Facebook','Ha_Immagine',
-  'Dimensioni_Immagine','Testo_Messaggio','URL_Segnalazione','URL_Immagine',
+  'Num_Foto','Dimensioni_Immagine','Testo_Messaggio','URL_Segnalazione',
+  'URL_Immagine','URL_Immagini',
   'Stato','Note_Ufficio','Operatore','Data_Presa_Carico','Data_Risoluzione',
   'Token_Risoluzione',
 ];
@@ -67,11 +68,20 @@ function doPost(e) {
       return risolviSegnalazione(sheet, data);
     }
 
-    if (data.imageBase64) {
-      try {
-        const imgUrl = uploadImageToGitHub(data.ID_Segnalazione, data.imageBase64);
-        if (imgUrl) data.URL_Immagine = imgUrl;
-      } catch(imgErr) {}
+    // Upload immagini su GitHub (fino a 4 foto)
+    const uploadedUrls = [];
+    for (var photoIdx = 1; photoIdx <= 4; photoIdx++) {
+      var b64key = 'imageBase64_' + photoIdx;
+      if (data[b64key]) {
+        try {
+          var imgUrl = uploadImageToGitHub(data.ID_Segnalazione, photoIdx, data[b64key]);
+          if (imgUrl) uploadedUrls.push(imgUrl);
+        } catch(imgErr) {}
+      }
+    }
+    if (uploadedUrls.length > 0) {
+      data.URL_Immagine  = uploadedUrls[0];
+      data.URL_Immagini  = uploadedUrls.join(', ');
     }
 
     ensureHeaders(sheet);
@@ -84,14 +94,17 @@ function doPost(e) {
     const siteBase   = (data.URL_Segnalazione || '').replace(/\/?$/, '/');
     const resolveUrl = siteBase + 'mappa.html?risolvi=' + data.Token_Risoluzione;
 
-    let photoBlob = null;
-    if (data.imageBase64) {
-      try {
-        const b64 = data.imageBase64.replace(/^data:image\/\w+;base64,/, '');
-        photoBlob = Utilities.newBlob(
-          Utilities.base64Decode(b64), 'image/jpeg', data.ID_Segnalazione + '.jpg'
-        );
-      } catch(e) {}
+    var photoBlobs = [];
+    for (var pi = 1; pi <= 4; pi++) {
+      var bkey = 'imageBase64_' + pi;
+      if (data[bkey]) {
+        try {
+          var raw = data[bkey].replace(/^data:image\/\w+;base64,/, '');
+          photoBlobs.push(Utilities.newBlob(
+            Utilities.base64Decode(raw), 'image/jpeg', 'foto_' + pi + '.jpg'
+          ));
+        } catch(e) {}
+      }
     }
 
     if (data.Email_Destinatario) {
@@ -106,7 +119,7 @@ function doPost(e) {
           noReply:  true,
           replyTo:  data.Email_Segnalante || '',
         };
-        if (photoBlob) optsPA.attachments = [photoBlob];
+        if (photoBlobs.length > 0) optsPA.attachments = photoBlobs;
         MailApp.sendEmail(optsPA);
       } catch(mailErr) {}
     }
@@ -192,12 +205,13 @@ function risolviSegnalazione(sheet, data) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function uploadImageToGitHub(id, imageBase64) {
+function uploadImageToGitHub(id, photoIndex, imageBase64) {
   const token = PropertiesService.getScriptProperties().getProperty('GITHUB_TOKEN');
   if (!token) return null;
 
   const b64    = imageBase64.replace(/^data:image\/\w+;base64,/, '');
-  const apiUrl = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/img/' + id + '.jpg';
+  const path   = 'img/' + id + '/foto_' + photoIndex + '.jpg';
+  const apiUrl = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + path;
 
   const response = UrlFetchApp.fetch(apiUrl, {
     method: 'PUT',
@@ -207,7 +221,7 @@ function uploadImageToGitHub(id, imageBase64) {
       'Content-Type': 'application/json',
     },
     payload: JSON.stringify({
-      message: 'img: aggiunge immagine ' + id + ' [skip ci]',
+      message: 'img: aggiunge ' + id + '/foto_' + photoIndex + ' [skip ci]',
       content: b64,
       branch: GITHUB_BRANCH,
     }),
@@ -215,7 +229,7 @@ function uploadImageToGitHub(id, imageBase64) {
   });
 
   if (response.getResponseCode() === 201) {
-    return 'https://' + GITHUB_OWNER + '.github.io/' + GITHUB_REPO + '/img/' + id + '.jpg';
+    return 'https://' + GITHUB_OWNER + '.github.io/' + GITHUB_REPO + '/' + path;
   }
   return null;
 }
@@ -243,8 +257,13 @@ function buildEmailPA(data, mittente, resolveUrl) {
     return '<tr><td style="' + tdL + '">' + r[0] + '</td><td style="' + tdV + '">' + r[1] + '</td></tr>';
   }).join('');
 
-  const photoHtml = data.URL_Immagine
-    ? '<div style="margin:20px 0;"><a href="' + data.URL_Immagine + '"><img src="' + data.URL_Immagine + '" alt="Foto" style="max-width:100%;border-radius:8px;border:1px solid #e8e0d4;"></a></div>'
+  const photoUrls = (data.URL_Immagini || data.URL_Immagine || '').split(',').map(u => u.trim()).filter(Boolean);
+  const photoHtml = photoUrls.length > 0
+    ? '<div style="margin:20px 0;display:flex;flex-wrap:wrap;gap:8px;">'
+      + photoUrls.map(function(u) {
+          return '<a href="' + u + '" style="flex:1;min-width:120px;max-width:200px;"><img src="' + u + '" alt="Foto" style="width:100%;border-radius:8px;border:1px solid #e8e0d4;"></a>';
+        }).join('')
+      + '</div>'
     : '';
 
   return '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#f5f0e8;font-family:\'Segoe UI\',Arial,sans-serif;">'
@@ -279,8 +298,13 @@ function buildEmailSegnalante(data, mittente) {
     return '<tr><td style="' + tdL + '">' + r[0] + '</td><td style="' + tdV + '">' + r[1] + '</td></tr>';
   }).join('');
 
-  const photoHtml = data.URL_Immagine
-    ? '<div style="margin:16px 0 0;"><img src="' + data.URL_Immagine + '" alt="Foto segnalazione" style="max-width:100%;border-radius:8px;border:1px solid #e8e0d4;"></div>'
+  const photoUrls2 = (data.URL_Immagini || data.URL_Immagine || '').split(',').map(u => u.trim()).filter(Boolean);
+  const photoHtml = photoUrls2.length > 0
+    ? '<div style="margin:16px 0 0;display:flex;flex-wrap:wrap;gap:8px;">'
+      + photoUrls2.map(function(u) {
+          return '<a href="' + u + '" style="flex:1;min-width:120px;max-width:180px;"><img src="' + u + '" alt="Foto" style="width:100%;border-radius:8px;border:1px solid #e8e0d4;"></a>';
+        }).join('')
+      + '</div>'
     : '';
 
   return '<!DOCTYPE html><html><body style="margin:0;padding:0;background:#f5f0e8;font-family:\'Segoe UI\',Arial,sans-serif;">'

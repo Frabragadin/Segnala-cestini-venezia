@@ -27,6 +27,8 @@ let _ticketCopied    = false;
 let _positionSet     = false;
 const _socialPlatforms = new Set();
 
+const MAX_PHOTOS = 4;
+
 let reportData = {
   lat: CONFIG.mapDefault.lat,
   lng: CONFIG.mapDefault.lng,
@@ -41,8 +43,7 @@ let reportData = {
   accuratezza: '',
   exifLat: null,
   exifLng: null,
-  photoResized: null,
-  photoDims: '',
+  photos: [],     // [{ base64, dims, exifLat, exifLng }, ...]
   hasPhoto: false,
 };
 
@@ -116,73 +117,135 @@ function onCustomEmailInput() {
 }
 
 // ─────────────────────────────────────────────
-//  FOTO + RESIZE + EXIF
+//  FOTO + RESIZE + EXIF (multi-photo, max 4)
 // ─────────────────────────────────────────────
 function openCamera() {
   const input = document.getElementById('fileInput');
+  input.removeAttribute('multiple');
   input.setAttribute('capture', 'environment');
+  input.value = '';
   input.click();
 }
 
 function openGallery() {
   const input = document.getElementById('fileInput');
+  input.setAttribute('multiple', '');
   input.removeAttribute('capture');
+  input.value = '';
   input.click();
 }
 
 document.getElementById('fileInput').addEventListener('change', async function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
+  const files = Array.from(e.target.files);
+  if (!files.length) return;
 
+  const remaining = MAX_PHOTOS - reportData.photos.length;
+  const toProcess = files.slice(0, remaining);
+
+  for (const file of toProcess) {
+    await processPhoto(file);
+  }
+  this.value = '';
+  renderPhotoGrid();
+});
+
+async function processPhoto(file) {
   // 1. Leggi EXIF GPS
-  let exifInfo = '';
+  let exifLat = null, exifLng = null;
   try {
     const gps = await exifr.gps(file);
     if (gps && gps.latitude && gps.longitude) {
-      reportData.exifLat = gps.latitude;
-      reportData.exifLng = gps.longitude;
-      document.getElementById('btnExif').style.display = 'flex';
-      exifInfo = ' · 📸 GPS EXIF trovato!';
-      // Se la mappa è già aperta, usa EXIF immediatamente
-      if (map) useExifGps();
+      exifLat = gps.latitude;
+      exifLng = gps.longitude;
     }
-  } catch(err) {
-    // exifr non disponibile o nessun EXIF
-  }
+  } catch(err) {}
 
   // 2. Ridimensiona a max 1280px
-  const img    = new Image();
-  const reader = new FileReader();
-  reader.onload = ev => {
-    img.onload = () => {
-      const MAX = 1280;
-      let w = img.width, h = img.height;
-      if (w > MAX || h > MAX) {
-        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-        else       { w = Math.round(w * MAX / h); h = MAX; }
-      }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      const resized = canvas.toDataURL('image/jpeg', 0.85);
-      reportData.photoResized = resized;
-      reportData.photoDims    = `${w}x${h}`;
-      reportData.hasPhoto     = true;
-      clearFieldError('photoZone');
-      document.getElementById('photoZone-error').classList.remove('visible');
+  return new Promise(resolve => {
+    const img    = new Image();
+    const reader = new FileReader();
+    reader.onload = ev => {
+      img.onload = () => {
+        const MAX = 1280;
+        let w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+          else       { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const base64 = canvas.toDataURL('image/jpeg', 0.85);
 
-      document.getElementById('previewImg').src             = resized;
-      document.getElementById('photoZone').style.display    = 'none';
-      document.getElementById('photoPreview').style.display = 'block';
+        reportData.photos.push({ base64, dims: `${w}x${h}`, exifLat, exifLng });
+        reportData.hasPhoto = true;
 
-      const info = document.getElementById('photoInfo');
-      info.textContent = `✓ ${w}×${h}px${exifInfo} · ${(resized.length * 0.75 / 1024).toFixed(0)} KB`;
-      info.classList.add('visible');
+        // Usa EXIF dalla prima foto con GPS
+        if (exifLat && !reportData.exifLat) {
+          reportData.exifLat = exifLat;
+          reportData.exifLng = exifLng;
+          document.getElementById('btnExif').style.display = 'flex';
+          if (map) useExifGps();
+        }
+        resolve();
+      };
+      img.src = ev.target.result;
     };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
-});
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderPhotoGrid() {
+  const grid = document.getElementById('photoGrid');
+  const slot = document.getElementById('photoAddSlot');
+
+  // Rimuovi le anteprime esistenti
+  grid.querySelectorAll('.photo-thumb').forEach(el => el.remove());
+
+  // Inserisci le anteprime prima dello slot "aggiungi"
+  reportData.photos.forEach((p, i) => {
+    const thumb = document.createElement('div');
+    thumb.className = 'photo-thumb';
+    thumb.innerHTML = `
+      <img src="${p.base64}" alt="Foto ${i + 1}">
+      <button class="photo-thumb-del" type="button" onclick="removePhoto(${i})" title="Rimuovi">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <span class="photo-thumb-num">${i + 1}</span>`;
+    grid.insertBefore(thumb, slot);
+  });
+
+  // Mostra/nascondi slot "aggiungi"
+  slot.style.display = reportData.photos.length < MAX_PHOTOS ? 'flex' : 'none';
+
+  // Aggiorna contatore e info
+  document.getElementById('photoCount').textContent = `${reportData.photos.length} / ${MAX_PHOTOS}`;
+
+  const info = document.getElementById('photoInfo');
+  if (reportData.photos.length > 0) {
+    const sizes = reportData.photos.map(p => (p.base64.length * 0.75 / 1024).toFixed(0) + ' KB').join(' · ');
+    info.textContent = `${reportData.photos.length} foto · ${sizes}`;
+    info.classList.add('visible');
+    clearFieldError('photoZone');
+    document.getElementById('photoZone-error').classList.remove('visible');
+  } else {
+    info.textContent = '';
+    info.classList.remove('visible');
+    reportData.hasPhoto = false;
+  }
+}
+
+function removePhoto(index) {
+  reportData.photos.splice(index, 1);
+  reportData.hasPhoto = reportData.photos.length > 0;
+  // Ricalcola exifLat dalla prima foto rimasta con GPS
+  reportData.exifLat = null;
+  reportData.exifLng = null;
+  for (const p of reportData.photos) {
+    if (p.exifLat) { reportData.exifLat = p.exifLat; reportData.exifLng = p.exifLng; break; }
+  }
+  renderPhotoGrid();
+}
 
 // ─────────────────────────────────────────────
 //  MAPPA + GPS + GEOCODING
@@ -350,9 +413,8 @@ async function sendReport() {
   const descr = document.getElementById('descr').value.trim();
 
   if (!reportData.hasPhoto) {
-    document.getElementById('photoZone').classList.add('invalid');
     document.getElementById('photoZone-error').classList.add('visible');
-    if (!hasError) document.getElementById('photoZone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!hasError) document.getElementById('photoAddSlot').scrollIntoView({ behavior: 'smooth', block: 'center' });
     hasError = true;
   }
 
@@ -433,7 +495,7 @@ async function sendReport() {
     || window.location.href.replace('index.html', '').split('?')[0];
 
   const siteBase = siteUrl.replace(/\/?$/, '/');
-  const predictedImgUrl = reportData.hasPhoto ? siteBase + 'img/' + ticketId + '.jpg' : null;
+  const photoUrls = reportData.photos.map((_, i) => siteBase + 'img/' + ticketId + '/foto_' + (i + 1) + '.jpg');
 
   const resolveUrl = siteBase + 'mappa.html?risolvi=' + token;
 
@@ -446,7 +508,7 @@ async function sendReport() {
     `👤 Segnalato da: ${nome}`,
     `📧 Email: ${emailSegnalante}`,
     `🕐 ${now.toLocaleString('it-IT')}`,
-    predictedImgUrl ? `📷 Foto: ${predictedImgUrl}` : '',
+    photoUrls.length > 0 ? `📷 Foto: ${photoUrls.join(', ')}` : '',
     `#SegnalaOra #${cat.replace(/[^a-zA-Z]/g,'')}`,
     ticketId,
     `\n──────────────────────────────────────`,
@@ -486,15 +548,17 @@ async function sendReport() {
       Canale_WhatsApp:    'No',
       Canale_Twitter:     'No',
       Canale_Facebook:    'No',
-      Ha_Immagine:        reportData.hasPhoto ? 'Sì' : 'No',
-      Dimensioni_Immagine: reportData.photoDims,
+      Ha_Immagine:        reportData.photos.length > 0 ? 'Sì' : 'No',
+      Num_Foto:           String(reportData.photos.length),
+      Dimensioni_Immagine: reportData.photos.map(p => p.dims).join(', '),
       Testo_Messaggio:    testoMessaggio,
       URL_Segnalazione:   siteUrl,
+      URL_Immagine:       photoUrls[0] || '',
+      URL_Immagini:       photoUrls.join(', '),
       Email_Destinatario: toEmails[0] || '',
       Stato:              'Nuova',
       Token_Risoluzione:  token,
-      ...(predictedImgUrl ? { URL_Immagine: predictedImgUrl } : {}),
-      ...(reportData.photoResized ? { imageBase64: reportData.photoResized } : {}),
+      ...Object.fromEntries(reportData.photos.map((p, i) => [`imageBase64_${i + 1}`, p.base64])),
     };
     try {
       await fetch(CONFIG.appsScriptUrl, {
