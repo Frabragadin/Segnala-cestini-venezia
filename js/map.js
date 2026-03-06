@@ -10,7 +10,7 @@
 const SHEETS_CSV_APERTE  = 'dati/segnalazioni.csv';
 const SHEETS_CSV_RISOLTE = 'dati/risolte.csv';
 
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwiLYj4k102Vamc5PuqYp6euSVnYJh61RtkgTGvXufbLV3R_r-j2MRCdlavPu2nCFvpmw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwve06JZu-6pGn0KQXMlZR6OCelS_3SWlxjAtK9CTM1De-26D-YXFUVAdQfR8w8OUts/exec';
 
 // Posizione default della mappa
 const MAP_DEFAULT = { lat: 38.1157, lng: 13.3615, zoom: 13 };
