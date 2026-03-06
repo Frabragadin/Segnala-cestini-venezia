@@ -5,6 +5,7 @@
 
 const SHEETS_CSV_APERTE  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzGnyHVzcSbnLKsp1gkFi5a8xJeeFTK8YhmA67XJUEGaJIQ5sMNwqG4Jdhxg9DqaAWU2bdWGHGfnpR/pub?gid=144049557&single=true&output=csv';
 const SHEETS_CSV_RISOLTE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzGnyHVzcSbnLKsp1gkFi5a8xJeeFTK8YhmA67XJUEGaJIQ5sMNwqG4Jdhxg9DqaAWU2bdWGHGfnpR/pub?gid=707341479&single=true&output=csv';
+const APPS_SCRIPT_URL    = 'https://script.google.com/macros/s/AKfycbwiLYj4k102Vamc5PuqYp6euSVnYJh61RtkgTGvXufbLV3R_r-j2MRCdlavPu2nCFvpmw/exec';
 const LS_KEY = 'segnalaora_profilo';
 
 // ─────────────────────────────────────────────
@@ -86,6 +87,22 @@ function renderCard(r) {
   const urg   = (r.urgenza || 'Normale').toLowerCase();
   const stato = r.stato || 'Nuova';
   const clsMap = { Nuova: 'stato-nuova', 'In lavorazione': 'stato-lavorazione', Risolta: 'stato-risolta', Chiusa: 'stato-chiusa' };
+  const canResolve = stato !== 'Risolta' && stato !== 'Chiusa';
+  const resolveHtml = canResolve ? (r.token ? `
+      <div class="pc-resolve">
+        <button class="btn-resolve-card" data-token="${r.token}" onclick="resolveReport(this)">
+          <i class="fa-solid fa-circle-check"></i> Segna come risolta
+        </button>
+        <span class="resolve-inline-msg"></span>
+      </div>` : `
+      <div class="pc-resolve pc-resolve--input">
+        <input class="resolve-token-input" type="text" placeholder="Codice risoluzione (ricevuto via email)…"
+          onkeydown="if(event.key==='Enter')this.nextElementSibling.click()">
+        <button class="btn-resolve-card" onclick="resolveReport(this)">
+          <i class="fa-solid fa-circle-check"></i> Conferma
+        </button>
+        <span class="resolve-inline-msg"></span>
+      </div>`) : '';
   return `
     <div class="profile-card">
       <div class="pc-top">
@@ -99,7 +116,66 @@ function renderCard(r) {
         <span class="stato-badge ${clsMap[stato] || 'stato-nuova'}">${stato}</span>
       </div>
       <div class="pc-id">${r.ticketId || ''}</div>
+      ${resolveHtml}
     </div>`;
+}
+
+// ─────────────────────────────────────────────
+//  SEGNA COME RISOLTA (inline)
+// ─────────────────────────────────────────────
+function resolveReport(btn) {
+  // Token da data-attribute (locale) oppure dal campo input (ricerca email)
+  let token = btn.dataset.token;
+  if (!token) {
+    const prev = btn.previousElementSibling;
+    if (prev && prev.tagName === 'INPUT') token = prev.value.trim();
+  }
+  const msg = btn.nextElementSibling;
+
+  if (!token) {
+    const prev = btn.previousElementSibling;
+    if (prev && prev.tagName === 'INPUT') { prev.focus(); prev.classList.add('input-invalid'); }
+    return;
+  }
+  if (btn.previousElementSibling && btn.previousElementSibling.tagName === 'INPUT') {
+    btn.previousElementSibling.classList.remove('input-invalid');
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Invio…';
+  msg.className   = 'resolve-inline-msg';
+  msg.textContent = '';
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode:   'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'risolvi', token, ID_Segnalazione: token })
+  })
+  .then(() => {
+    msg.className   = 'resolve-inline-msg ok';
+    msg.textContent = '✅ Richiesta inviata. La segnalazione sarà aggiornata entro qualche minuto.';
+    btn.innerHTML   = '<i class="fa-solid fa-circle-check"></i> Inviata';
+
+    // Aggiorna stato nel localStorage
+    const reports = loadLocal();
+    const found   = reports.find(r => r.token === token);
+    if (found) {
+      found.stato = 'Risolta';
+      saveLocal(reports);
+      const card  = btn.closest('.profile-card');
+      const badge = card.querySelector('.stato-badge');
+      if (badge) { badge.className = 'stato-badge stato-risolta'; badge.textContent = 'Risolta'; }
+    }
+
+    setTimeout(() => { btn.closest('.pc-resolve').style.display = 'none'; }, 5000);
+  })
+  .catch(() => {
+    msg.className   = 'resolve-inline-msg err';
+    msg.textContent = '❌ Errore di rete. Riprova.';
+    btn.disabled    = false;
+    btn.innerHTML   = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
+  });
 }
 
 // ─────────────────────────────────────────────

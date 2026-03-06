@@ -16,7 +16,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-<link rel="stylesheet" href="css/segnalazione-civica.css">
+<link rel="stylesheet" href="css/app.css">
     <link rel="shortcut icon" href="img/favicon.ico"/>
     <link rel="icon" href="img/favicon.png" type="image/png"/>
 <script src="js/theme.js"></script>
@@ -52,7 +52,7 @@
 <meta name="twitter:image:alt"        content="SegnalaOra – mappa interattiva delle segnalazioni territoriali" />
 
 </head>
-<body>
+<body class="page-form">
 
 <header>
   <div class="logo-mark"><i class="fa-solid fa-location-dot"></i></div>
@@ -64,39 +64,14 @@
     <a href="profilo.html" class="btn-info" title="Le mie segnalazioni">
       <i class="fa-solid fa-user"></i>
     </a>
-    <button class="btn-info" onclick="openInfo()" title="Informazioni sul progetto">
+    <a href="info.html" class="btn-info" title="Informazioni sul progetto">
       <i class="fa-solid fa-circle-info"></i>
-    </button>
+    </a>
     <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="Tema">
       <i class="fa-solid fa-moon"></i>
     </button>
   </div>
 </header>
-
-<!-- INFO MODAL -->
-<div class="info-overlay" id="infoOverlay" onclick="if(event.target===this)closeInfo()">
-  <div class="info-modal">
-    <button class="info-modal-close" onclick="closeInfo()" title="Chiudi">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-    <h2><i class="fa-solid fa-location-dot"></i> SegnalaOra</h2>
-    <p><strong>SegnalaOra</strong> è uno strumento open source per segnalare problemi del territorio al proprio Comune: buche stradali, rifiuti abbandonati, illuminazione pubblica guasta, verde incurato e molto altro.</p>
-    <p><strong>Come funziona:</strong></p>
-    <ol>
-      <li>Carica una foto del problema — il GPS viene estratto automaticamente dall'immagine</li>
-      <li>Verifica la posizione sulla mappa oppure lascia che il GPS del dispositivo la rilevi</li>
-      <li>Scegli a chi inviare, descrivi il problema e inserisci i tuoi dati</li>
-      <li>Invia la segnalazione al Comune — riceverai una conferma via email</li>
-    </ol>
-    <p>Tutte le segnalazioni sono archiviate automaticamente in Google Sheets e visibili sulla mappa pubblica.</p>
-    <div class="credits">
-      <strong>Idea di</strong> Andrea Borruso, Salvatore Fiandaca, Ciro Spataro e Giovan Battista Vitrano<br>
-      By <a href="https://opendatasicilia.it" target="_blank" rel="noopener">@opendatasicilia</a><br><br>
-      <strong>Sviluppo tecnico</strong><br>
-      Web app sviluppata attraverso una collaborazione human–Claude AI (Anthropic), che ha supportato la progettazione dell'architettura modulare, l'ottimizzazione del codice e l'implementazione di funzionalità avanzate di visualizzazione geospaziale.
-    </div>
-  </div>
-</div>
 
 <main>
 
@@ -283,10 +258,10 @@
     <i class="fa-solid fa-user"></i>
     <span>Profilo</span>
   </a>
-  <button class="bnav-item" type="button" onclick="openInfo()">
+  <a class="bnav-item" href="info.html">
     <i class="fa-solid fa-circle-info"></i>
     <span>Info</span>
-  </button>
+  </a>
 </nav>
 </body>
 </html>

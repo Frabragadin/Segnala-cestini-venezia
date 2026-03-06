@@ -26,6 +26,8 @@ let activeFilters = { urgenza: 'all', stato: 'all' };
 let highlightedId = null;
 let viewMode      = 'aperte';   // 'aperte' | 'risolte'
 let _focusTimer   = null;       // timer per apertura popup da focusReport
+let currentPage   = 1;
+const PAGE_SIZE   = 10;
 
 // ─────────────────────────────────────────────────────────
 //  MAPPA INIT
@@ -453,25 +455,8 @@ function highlightListItem(id) {
 }
 
 // ─────────────────────────────────────────────────────────
-//  MODALI — Info / Lightbox / Risoluzione
+//  MODALI — Lightbox / Risoluzione
 // ─────────────────────────────────────────────────────────
-function openInfo()  { document.getElementById('infoOverlay').classList.add('open'); }
-function closeInfo() { document.getElementById('infoOverlay').classList.remove('open'); }
-
-let _statsLoaded = false;
-function openStats() {
-  if (window.innerWidth <= 640) {
-    window.location.href = 'statistiche.html';
-    return;
-  }
-  if (!_statsLoaded) {
-    document.getElementById('statsFrame').src = 'statistiche.html';
-    _statsLoaded = true;
-  }
-  document.getElementById('statsOverlay').classList.add('open');
-}
-function closeStats() { document.getElementById('statsOverlay').classList.remove('open'); }
-
 function openLightbox(url) {
   document.getElementById('lightboxImg').src = url;
   document.getElementById('lightbox').classList.add('open');
@@ -546,7 +531,7 @@ initMap();
 loadData();
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeInfo(); closeResolve(); closeLightbox(); closeStats(); }
+  if (e.key === 'Escape') { closeResolve(); closeLightbox(); }
 });
 
 // Rileva ?risolvi=TOKEN nell'URL e apre il modal automaticamente

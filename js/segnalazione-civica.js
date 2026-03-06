@@ -618,13 +618,6 @@ function toggleSocial(platform) {
 }
 
 // ─────────────────────────────────────────────
-//  INFO MODAL
-// ─────────────────────────────────────────────
-function openInfo()  { document.getElementById('infoOverlay').classList.add('open'); }
-function closeInfo() { document.getElementById('infoOverlay').classList.remove('open'); }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeInfo(); });
-
-// ─────────────────────────────────────────────
 //  INIT
 // ─────────────────────────────────────────────
 loadDestinatari();

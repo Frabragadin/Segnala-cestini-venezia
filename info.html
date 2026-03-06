@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informazioni — SegnalaOra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<link rel="stylesheet" href="css/app.css">
+<link rel="shortcut icon" href="img/favicon.ico"/>
+<link rel="icon" href="img/favicon.png" type="image/png"/>
+<script src="js/theme.js"></script>
+</head>
+<body class="page-info">
+
+<header>
+  <a href="javascript:history.back()" class="btn-back" title="Torna indietro">
+    <i class="fa-solid fa-arrow-left"></i>
+  </a>
+  <div class="logo-mark"><i class="fa-solid fa-location-dot"></i></div>
+  <h1>SegnalaOra</h1>
+  <div class="header-actions">
+    <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="Tema">
+      <i class="fa-solid fa-moon"></i>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <section class="info-section">
+    <h2><i class="fa-solid fa-location-dot"></i> Cos'è SegnalaOra</h2>
+    <p><strong>SegnalaOra</strong> è uno strumento open source per segnalare problemi del territorio al proprio Comune: buche stradali, rifiuti abbandonati, illuminazione pubblica guasta, verde incurato e molto altro.</p>
+  </section>
+
+  <section class="info-section">
+    <h2><i class="fa-solid fa-list-ol"></i> Come funziona</h2>
+    <ol>
+      <li>Carica una foto del problema — il GPS viene estratto automaticamente dall'immagine</li>
+      <li>Verifica la posizione sulla mappa oppure lascia che il GPS del dispositivo la rilevi</li>
+      <li>Scegli a chi inviare, descrivi il problema e inserisci i tuoi dati</li>
+      <li>Invia la segnalazione al Comune — riceverai una conferma via email</li>
+    </ol>
+    <p>Tutte le segnalazioni sono archiviate automaticamente in Google Sheets e visibili sulla mappa pubblica.</p>
+  </section>
+
+  <section class="info-section">
+    <h2><i class="fa-solid fa-circle-check"></i> Come segnalare una risoluzione</h2>
+    <ol>
+      <li>Vai in <a href="profilo.html"><strong>Le mie segnalazioni</strong></a> e trova la segnalazione da chiudere</li>
+      <li>Clicca <strong>Segna come risolta</strong> — se hai il codice salvato, l'invio è immediato</li>
+      <li>Altrimenti incolla il codice di risoluzione ricevuto via email e clicca <em>Conferma</em></li>
+    </ol>
+    <p class="info-note">Il codice di risoluzione è incluso nell'email inviata alla PA al momento della segnalazione.</p>
+  </section>
+
+  <section class="info-section">
+    <h2><i class="fa-solid fa-user"></i> Il tuo profilo</h2>
+    <ol>
+      <li>Accedi a <a href="profilo.html"><strong>Le mie segnalazioni</strong></a> per vedere tutte le segnalazioni inviate da questo dispositivo</li>
+      <li>Lo stato si aggiorna automaticamente incrociando i dati con i fogli pubblici</li>
+      <li>Puoi anche cercare le tue segnalazioni per email, se la colonna è pubblica nel foglio</li>
+    </ol>
+  </section>
+
+  <section class="info-section info-section--links">
+    <h2><i class="fa-solid fa-compass"></i> Naviga</h2>
+    <div class="info-links">
+      <a href="index.html" class="info-link-card">
+        <i class="fa-solid fa-camera"></i>
+        <span>Nuova segnalazione</span>
+      </a>
+      <a href="mappa.html" class="info-link-card">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <span>Mappa pubblica</span>
+      </a>
+      <a href="statistiche.html" class="info-link-card">
+        <i class="fa-solid fa-chart-simple"></i>
+        <span>Statistiche</span>
+      </a>
+      <a href="profilo.html" class="info-link-card">
+        <i class="fa-solid fa-user"></i>
+        <span>Il mio profilo</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="info-section">
+    <h2><i class="fa-solid fa-layer-group"></i> Tecnologie utilizzate</h2>
+    <div class="info-links">
+      <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" class="info-link-card">
+        <i class="fa-solid fa-map"></i>
+        <span>OpenStreetMap</span>
+      </a>
+      <a href="https://leafletjs.com" target="_blank" rel="noopener" class="info-link-card">
+        <i class="fa-solid fa-leaf"></i>
+        <span>Leaflet.js</span>
+      </a>
+      <a href="https://workspace.google.com/products/sheets/" target="_blank" rel="noopener" class="info-link-card">
+        <i class="fa-solid fa-table"></i>
+        <span>Google Sheets</span>
+      </a>
+      <a href="#" target="_blank" rel="noopener" class="info-link-card">
+        <i class="fa-brands fa-github"></i>
+        <span>GitHub</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="info-section">
+    <h2><i class="fa-brands fa-creative-commons"></i> Licenza</h2>
+    <p>
+      I contenuti e i dati di <strong>SegnalaOra</strong> sono rilasciati con licenza
+      <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">
+        <strong>Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)</strong>
+      </a>.
+    </p>
+    <p>Sei libero di condividere e adattare il materiale per qualsiasi scopo, anche commerciale, a condizione di citare la fonte.</p>
+    <div class="info-links" style="margin-top:0.75rem">
+      <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener" class="info-link-card">
+        <i class="fa-brands fa-creative-commons"></i>
+        <span>CC BY 4.0</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="info-section info-credits">
+    <strong>Idea di</strong> Andrea Borruso, Salvatore Fiandaca, Ciro Spataro e Giovan Battista Vitrano<br>
+    By <a href="https://opendatasicilia.it" target="_blank" rel="noopener">@opendatasicilia</a><br><br>
+    <strong>Sviluppo tecnico</strong><br>
+    Web app sviluppata attraverso una collaborazione human–Claude AI (Anthropic), che ha supportato la progettazione dell'architettura modulare, l'ottimizzazione del codice e l'implementazione di funzionalità avanzate di visualizzazione geospaziale.
+  </section>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a class="bnav-item" href="index.html">
+    <i class="fa-solid fa-camera"></i>
+    <span>Segnala</span>
+  </a>
+  <a class="bnav-item" href="mappa.html">
+    <i class="fa-solid fa-map-location-dot"></i>
+    <span>Mappa</span>
+  </a>
+  <a class="bnav-item" href="statistiche.html">
+    <i class="fa-solid fa-chart-simple"></i>
+    <span>Statistiche</span>
+  </a>
+  <a class="bnav-item" href="profilo.html">
+    <i class="fa-solid fa-user"></i>
+    <span>Profilo</span>
+  </a>
+  <a class="bnav-item bnav-active" href="info.html">
+    <i class="fa-solid fa-circle-info"></i>
+    <span>Info</span>
+  </a>
+</nav>
+
+</body>
+</html>

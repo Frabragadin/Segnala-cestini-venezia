@@ -16,7 +16,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-hash@0.2.1/leaflet-hash.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-<link rel="stylesheet" href="css/map.css">
+<link rel="stylesheet" href="css/app.css">
     <link rel="shortcut icon" href="img/favicon.ico"/>
     <link rel="icon" href="img/favicon.png" type="image/png"/>
 <script src="js/theme.js"></script> 
@@ -55,7 +55,7 @@
 
 
 </head>
-<body>
+<body class="page-map">
 
 <header>
   <div class="logo-mark"><i class="fa-solid fa-location-dot"></i></div>
@@ -64,63 +64,11 @@
     <p>Mappa segnalazioni civiche</p>
   </div>
   <div class="header-right">
-    <a href="index.html" class="btn-report">+ Nuova segnalazione</a>
-    <button class="btn-report btn-resolve" onclick="openResolve('')"><i class="fa-solid fa-circle-check"></i> <span class="btn-resolve-text">Segna come risolta</span></button>
-    <button class="btn-info" onclick="openStats()" title="Statistiche">
-      <i class="fa-solid fa-chart-simple"></i>
-    </button>
-    <a href="profilo.html" class="btn-info" title="Le mie segnalazioni">
-      <i class="fa-solid fa-user"></i>
-    </a>
-    <button class="btn-info" onclick="openInfo()" title="Informazioni sul progetto">
-      <i class="fa-solid fa-circle-info"></i>
-    </button>
     <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="Passa al tema scuro">
       <i class="fa-solid fa-moon"></i>
     </button>
   </div>
 </header>
-
-<!-- INFO MODAL -->
-<div class="info-overlay" id="infoOverlay" onclick="if(event.target===this)closeInfo()">
-  <div class="info-modal">
-    <button class="info-modal-close" onclick="closeInfo()" title="Chiudi">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-    <h2><i class="fa-solid fa-location-dot"></i> SegnalaOra</h2>
-    <p><strong>SegnalaOra</strong> è uno strumento open source per segnalare problemi del territorio al proprio Comune: buche stradali, rifiuti abbandonati, illuminazione pubblica guasta, verde incurato e molto altro.</p>
-    <p><strong>Come funziona:</strong></p>
-    <ol>
-      <li>Carica una foto del problema — il GPS viene estratto automaticamente dall'immagine</li>
-      <li>Indica la posizione sulla mappa, oppure lascia che il GPS del dispositivo la rilevi</li>
-      <li>Descrivi il problema, scegli la categoria e il livello di urgenza</li>
-      <li>Invia la segnalazione al Comune e condividila su WhatsApp, Twitter o Facebook</li>
-    </ol>
-    <p>Tutte le segnalazioni sono archiviate automaticamente in Google Sheets e visibili su questa mappa pubblica.</p>
-
-    <p><strong>Come segnalare una risoluzione:</strong></p>
-    <ol>
-      <li>Clicca il pulsante <strong><i class="fa-solid fa-circle-check"></i> Segna come risolta</strong> in alto a destra</li>
-      <li>Incolla il codice UUID ricevuto via email nella casella di testo</li>
-      <li>Clicca <em>Conferma risoluzione</em> — lo stato sarà aggiornato entro pochi minuti</li>
-    </ol>
-    <p style="font-size:0.83rem;color:#777">Il codice di risoluzione è incluso nell'email inviata alla PA al momento della segnalazione.</p>
-
-    <p><strong><i class="fa-solid fa-user" style="color:var(--amber)"></i> Il tuo profilo:</strong></p>
-    <ol>
-      <li>Accedi a <a href="profilo.html"><strong>Le mie segnalazioni</strong></a> per vedere tutte le segnalazioni inviate da questo dispositivo</li>
-      <li>Lo stato si aggiorna automaticamente incrociando i dati con i fogli pubblici</li>
-      <li>Puoi anche cercare le tue segnalazioni per email, se la colonna è pubblica nel foglio</li>
-    </ol>
-
-    <div class="credits">
-      <strong>Idea di</strong> Andrea Borruso, Salvatore Fiandaca, Ciro Spataro e Giovan Battista Vitrano<br>
-      By <a href="https://opendatasicilia.it" target="_blank" rel="noopener">@opendatasicilia</a><br><br>
-      <strong>Sviluppo tecnico</strong><br>
-      Web app sviluppata attraverso una collaborazione human–Claude AI (Anthropic), che ha supportato la progettazione dell'architettura modulare, l'ottimizzazione del codice e l'implementazione di funzionalità avanzate di visualizzazione geospaziale.
-    </div>
-  </div>
-</div>
 
 <!-- MODAL RISOLUZIONE (aperto via ?risolvi=TOKEN nell'URL) -->
 <div class="info-overlay" id="resolveOverlay" onclick="if(event.target===this)closeResolve()">
@@ -141,16 +89,6 @@
       <i class="fa-solid fa-circle-check"></i> Conferma risoluzione
     </button>
     <div class="resolve-result" id="resolveResult"></div>
-  </div>
-</div>
-
-<!-- STATS MODAL (iframe) -->
-<div class="stats-overlay" id="statsOverlay" onclick="if(event.target===this)closeStats()">
-  <div class="stats-iframe-wrap">
-    <button class="stats-close-btn" onclick="closeStats()" title="Chiudi">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-    <iframe id="statsFrame" src="" frameborder="0" title="Statistiche SegnalaOra"></iframe>
   </div>
 </div>
 
@@ -241,21 +179,6 @@
 
 </div><!-- /app-body -->
 
-<footer>
-  <span><i class="fa-solid fa-location-dot"></i> <strong>SegnalaOra</strong> — Segnalazioni civiche open source</span>
-  <span class="footer-sep">·</span>
-  <span>Dati: <a href="#" target="_blank" rel="noopener">Google Sheets</a></span>
-  <span class="footer-sep">·</span>
-  <span>Mappa: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a></span>
-  <span class="footer-sep">·</span>
-  <span>By <a href="https://opendatasicilia.it" target="_blank" rel="noopener">@opendatasicilia</a></span>
-  <span class="footer-right">
-    <a href="#" target="_blank" rel="noopener">
-      <i class="fa-brands fa-github"></i> GitHub
-    </a>
-  </span>
-</footer>
-
 <script src="js/map.js"></script>
 
 <!-- BOTTOM NAV mobile (nascosta su desktop) -->
@@ -268,18 +191,18 @@
     <i class="fa-solid fa-map-location-dot"></i>
     <span>Mappa</span>
   </button>
-  <button class="bnav-item" type="button" onclick="openStats()">
+  <a class="bnav-item" href="statistiche.html">
     <i class="fa-solid fa-chart-simple"></i>
     <span>Statistiche</span>
-  </button>
+  </a>
   <a class="bnav-item" href="profilo.html">
     <i class="fa-solid fa-user"></i>
     <span>Profilo</span>
   </a>
-  <button class="bnav-item" type="button" onclick="openInfo()">
+  <a class="bnav-item" href="info.html">
     <i class="fa-solid fa-circle-info"></i>
     <span>Info</span>
-  </button>
+  </a>
 </nav>
 
 </body>
