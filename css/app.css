@@ -325,7 +325,7 @@ body.page-form .btn-theme {
 
 /* ── Main layout ── */
 body.page-form main {
-  max-width: 680px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 1.5rem 1.5rem 5rem;
 }
@@ -2074,7 +2074,7 @@ body.page-profile .btn-theme {
 }
 
 /* ── Main profilo ── */
-body.page-profile main { flex: 1; padding: 1rem 1rem 1.5rem; max-width: 640px; margin: 0 auto; width: 100%; }
+body.page-profile main { flex: 1; padding: 1rem 1rem 1.5rem; max-width: 960px; margin: 0 auto; width: 100%; }
 
 /* ── Summary stats ── */
 body.page-profile .profile-summary {
@@ -2386,7 +2386,7 @@ body.page-info .btn-theme {
 body.page-info main {
   flex: 1;
   padding: 1.2rem 1rem 1.5rem;
-  max-width: 640px;
+  max-width: 960px;
   margin: 0 auto;
   width: 100%;
 }
