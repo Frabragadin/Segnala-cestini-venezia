@@ -694,9 +694,9 @@ body.page-form .cat-expand-btn:hover { border-color: var(--amber); color: var(--
 body.page-form .send-btn {
   width: 100%;
   padding: 1.1rem;
-  background: var(--ink);
-  color: var(--paper);
-  border: none;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1.5px solid rgba(60,40,20,0.1);
   border-radius: 14px;
   font-family: 'Titillium Web', sans-serif;
   font-size: 1.15rem;
@@ -706,22 +706,23 @@ body.page-form .send-btn {
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  transition: all 0.25s;
+  transition: border-color .18s, background .18s, color .18s;
   letter-spacing: -0.01em;
-  box-shadow: 0 4px 16px rgba(26,18,8,0.2);
 }
+body.page-form .send-btn i { color: var(--amber); }
 body.page-form .send-btn:hover {
-  background: var(--amber);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(212,130,10,0.3);
+  border-color: var(--amber);
+  background: rgba(212,130,10,0.04);
+  color: var(--amber);
 }
-body.page-form .send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+body.page-form .send-btn:hover i { color: var(--amber); }
+body.page-form .send-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 body.page-form .btn-next {
   padding: 0.8rem 1.8rem;
-  background: var(--ink);
-  color: var(--paper);
-  border: none;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1.5px solid rgba(60,40,20,0.1);
   border-radius: 10px;
   font-family: 'Titillium Web', sans-serif;
   font-size: 0.9rem;
@@ -730,9 +731,10 @@ body.page-form .btn-next {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  transition: all 0.2s;
+  transition: border-color .18s, background .18s, color .18s;
 }
-body.page-form .btn-next:hover { background: var(--amber); }
+body.page-form .btn-next i { color: var(--amber); }
+body.page-form .btn-next:hover { border-color: var(--amber); background: rgba(212,130,10,0.04); color: var(--amber); }
 
 /* ── Success overlay ── */
 body.page-form .success-overlay {
@@ -1038,6 +1040,11 @@ html.dark body.page-form .exif-banner  { background: rgba(244,197,66,0.1); borde
 html.dark body.page-form .exif-banner-btn { border-color: rgba(244,197,66,0.4); color: #f4c542; }
 html.dark body.page-form .exif-banner-btn:hover { background: rgba(244,197,66,0.15); }
 html.dark body.page-form .copy-reminder { background: rgba(244,197,66,0.1); border-color: rgba(244,197,66,0.3); color: #f4c542; }
+
+html.dark body.page-form .send-btn { background: #1e1812; border-color: rgba(255,255,255,0.12); color: #f5f0e8; }
+html.dark body.page-form .send-btn:hover { border-color: var(--amber); background: rgba(212,130,10,0.08); color: var(--amber); }
+html.dark body.page-form .btn-next { background: #1e1812; border-color: rgba(255,255,255,0.12); color: #f5f0e8; }
+html.dark body.page-form .btn-next:hover { border-color: var(--amber); background: rgba(212,130,10,0.08); color: var(--amber); }
 
 
 
@@ -2112,8 +2119,8 @@ body.page-profile .email-search-section { margin-bottom: 1rem; }
 body.page-profile .email-search-toggle {
   width: 100%;
   padding: 0.65rem 1rem;
-  background: white;
-  border: 1.5px dashed rgba(61,47,30,0.2);
+  background: var(--paper);
+  border: 1.5px solid rgba(60,40,20,0.1);
   border-radius: 10px;
   cursor: pointer;
   font-family: 'Titillium Web', sans-serif;
@@ -2148,18 +2155,19 @@ body.page-profile .email-search-form input:focus { border-color: var(--amber); }
 body.page-profile .email-search-form button {
   width: 100%;
   padding: 0.65rem;
-  background: var(--amber);
-  color: white;
-  border: none;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1.5px solid rgba(60,40,20,0.1);
   border-radius: 8px;
   cursor: pointer;
   font-family: 'Titillium Web', sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
   display: flex; align-items: center; justify-content: center; gap: 0.4rem;
-  transition: background .18s;
+  transition: border-color .18s, background .18s, color .18s;
 }
-body.page-profile .email-search-form button:hover:not(:disabled) { background: var(--amber-light); }
+body.page-profile .email-search-form button i { color: var(--amber); }
+body.page-profile .email-search-form button:hover:not(:disabled) { border-color: var(--amber); background: rgba(212,130,10,0.04); color: var(--amber); }
 body.page-profile .email-search-form button:disabled { opacity: 0.6; cursor: not-allowed; }
 body.page-profile .search-hint { font-size: 0.75rem; color: #9a8f80; margin-top: 0.5rem; text-align: center; }
 
@@ -2220,8 +2228,8 @@ body.page-profile .stato-chiusa      { background: rgba(120,120,120,0.1);color: 
 /* ── Clear section ── */
 body.page-profile .clear-section { margin-top: 1.5rem; text-align: center; }
 body.page-profile .btn-clear {
-  background: none;
-  border: 1.5px solid rgba(192,57,43,0.3);
+  background: var(--paper);
+  border: 1.5px solid rgba(192,57,43,0.25);
   color: var(--rust);
   border-radius: 8px;
   padding: 0.5rem 1.2rem;
@@ -2229,8 +2237,9 @@ body.page-profile .btn-clear {
   font-family: 'Titillium Web', sans-serif;
   font-size: 0.85rem;
   display: inline-flex; align-items: center; gap: 0.4rem;
-  transition: border-color .18s, background .18s;
+  transition: border-color .18s, background .18s, color .18s;
 }
+body.page-profile .btn-clear i { color: var(--rust); }
 body.page-profile .btn-clear:hover { border-color: var(--rust); background: rgba(192,57,43,0.06); }
 
 /* ── Segna come risolta (inline) ── */
@@ -2260,8 +2269,8 @@ body.page-profile .resolve-token-input:focus        { border-color: var(--sage);
 body.page-profile .resolve-token-input.input-invalid { border-color: var(--rust); }
 
 body.page-profile .btn-resolve-card {
-  background: none;
-  border: 1.5px solid var(--sage);
+  background: var(--paper);
+  border: 1.5px solid rgba(61,90,71,0.35);
   color: var(--sage);
   border-radius: 8px;
   padding: 0.32rem 0.85rem;
@@ -2270,9 +2279,10 @@ body.page-profile .btn-resolve-card {
   font-weight: 600;
   cursor: pointer;
   display: inline-flex; align-items: center; gap: 0.35rem;
-  transition: background .18s, border-color .18s;
+  transition: background .18s, border-color .18s, color .18s;
 }
-body.page-profile .btn-resolve-card:hover    { background: rgba(61,90,71,0.08); }
+body.page-profile .btn-resolve-card i { color: var(--sage); }
+body.page-profile .btn-resolve-card:hover    { border-color: var(--sage); background: rgba(61,90,71,0.06); }
 body.page-profile .btn-resolve-card:disabled { opacity: 0.6; cursor: not-allowed; }
 body.page-profile .resolve-inline-msg        { font-size: 0.78rem; line-height: 1.3; }
 body.page-profile .resolve-inline-msg.ok     { color: var(--sage); }
@@ -2307,6 +2317,8 @@ html.dark body.page-profile .summary-stat.urgent   .summary-num { color: #f87171
 html.dark body.page-profile .email-search-toggle   { background: #1a1410; border-color: rgba(255,255,255,0.12); color: #f5f0e8; }
 html.dark body.page-profile .email-search-form     { background: #1a1410; }
 html.dark body.page-profile .email-search-form input { background: #0f0d0b; border-color: rgba(255,255,255,0.12); color: #f5f0e8; }
+html.dark body.page-profile .email-search-form button { background: #0f0d0b; border-color: rgba(255,255,255,0.12); color: #f5f0e8; }
+html.dark body.page-profile .email-search-form button:hover:not(:disabled) { border-color: var(--amber); background: rgba(212,130,10,0.08); color: var(--amber); }
 html.dark body.page-profile .profile-card          { background: #1a1410; border-color: rgba(255,255,255,0.06); }
 html.dark body.page-profile .profile-card:hover    { border-color: rgba(212,130,10,0.5); }
 html.dark body.page-profile .pc-cat                { color: #f5f0e8; }
@@ -2317,8 +2329,10 @@ html.dark body.page-profile .no-reports            { background: #1a1410; color:
 html.dark body.page-profile .pc-resolve            { border-top-color: rgba(255,255,255,0.06); }
 html.dark body.page-profile .resolve-token-input      { background: #0f0d0b; border-color: rgba(255,255,255,0.12); color: #f5f0e8; }
 html.dark body.page-profile .resolve-token-input:focus { border-color: rgba(61,90,71,0.5); }
-html.dark body.page-profile .btn-resolve-card          { border-color: rgba(61,90,71,0.5); color: #7ecb9e; }
-html.dark body.page-profile .btn-resolve-card:hover    { background: rgba(61,90,71,0.15); }
+html.dark body.page-profile .btn-clear { background: #0f0d0b; border-color: rgba(192,57,43,0.35); color: #f87171; }
+html.dark body.page-profile .btn-clear:hover { border-color: #f87171; background: rgba(192,57,43,0.12); }
+html.dark body.page-profile .btn-resolve-card          { background: #0f0d0b; border-color: rgba(61,90,71,0.5); color: #7ecb9e; }
+html.dark body.page-profile .btn-resolve-card:hover    { border-color: #7ecb9e; background: rgba(61,90,71,0.15); }
 html.dark body.page-profile .resolve-inline-msg.ok     { color: #4ade80; }
 html.dark body.page-profile .resolve-inline-msg.err    { color: #f87171; }
 html.dark body.page-profile .bottom-nav  { background: #181410; border-top-color: rgba(255,255,255,0.08); box-shadow: none; }
