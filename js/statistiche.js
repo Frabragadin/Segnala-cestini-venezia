@@ -258,8 +258,11 @@ function renderCategorieChart(reports) {
   const wrapH = Math.max(180, sorted.length * barH + 40);
   document.getElementById('wrapCategorie').style.height = wrapH + 'px';
 
+  const total = data.reduce((a, b) => a + b, 0);
+
   new Chart(document.getElementById('chartCategorie'), {
     type: 'bar',
+    plugins: [ChartDataLabels],
     data: {
       labels,
       datasets: [{
@@ -273,9 +276,22 @@ function renderCategorieChart(reports) {
       indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
+      layout: { padding: { right: 76 } },
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: ctx => `  ${ctx.raw} segnalazioni` } }
+        tooltip: { callbacks: { label: ctx => `  ${ctx.raw} segnalazioni` } },
+        datalabels: {
+          anchor: 'end',
+          align: 'end',
+          clip: false,
+          formatter: val => {
+            const pct = total ? Math.round(val / total * 100) : 0;
+            return `${val}  (${pct}%)`;
+          },
+          font: { family: 'DM Sans', size: 10, weight: '600' },
+          color: chartTickColor(),
+          padding: { left: 6 },
+        }
       },
       scales: {
         x: {
@@ -303,6 +319,7 @@ function renderUrgenzaChart(reports) {
 
   new Chart(document.getElementById('chartUrgenza'), {
     type: 'doughnut',
+    plugins: [ChartDataLabels, centerTextPlugin],
     data: {
       labels: ['Alta', 'Normale', 'Bassa'],
       datasets: [{
@@ -326,6 +343,14 @@ function renderUrgenzaChart(reports) {
           callbacks: {
             label: ctx => `  ${ctx.label}: ${ctx.raw}  (${Math.round(ctx.raw / total * 100)}%)`
           }
+        },
+        datalabels: {
+          display: ctx => total > 0 && ctx.dataset.data[ctx.dataIndex] / total >= 0.05,
+          formatter: val => total ? Math.round(val / total * 100) + '%' : '',
+          color: '#fff',
+          font: { family: 'DM Sans', size: 11, weight: '700' },
+          textShadowBlur: 4,
+          textShadowColor: 'rgba(0,0,0,0.35)',
         }
       }
     }
@@ -345,8 +370,11 @@ function renderStatoChart(reports) {
   });
   const entries = order.filter(s => counts[s] > 0);
 
+  const statoTotal = entries.reduce((a, s) => a + counts[s], 0);
+
   new Chart(document.getElementById('chartStato'), {
     type: 'doughnut',
+    plugins: [ChartDataLabels, centerTextPlugin],
     data: {
       labels: entries,
       datasets: [{
@@ -367,7 +395,15 @@ function renderStatoChart(reports) {
           labels: { font: { family: 'DM Sans', size: 11 }, padding: 10, boxWidth: 12, color: chartTickColor() }
         },
         tooltip: {
-          callbacks: { label: ctx => `  ${ctx.label}: ${ctx.raw}` }
+          callbacks: { label: ctx => `  ${ctx.label}: ${ctx.raw}  (${statoTotal ? Math.round(ctx.raw / statoTotal * 100) : 0}%)` }
+        },
+        datalabels: {
+          display: ctx => statoTotal > 0 && ctx.dataset.data[ctx.dataIndex] / statoTotal >= 0.05,
+          formatter: val => statoTotal ? Math.round(val / statoTotal * 100) + '%' : '',
+          color: '#fff',
+          font: { family: 'DM Sans', size: 11, weight: '700' },
+          textShadowBlur: 4,
+          textShadowColor: 'rgba(0,0,0,0.35)',
         }
       }
     }
@@ -393,6 +429,7 @@ function renderTrendChart(reports) {
 
   new Chart(document.getElementById('chartTrend'), {
     type: 'bar',
+    plugins: [ChartDataLabels],
     data: {
       labels: sorted.map(([d]) => d),
       datasets: [{
@@ -408,9 +445,19 @@ function renderTrendChart(reports) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      layout: { padding: { top: 22 } },
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: ctx => `  ${ctx.raw} segnalazioni` } }
+        tooltip: { callbacks: { label: ctx => `  ${ctx.raw} segnalazioni` } },
+        datalabels: {
+          anchor: 'end',
+          align: 'top',
+          display: ctx => ctx.dataset.data[ctx.dataIndex] > 0,
+          formatter: val => val,
+          font: { family: 'DM Sans', size: 10, weight: '600' },
+          color: chartTickColor(),
+          padding: { bottom: 2 },
+        }
       },
       scales: {
         y: {
@@ -438,6 +485,30 @@ function chartGridColor()   { return isDark() ? 'rgba(245,240,232,0.07)' : 'rgba
 function chartTickColor()   { return isDark() ? 'rgba(245,240,232,0.5)'  : '#6b5e4e'; }
 function chartBorderColor() { return isDark() ? '#1a1410' : '#f5f0e8'; }
 
+// ─────────────────────────────────────────────
+//  CENTER TEXT PLUGIN (doughnut)
+// ─────────────────────────────────────────────
+const centerTextPlugin = {
+  id: 'centerText',
+  beforeDraw(chart) {
+    if (chart.config.type !== 'doughnut') return;
+    const { ctx, chartArea } = chart;
+    const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+    const cx = (chartArea.left + chartArea.right) / 2;
+    const cy = (chartArea.top + chartArea.bottom) / 2;
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = `700 1.4rem 'DM Sans', sans-serif`;
+    ctx.fillStyle = isDark() ? 'rgba(245,240,232,0.9)' : '#1a1208';
+    ctx.fillText(total, cx, cy - 9);
+    ctx.font = `0.65rem 'DM Sans', sans-serif`;
+    ctx.fillStyle = chartTickColor();
+    ctx.fillText('totale', cx, cy + 11);
+    ctx.restore();
+  }
+};
+
 // Aggiorna i colori degli assi di tutti i grafici attivi
 function updateChartColors() {
   ['chartCategorie', 'chartUrgenza', 'chartStato', 'chartTrend'].forEach(id => {
@@ -457,6 +528,10 @@ function updateChartColors() {
       chart.data.datasets.forEach(ds => {
         if (ds.borderColor !== undefined) ds.borderColor = chartBorderColor();
       });
+    }
+    // aggiorna colore etichette datalabels sui bar chart (non doughnut, il cui colore è sempre #fff)
+    if (chart.options.plugins?.datalabels && ['chartCategorie', 'chartTrend'].includes(id)) {
+      chart.options.plugins.datalabels.color = tick;
     }
     chart.update();
   });
