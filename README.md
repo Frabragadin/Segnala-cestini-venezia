@@ -114,3 +114,8 @@ Idea di **Andrea Borruso**, **Salvatore Fiandaca**, **Ciro Spataro** e **Giovan 
 By [@opendatasicilia](https://opendatasicilia.it)
 
 Sviluppo tecnico realizzato attraverso una collaborazione **human–Claude AI** (Anthropic).
+
+<img width="430" height="932" alt="2026-03-06_15h47_51" src="https://github.com/user-attachments/assets/d0740be9-4fd8-430e-a6e4-3c8c4ae0f017" /> <img width="430" height="932" alt="2026-03-06_15h47_42" src="https://github.com/user-attachments/assets/45818975-3a87-4066-81ec-e1c18612442b" /> <img width="430" height="932" alt="2026-03-06_15h48_09" src="https://github.com/user-attachments/assets/34e4cd8e-3bd7-4c65-ab20-3bc6a6e56cd9" />
+<img width="430" height="932" alt="2026-03-06_15h48_22" src="https://github.com/user-attachments/assets/1119e6a2-48ec-4e12-b099-52e2f95222bb" /> <img width="430" height="932" alt="2026-03-06_15h48_29" src="https://github.com/user-attachments/assets/091e4e4d-7f17-439c-aab4-161061ab1e9b" />
+
+
