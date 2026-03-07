@@ -36,7 +36,11 @@
   <!-- Cerca per email -->
   <div class="email-search-section">
     <button class="email-search-toggle" id="emailSearchToggle" onclick="toggleEmailSearch()">
-      <i class="fa-solid fa-magnifying-glass"></i> Inserisci la tua email e carica le tue segnalazioni.
+      <span class="toggle-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+      <span>
+        <strong>Hai già segnalato?</strong>
+        <small>Inserisci la tua email per caricare le tue segnalazioni</small>
+      </span>
     </button>
     <div class="email-search-form" id="emailSearchForm" style="display:none">
       <input type="email" id="searchEmail" placeholder="tua@email.it"

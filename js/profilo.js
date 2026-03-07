@@ -179,16 +179,18 @@ async function syncFromEmail(email, showFeedback) {
 function renderList(reports, header) {
   const list = document.getElementById('profileList');
   list.innerHTML = (header ? `<div class="search-results-header">${header}</div>` : '')
-    + reports.map(renderCard).join('');
+    + reports.map((r, i) => renderCard(r, i)).join('');
 }
 
-function renderCard(r) {
+function renderCard(r, idx) {
   const icon = r.catEmoji
     ? (r.catEmoji.startsWith('fa-') ? `<i class="${r.catEmoji}"></i>` : r.catEmoji)
     : '📌';
   const urg   = (r.urgenza || 'Normale').toLowerCase();
   const stato = r.stato || 'Nuova';
-  const clsMap = { Nuova: 'stato-nuova', 'In lavorazione': 'stato-lavorazione', Risolta: 'stato-risolta', Chiusa: 'stato-chiusa' };
+  const clsMap  = { Nuova: 'stato-nuova', 'In lavorazione': 'stato-lavorazione', Risolta: 'stato-risolta', Chiusa: 'stato-chiusa' };
+  const iconMap = { Nuova: 'fa-solid fa-clock', 'In lavorazione': 'fa-solid fa-wrench', Risolta: 'fa-solid fa-circle-check', Chiusa: 'fa-solid fa-circle-xmark' };
+  const delay   = idx > 0 ? ` style="animation-delay:${idx * 0.05}s"` : '';
   const canResolve = stato !== 'Risolta' && stato !== 'Chiusa';
   const resolveHtml = canResolve ? (r.token ? `
       <div class="pc-resolve">
@@ -206,16 +208,15 @@ function renderCard(r) {
         <span class="resolve-inline-msg"></span>
       </div>`) : '';
   return `
-    <div class="profile-card">
+    <div class="profile-card urg-${urg}"${delay}>
       <div class="pc-top">
-        <span class="pc-icon">${icon}</span>
+        <span class="pc-icon-wrap">${icon}</span>
         <span class="pc-cat">${r.categoria || '—'}</span>
-        <div class="urgency-dot ${urg}"></div>
       </div>
       <div class="pc-addr">${r.indirizzo || '—'}</div>
       <div class="pc-meta">
         <span class="pc-date">${r.data || ''} ${r.ora || ''}</span>
-        <span class="stato-badge ${clsMap[stato] || 'stato-nuova'}">${stato}</span>
+        <span class="stato-badge ${clsMap[stato] || 'stato-nuova'}"><i class="${iconMap[stato] || 'fa-solid fa-clock'}"></i> ${stato}</span>
       </div>
       <div class="pc-id">${r.ticketId || ''}</div>
       ${resolveHtml}
@@ -296,18 +297,22 @@ function updateSummary(reports) {
   el.style.display = 'grid';
   el.innerHTML = `
     <div class="summary-stat">
+      <i class="summary-icon fa-solid fa-list-ul"></i>
       <span class="summary-num">${reports.length}</span>
       <span class="summary-lbl">Totali</span>
     </div>
     <div class="summary-stat urgent">
+      <i class="summary-icon fa-solid fa-clock"></i>
       <span class="summary-num">${nuove}</span>
       <span class="summary-lbl">Nuove</span>
     </div>
     <div class="summary-stat">
+      <i class="summary-icon fa-solid fa-wrench"></i>
       <span class="summary-num">${lav}</span>
       <span class="summary-lbl">Lavoraz.</span>
     </div>
     <div class="summary-stat resolved">
+      <i class="summary-icon fa-solid fa-circle-check"></i>
       <span class="summary-num">${risolte}</span>
       <span class="summary-lbl">Risolte</span>
     </div>`;
