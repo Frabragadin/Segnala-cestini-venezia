@@ -9,3 +9,6 @@ Thumbs.db
 
 # Node (se in futuro si usano tool locali)
 node_modules/
+
+# Apps Script con dati reali (usa dati/apps-script-template.gs per il repo pubblico)
+dati/apps-script.gs
