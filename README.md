@@ -73,22 +73,22 @@ statistiche.html ◀── fetch CSV ──┤  dati/segnalazioni.csv
                                  └── (sync ogni 30 min via GitHub Actions)
 ```
 
-| File | Ruolo |
-| --- | --- |
-| `js/config.js` | **Unico file da modificare al fork** — tutte le costanti configurabili |
-| `index.html` | Form wizard segnalazione — 4 step |
-| `mappa.html` | Mappa pubblica segnalazioni interattiva |
-| `statistiche.html` | Dashboard grafici + Open Data (tabella + export CSV) |
-| `profilo.html` | Profilo utente — storico segnalazioni del dispositivo |
-| `info.html` | Informazioni sul progetto, istruzioni download Open Data |
-| `privacy.html` | Privacy Policy & Cookie Policy |
-| `dati/apps-script.gs` | Google Apps Script (backend serverless) |
-| `dati/template-google-sheets.csv` | Template intestazioni foglio (34 colonne) |
-| `dati/segnalazioni.csv` | CSV segnalazioni aperte (generato da GitHub Actions) |
-| `dati/risolte.csv` | CSV segnalazioni risolte (generato da GitHub Actions) |
-| `.github/workflows/sync-sheets.yml` | Sincronizza entrambi i CSV ogni 30 minuti |
-| `.github/workflows/sync-images.yml` | Scarica/ottimizza immagini (attivazione manuale) |
-| `img/` | Immagini delle segnalazioni caricate via GitHub API |
+| File                                  | Ruolo                                                                         |
+| ------------------------------------- | ----------------------------------------------------------------------------- |
+| `js/config.js`                      | **Unico file da modificare al fork** — tutte le costanti configurabili |
+| `index.html`                        | Form wizard segnalazione — 4 step                                            |
+| `mappa.html`                        | Mappa pubblica segnalazioni interattiva                                       |
+| `statistiche.html`                  | Dashboard grafici + Open Data (tabella + export CSV)                          |
+| `profilo.html`                      | Profilo utente — storico segnalazioni del dispositivo                        |
+| `info.html`                         | Informazioni sul progetto, istruzioni download Open Data                      |
+| `privacy.html`                      | Privacy Policy & Cookie Policy                                                |
+| `dati/apps-script.gs`               | Google Apps Script (backend serverless)                                       |
+| `dati/template-google-sheets.csv`   | Template intestazioni foglio (34 colonne)                                     |
+| `dati/segnalazioni.csv`             | CSV segnalazioni aperte (generato da GitHub Actions)                          |
+| `dati/risolte.csv`                  | CSV segnalazioni risolte (generato da GitHub Actions)                         |
+| `.github/workflows/sync-sheets.yml` | Sincronizza entrambi i CSV ogni 30 minuti                                     |
+| `.github/workflows/sync-images.yml` | Scarica/ottimizza immagini (attivazione manuale)                              |
+| `img/`                              | Immagini delle segnalazioni caricate via GitHub API                           |
 
 ---
 
@@ -192,7 +192,7 @@ I dati e i contenuti sono rilasciati con licenza [**CC BY 4.0**](https://creativ
 Idea di **Andrea Borruso**, **Salvatore Fiandaca**, **Ciro Spataro** e **Giovan Battista Vitrano**
 By [@opendatasicilia](https://opendatasicilia.it)
 
-Sviluppo tecnico realizzato attraverso una collaborazione **human–Claude AI** (Anthropic).
+Sviluppo tecnico: Web app progettata e sviluppata da [**@gbvitrano**](https://www.linkedin.com/in/gbvitrano/) in collaborazione con [**Claude AI**](https://www.anthropic.com/claude) (Anthropic), che ha affiancato le scelte architetturali, l'ottimizzazione del codice e lo sviluppo delle funzionalità di visualizzazione geospaziale.
 
 <img width="430" height="932" alt="2026-03-06_15h47_51" src="https://github.com/user-attachments/assets/d0740be9-4fd8-430e-a6e4-3c8c4ae0f017" /> <img width="430" height="932" alt="2026-03-06_15h47_42" src="https://github.com/user-attachments/assets/45818975-3a87-4066-81ec-e1c18612442b" /> <img width="430" height="932" alt="2026-03-06_15h48_09" src="https://github.com/user-attachments/assets/34e4cd8e-3bd7-4c65-ab20-3bc6a6e56cd9" />
 <img width="430" height="932" alt="2026-03-06_15h48_22" src="https://github.com/user-attachments/assets/1119e6a2-48ec-4e12-b099-52e2f95222bb" /> <img width="430" height="932" alt="2026-03-06_15h48_29" src="https://github.com/user-attachments/assets/091e4e4d-7f17-439c-aab4-161061ab1e9b" />
