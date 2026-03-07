@@ -107,6 +107,8 @@ async function loadAll() {
 //  RENDER
 // ─────────────────────────────────────────────
 function renderStats(aperte, risolte) {
+  aperte.forEach(r  => { r._foglio = 'Segnalazioni'; });
+  risolte.forEach(r => { r._foglio = 'Risolte'; });
   _allReports = [...aperte, ...risolte];
 
   document.getElementById('loadingWrap').style.display  = 'none';
@@ -543,6 +545,128 @@ function updateChartColors() {
 document.addEventListener('themechange', function() {
   updateChartColors();
 });
+
+// ─────────────────────────────────────────────
+//  TABELLA DATI
+// ─────────────────────────────────────────────
+let _tableInited  = false;
+let _tableVisible = false;
+let _allCols      = [];
+let _visibleCols  = new Set();
+
+const COLS_EXCLUDED = new Set(['Ha_Immagine', 'Dimensioni_Immagine', 'Accuratezza_GPS_m', 'URL_Segnalazione']);
+
+function toggleTable() {
+  _tableVisible = !_tableVisible;
+  const section = document.getElementById('tableSection');
+  const btn     = document.getElementById('btnTableToggle');
+  section.style.display = _tableVisible ? 'block' : 'none';
+  btn.classList.toggle('active', _tableVisible);
+  btn.innerHTML = `<i class="fa-solid fa-table-list"></i> ${_tableVisible ? 'Nascondi tabella' : 'Tabella dati'}`;
+  if (_tableVisible && !_tableInited) {
+    _tableInited = true;
+    initTable();
+  }
+}
+
+function initTable() {
+  const colSet = new Set(['Foglio']);
+  _allReports.forEach(r => Object.keys(r).forEach(k => { if (k !== '_foglio') colSet.add(k); }));
+  _allCols     = [...colSet].filter(c => !COLS_EXCLUDED.has(c));
+  _visibleCols = new Set(_allCols);
+  buildColPanel();
+  renderDataTable();
+}
+
+function buildColPanel() {
+  const container = document.getElementById('colChecks');
+  container.innerHTML = '';
+  _allCols.forEach(col => {
+    const label = document.createElement('label');
+    label.className = 'col-check-item';
+    const checked = _visibleCols.has(col) ? 'checked' : '';
+    label.innerHTML = `<input type="checkbox" value="${col}" ${checked}> ${col}`;
+    label.querySelector('input').addEventListener('change', e => {
+      if (e.target.checked) _visibleCols.add(col);
+      else _visibleCols.delete(col);
+      syncColAllCheckbox();
+      renderDataTable();
+    });
+    container.appendChild(label);
+  });
+  syncColAllCheckbox();
+}
+
+function syncColAllCheckbox() {
+  const allCb = document.getElementById('colCheckAll');
+  if (!allCb) return;
+  allCb.checked       = _visibleCols.size === _allCols.length;
+  allCb.indeterminate = _visibleCols.size > 0 && _visibleCols.size < _allCols.length;
+}
+
+function toggleAllCols(checked) {
+  if (checked) _allCols.forEach(c => _visibleCols.add(c));
+  else _visibleCols.clear();
+  document.querySelectorAll('#colChecks input[type=checkbox]').forEach(cb => { cb.checked = checked; });
+  renderDataTable();
+}
+
+function toggleColPanel() {
+  const panel   = document.getElementById('colPanel');
+  const chevron = document.getElementById('colPanelChevron');
+  const open    = panel.style.display === 'block';
+  panel.style.display = open ? 'none' : 'block';
+  chevron.className   = open ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
+}
+
+function renderDataTable() {
+  const cols  = _allCols.filter(c => _visibleCols.has(c));
+  const thead = document.getElementById('dataTableHead');
+  const tbody = document.getElementById('dataTableBody');
+
+  thead.innerHTML = '<tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr>';
+
+  const fragment = document.createDocumentFragment();
+  _allReports.forEach(r => {
+    const tr = document.createElement('tr');
+    cols.forEach(col => {
+      const td = document.createElement('td');
+      if (col === 'Foglio') {
+        const isRisolta = r._foglio === 'Risolte';
+        td.innerHTML = `<span class="badge-foglio ${isRisolta ? 'badge-risolta' : 'badge-aperta'}">${r._foglio}</span>`;
+      } else {
+        td.textContent = r[col] || '';
+        td.title = r[col] || '';
+      }
+      tr.appendChild(td);
+    });
+    fragment.appendChild(tr);
+  });
+  tbody.innerHTML = '';
+  tbody.appendChild(fragment);
+}
+
+function exportTableCSV() {
+  const cols  = _allCols.filter(c => _visibleCols.has(c));
+  const lines = [cols.map(csvEsc).join(',')];
+  _allReports.forEach(r => {
+    lines.push(cols.map(col => csvEsc(col === 'Foglio' ? r._foglio : (r[col] || ''))).join(','));
+  });
+  const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'segnalazioni.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function csvEsc(val) {
+  const s = String(val ?? '');
+  return (s.includes(',') || s.includes('"') || s.includes('\n'))
+    ? '"' + s.replace(/"/g, '""') + '"'
+    : s;
+}
 
 // ─────────────────────────────────────────────
 //  INIT

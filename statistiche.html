@@ -58,7 +58,7 @@
   <div class="logo-mark"><i class="fa-solid fa-location-dot"></i></div>
   <div>
     <h1>SegnalaOra</h1>
-    <p>Statistiche segnalazioni civiche</p>
+    <p>Statistiche segnalazioni civiche e Open Data</p>
   </div>
   <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="Tema">
     <i class="fa-solid fa-moon"></i>
@@ -122,6 +122,42 @@
     </div>
 
   </div>
+
+  <!-- BOTTONE TABELLA -->
+  <div class="table-toggle-bar">
+    <button class="btn-table-toggle" id="btnTableToggle" onclick="toggleTable()">
+      <i class="fa-solid fa-table-list"></i> Tabella dati
+    </button>
+  </div>
+
+  <!-- SEZIONE TABELLA -->
+  <div id="tableSection" class="table-section" style="display:none">
+    <div class="table-toolbar">
+      <div class="col-selector-wrap">
+        <button class="btn-col-toggle" onclick="toggleColPanel()">
+          <i class="fa-solid fa-sliders"></i> Colonne <i class="fa-solid fa-chevron-down" id="colPanelChevron"></i>
+        </button>
+        <div class="col-panel" id="colPanel" style="display:none">
+          <div class="col-panel-header">
+            <label class="col-check-all">
+              <input type="checkbox" id="colCheckAll" onchange="toggleAllCols(this.checked)"> Seleziona tutte
+            </label>
+          </div>
+          <div class="col-checks" id="colChecks"></div>
+        </div>
+      </div>
+      <button class="btn-export-csv" onclick="exportTableCSV()">
+        <i class="fa-solid fa-file-arrow-down"></i> Esporta CSV
+      </button>
+    </div>
+    <div class="table-wrap">
+      <table id="dataTable" class="data-table">
+        <thead id="dataTableHead"></thead>
+        <tbody id="dataTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -152,7 +188,7 @@
   </a>
   <button class="bnav-item bnav-active" type="button">
     <i class="fa-solid fa-chart-simple"></i>
-    <span>Statistiche</span>
+    <span>Statistiche e Open Data</span>
   </button>
   <a class="bnav-item" href="profilo.html">
     <i class="fa-solid fa-user"></i>
