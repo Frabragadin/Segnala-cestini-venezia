@@ -10,7 +10,7 @@ const APP_CONFIG = {
   // 1. GOOGLE SERVICES
   //    Ottieni questi valori dal tuo Google Workspace.
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbxWnpCZXQ_mjXBUCwIoG8aKFYtVT5c94aCj2MvhtYbpGPYAR-MUsjraIsf3W5Ow6EHC/exec',
+  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbykYATZ5W_jxVQN7GbjCuJdxTIXI7dXjCjY7bE8DNjWVz4K6vDbMI5G3mGwMbwdh922Sg/exec',
                     // Usato da: segnalazione-civica.js (POST nuova seg.) + map.js (risolvi)
   sheetsCsvAperte:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzGnyHVzcSbnLKsp1gkFi5a8xJeeFTK8YhmA67XJUEGaJIQ5sMNwqG4Jdhxg9DqaAWU2bdWGHGfnpR/pub?gid=144049557&single=true&output=csv',
   sheetsCsvRisolte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzGnyHVzcSbnLKsp1gkFi5a8xJeeFTK8YhmA67XJUEGaJIQ5sMNwqG4Jdhxg9DqaAWU2bdWGHGfnpR/pub?gid=707341479&single=true&output=csv',
