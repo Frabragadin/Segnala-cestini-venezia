@@ -598,25 +598,30 @@ async function sendReport() {
       _hp:                document.getElementById('hp_website')?.value || '',
       ...Object.fromEntries(reportData.photos.map((p, i) => [`imageBase64_${i + 1}`, p.base64])),
     };
-    try {
- try {
-  // Usa il proxy CORS
-  const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-  const response = await fetch(proxyUrl + APP_CONFIG.appsScriptUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Origin': window.location.origin
-    },
-    body: JSON.stringify(payload),
+try {
+  // Costruisci URL con parametri in GET
+  const params = new URLSearchParams();
+  params.append('action', 'add');
+  params.append('lat', reportData.lat);
+  params.append('lng', reportData.lng);
+  params.append('categoria', cat);
+  params.append('nome', nome);
+  params.append('email', emailSegnalante);
+  params.append('indirizzo', addr);
+  params.append('note', descr);
+  params.append('stato', 'aperta');
+  
+  const url = APP_CONFIG.appsScriptUrl + '?' + params.toString();
+  
+  await fetch(url, {
+    method: 'GET',
+    mode: 'no-cors'
   });
   
-  const result = await response.json();
-  console.log('Risposta:', result);
+  console.log('Richiesta inviata in GET');
 } catch(e) {
-  console.error('Errore fetch:', e);
+  console.error('Errore:', e);
 }
-    } catch(e) {}
 
     // Salva nel profilo locale (localStorage)
     try {
