@@ -601,7 +601,6 @@ async function sendReport() {
     try {
       await fetch(APP_CONFIG.appsScriptUrl, {
         method: 'POST', mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
     } catch(e) {}
