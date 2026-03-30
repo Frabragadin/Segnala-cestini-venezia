@@ -25,7 +25,7 @@ const APP_CONFIG = {
     siteUrl:       '',         // URL del sito (es: https://segnalaora.comune.it) — lascia vuoto per auto-rilevamento
     ogImage:       '',         // URL immagine Open Graph (1200x630 px)
     hashtag:       '#SegnalaOra',
-    bannerCrediti: 'Segnala Cestini - Venezia<br/>Servizio del Comune di Venezia · Veritas',
+    bannerCrediti: 'Segnala Cestini - Venezia<br/>Servizio del  Comune di Venezia · Veritas',
     // Nota: bannerCrediti viene passato come `expandcontent` a L.controlCredits() in map.js
   },
 
