@@ -296,7 +296,48 @@ function setPosition(lat, lng, fonte, accuratezza) {
     marker.setLatLng([lat, lng]);
     marker.setOpacity(1);
   }
-  reverseGeocode(lat, lng);
+  // Aggiorna l'indirizzo in tempo reale
+  updateAddressFromCoords(lat, lng);
+}
+// Aggiorna l'indirizzo a partire dalle coordinate (in tempo reale)
+async function updateAddressFromCoords(lat, lng) {
+  try {
+    // Chiamata al servizio di geocoding inverso di OpenStreetMap (in italiano)
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1&accept-language=it`);
+    const data = await response.json();
+    const a = data.address || {};
+    
+    // Estrai i dati dell'indirizzo
+    reportData.via       = a.road || a.pedestrian || a.footway || '';
+    reportData.civico    = a.house_number || '';
+    reportData.cap       = a.postcode || '';
+    reportData.comune    = a.city || a.town || a.village || a.municipality || '';
+    reportData.provincia = a.county || a.state_district || '';
+    reportData.regione   = a.state || '';
+    reportData.address   = data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    
+    // Aggiorna il campo indirizzo nel form
+    const addrInput = document.getElementById('addressInput');
+    if (addrInput) {
+      addrInput.value = reportData.address;
+    }
+    
+    // Aggiorna anche il campo via se presente
+    const viaInput = document.getElementById('via');
+    if (viaInput) {
+      viaInput.value = reportData.via;
+    }
+    
+    console.log('📍 Indirizzo aggiornato:', reportData.address);
+    
+  } catch (error) {
+    console.error('Errore nel recupero dell\'indirizzo:', error);
+    reportData.address = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    const addrInput = document.getElementById('addressInput');
+    if (addrInput) {
+      addrInput.value = reportData.address;
+    }
+  }
 }
 
 function getGPS() {
