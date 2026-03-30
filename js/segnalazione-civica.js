@@ -599,15 +599,23 @@ async function sendReport() {
       ...Object.fromEntries(reportData.photos.map((p, i) => [`imageBase64_${i + 1}`, p.base64])),
     };
     try {
-  // Usa un proxy CORS gratuito per bypassare il blocco
+ try {
+  // Usa il proxy CORS
   const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-  const targetUrl = APP_CONFIG.appsScriptUrl;
-  
-  await fetch(proxyUrl + targetUrl, {
+  const response = await fetch(proxyUrl + APP_CONFIG.appsScriptUrl, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Origin': window.location.origin
+    },
     body: JSON.stringify(payload),
   });
+  
+  const result = await response.json();
+  console.log('Risposta:', result);
+} catch(e) {
+  console.error('Errore fetch:', e);
+}
     } catch(e) {}
 
     // Salva nel profilo locale (localStorage)
