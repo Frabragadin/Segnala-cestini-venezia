@@ -10,7 +10,7 @@ const APP_CONFIG = {
   // 1. GOOGLE SERVICES
   //    Ottieni questi valori dal tuo Google Workspace.
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  appsScriptUrl:    'https://script.google.com/macros/s/AKfycbwve06JZu-6pGn0KQXMlZR6OCelS_3SWlxjAtK9CTM1De-26D-YXFUVAdQfR8w8OUts/exec',
+  appsScriptUrl:    'https://script.google.com/macros/s/AKfycbyGqYWpA0V6XoypmW_25jeNP6i1YAVf-X0bQwZd1IaeA9cC5KhvuxBkEO-eMU3YYjcJLg/exec',
                     // Usato da: segnalazione-civica.js (POST nuova seg.) + map.js (risolvi)
   sheetsCsvAperte:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzGnyHVzcSbnLKsp1gkFi5a8xJeeFTK8YhmA67XJUEGaJIQ5sMNwqG4Jdhxg9DqaAWU2bdWGHGfnpR/pub?gid=144049557&single=true&output=csv',
   sheetsCsvRisolte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzGnyHVzcSbnLKsp1gkFi5a8xJeeFTK8YhmA67XJUEGaJIQ5sMNwqG4Jdhxg9DqaAWU2bdWGHGfnpR/pub?gid=707341479&single=true&output=csv',
@@ -33,10 +33,10 @@ const APP_CONFIG = {
   // 3. PUBBLICA AMMINISTRAZIONE
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   pa: {
-    nome:          'Comune di [Nome Comune]',
-    sito:          'https://www.comune.[nome].it',
-    emailDefault:  'protocollo@comune.[nome].it',
-    twitterHandle: '@comune[nome]',
+    nome:          'Comune di Venezia',
+    sito:          'https://www.comune.venezia.it',
+    emailDefault:  'ambiente@gruppoveritas.it',
+    twitterHandle: '@ComuneVenezia',
   },
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -45,8 +45,8 @@ const APP_CONFIG = {
   //    Usa Google Maps o OpenStreetMap per trovare le coordinate.
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   mappa: {
-    lat:          38.1157,  // latitudine centro comune
-    lng:          13.3615,  // longitudine centro comune
+    lat:          45.4384,   // latitudine Ponte di Rialto
+    lng:          12.3355,   // longitudine Ponte di Rialto
     zoomForm:     14,       // zoom nel form segnalazione (segnalazione-civica.js)
     zoomPubblica: 13,       // zoom mappa pubblica (mappa.html)
     maxZoomForm:  20,       // zoom massimo nel form segnalazione
@@ -73,123 +73,17 @@ const APP_CONFIG = {
   //      custom      — se true, l'utente puo inserire un'email libera
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   destinatari: [
-    {
-      id:          'strade',
-      nome:        'Buche stradali',
-      descrizione: 'Buche, asfalto, marciapiedi',
-      categoria:   'Buche e dissesti stradali',
-      email:       'lavori.pubblici@comune.[nome].it',
-      icon:        'fa-solid fa-road-circle-exclamation',
-      custom:      false,
-    },
-    {
-      id:          'luce',
-      nome:        'Illuminazione',
-      descrizione: 'Lampioni guasti, semafori',
-      categoria:   'Illuminazione pubblica guasta',
-      email:       'illuminazione@comune.[nome].it',
-      icon:        'fa-solid fa-lightbulb',
-      custom:      false,
-    },
-    {
-      id:          'rifiuti',
-      nome:        'Rifiuti',
-      descrizione: 'Rifiuti abbandonati, degrado',
-      categoria:   'Rifiuti abbandonati',
-      email:       'ambiente@comune.[nome].it',
-      icon:        'fa-solid fa-trash-can',
-      custom:      false,
-    },
-    {
-      id:          'verde',
-      nome:        'Verde Pubblico',
-      descrizione: 'Alberi, parchi, aree verdi',
-      categoria:   'Alberi e verde pubblico',
-      email:       'verde@comune.[nome].it',
-      icon:        'fa-solid fa-tree',
-      custom:      false,
-    },
-    {
-      id:          'acqua',
-      nome:        'Perdite idriche',
-      descrizione: 'Perdite, allagamenti, fognature',
-      categoria:   'Perdite idriche',
-      email:       'acqua@comune.[nome].it',
-      icon:        'fa-solid fa-faucet-drip',
-      custom:      false,
-    },
-    {
-      id:          'deiezioni',
-      nome:        'Deiezioni',
-      descrizione: 'Deiezioni animali non raccolte',
-      categoria:   'Deiezioni non raccolte',
-      email:       'ambiente@comune.[nome].it',
-      icon:        'fa-solid fa-paw',
-      custom:      false,
-    },
-    {
-      id:          'segnaletica',
-      nome:        'Segnaletica',
-      descrizione: 'Cartelli danneggiati, strisce',
-      categoria:   'Segnaletica danneggiata',
-      email:       'lavori.pubblici@comune.[nome].it',
-      icon:        'fa-solid fa-signs-post',
-      custom:      false,
-    },
-    {
-      id:          'veicoli',
-      nome:        'Veicoli abbandonati',
-      descrizione: 'Auto, moto abbandonate',
-      categoria:   'Veicoli abbandonati',
-      email:       'polizialocale@comune.[nome].it',
-      icon:        'fa-solid fa-car-side',
-      custom:      false,
-    },
-    {
-      id:          'sicurezza',
-      nome:        'Sicurezza',
-      descrizione: 'Degrado, ordine pubblico',
-      categoria:   'Degrado e sicurezza',
-      email:       'polizialocale@comune.[nome].it',
-      icon:        'fa-solid fa-shield-halved',
-      custom:      false,
-    },
-    {
-      id:          'barriere',
-      nome:        'Barriere arch.',
-      descrizione: 'Accessibilita disabili',
-      categoria:   'Barriere architettoniche',
-      email:       'lavori.pubblici@comune.[nome].it',
-      icon:        'fa-solid fa-wheelchair',
-      custom:      false,
-    },
-    {
-      id:          'immobile',
-      nome:        'Immobile',
-      descrizione: 'Edifici pericolanti, crolli',
-      categoria:   'Immobile pericolante',
-      email:       'lavori.pubblici@comune.[nome].it',
-      icon:        'fa-solid fa-house-crack',
-      custom:      false,
-    },
-    {
-      id:          'rumore',
-      nome:        'Rumore',
-      descrizione: 'Inquinamento acustico',
-      categoria:   'Inquinamento acustico',
-      email:       'polizialocale@comune.[nome].it',
-      icon:        'fa-solid fa-volume-high',
-      custom:      false,
-    },
-    {
-      id:          'altro',
-      nome:        'Altro',
-      descrizione: 'Inserisci l\'email destinatario',
-      categoria:   'Altro',
-      email:       null,
-      icon:        'fa-solid fa-ellipsis',
-      custom:      true,
-    },
+     // Esempio per i rifiuti:
+{
+  id:          'rifiuti',
+  nome:        'Rifiuti',
+  descrizione: 'Cestini pieni, rifiuti abbandonati',
+  categoria:   'Rifiuti abbandonati',
+  email:       'ambiente@gruppoveritas.it',
+  icon:        'fa-solid fa-trash-can',
+  custom:      false,
+},
+    
   ],
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
