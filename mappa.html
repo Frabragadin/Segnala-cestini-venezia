@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="canonical" href="https://segnalaora.coseerobe.it/" />
-<meta name="description" content="Segnala in modo semplice e georeferenziato i problemi del tuo territorio. Un progetto civico basato su opendata per migliorare la comunicazione tra cittadini e pubblica amministrazione." />
-    <meta name="author" content="Giovan Battista Vitrano per OpenDataSicilia.it">
+<link rel="canonical" href="https://frabragadin.github.io/Segnala-cestini-venezia/" />
+<meta name="description" content="Mappa interattiva delle segnalazioni di cestini pieni e rifiuti abbandonati nel territorio di Venezia." />
+    <meta name="author" content="Francesco Bragadin">
     <meta http-equiv="content-language" content="IT">
     <meta name="robots" content="index,follow">
-    <meta name="creation_Date" content="01/03/2026>
-<title>SegnalaOra — Mappa Segnalazioni</title>
+    <meta name="creation_Date" content="01/03/2026">
+<title>Segnala Cestini - Venezia — Mappa Segnalazioni</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -35,36 +35,34 @@
 
     <!-- Open Graph / Facebook -->
 <meta property="og:type"              content="website" />
-<meta property="og:url"               content="https://segnalaora.coseerobe.it/" />
-<meta property="og:site_name"         content="SegnalaOra – Cose&Robe" />
-<meta property="og:title"             content="SegnalaOra | Segnala un problema sul tuo territorio" />
-<meta property="og:description"       content="Segnala in modo semplice e georeferenziato i problemi del tuo territorio. Un progetto civico basato su opendata per migliorare la comunicazione tra cittadini e pubblica amministrazione." />
-<meta property="og:image"             content="https://segnalaora.coseerobe.it/img/og-image.jpg" />
+<meta property="og:url"               content="https://frabragadin.github.io/Segnala-cestini-venezia/mappa.html" />
+<meta property="og:site_name"         content="Segnala Cestini - Venezia" />
+<meta property="og:title"             content="Segnala Cestini - Venezia | Mappa segnalazioni" />
+<meta property="og:description"       content="Mappa interattiva delle segnalazioni di cestini pieni e rifiuti abbandonati nel territorio di Venezia." />
+<meta property="og:image"             content="https://frabragadin.github.io/Segnala-cestini-venezia/img/og-image.jpg" />
 <meta property="og:image:width"       content="1200" />
 <meta property="og:image:height"      content="630" />
-<meta property="og:image:alt"         content="SegnalaOra – mappa interattiva delle segnalazioni territoriali" />
+<meta property="og:image:alt"         content="Segnala Cestini - Venezia – mappa interattiva delle segnalazioni" />
 <meta property="og:locale"            content="it_IT" />
 
 <!-- Twitter Card -->
 <meta name="twitter:card"             content="summary_large_image" />
-<meta name="twitter:site"             content="@gbvitrano" />
-<meta name="twitter:creator"          content="@gbvitrano" />
-<meta name="twitter:title"            content="SegnalaOra | Segnala un problema sul tuo territorio" />
-<meta name="twitter:description"      content="Segnala in modo semplice e georeferenziato i problemi del tuo territorio. Un progetto civico basato su opendata." />
-<meta name="twitter:image"            content="https://segnalaora.coseerobe.it/img/og-image.jpg" />
-<meta name="twitter:image:alt"        content="SegnalaOra – mappa interattiva delle segnalazioni territoriali" />
-
-
+<meta name="twitter:site"             content="@ComuneVenezia" />
+<meta name="twitter:creator"          content="@ComuneVenezia" />
+<meta name="twitter:title"            content="Segnala Cestini - Venezia | Mappa segnalazioni" />
+<meta name="twitter:description"      content="Mappa interattiva delle segnalazioni di cestini pieni e rifiuti abbandonati nel territorio di Venezia." />
+<meta name="twitter:image"            content="https://frabragadin.github.io/Segnala-cestini-venezia/img/og-image.jpg" />
+<meta name="twitter:image:alt"        content="Segnala Cestini - Venezia – mappa interattiva delle segnalazioni" />
 
 </head>
 <body class="page-map">
-<div class="demo-banner"><i class="fa-solid fa-flask"></i> Web App Demo by <a href="https://opendatasicilia.it" target="_blank" rel="noopener">@opendatasicilia</a><button class="demo-banner-close" onclick="this.parentElement.style.display='none'" title="Chiudi"><i class="fa-solid fa-xmark"></i></button></div>
+<div class="demo-banner"><i class="fa-solid fa-trash-can"></i> Segnala Cestini - Venezia <button class="demo-banner-close" onclick="this.parentElement.style.display='none'" title="Chiudi"><i class="fa-solid fa-xmark"></i></button></div>
 
 <header>
   <div class="logo-mark"><i class="fa-solid fa-location-dot"></i></div>
   <div>
-    <h1>SegnalaOra</h1>
-    <p>Mappa segnalazioni civiche</p>
+    <h1>Segnala Cestini Venezia</h1>
+    <p>Mappa segnalazioni cestini pieni</p>
   </div>
   <div class="header-right">
     <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="Passa al tema scuro">
