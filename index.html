@@ -256,15 +256,6 @@
   </div>
 </div>
 <script src="js/cookie-consent.js"></script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('SW registrato:', reg.scope))
-        .catch(err => console.log('SW fallito:', err));
-    });
-  }
-</script>
 	
 <!-- INFO POPUP -->
 <div class="info-overlay" id="infoOverlay">
@@ -329,6 +320,19 @@ function closeInfoPopup(){
     <span>Info</span>
   </a>
 </nav>
-	
+	<script>
+  // Registra il Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('Service Worker registrato con successo:', registration.scope);
+        })
+        .catch(error => {
+          console.log('Registrazione Service Worker fallita:', error);
+        });
+    });
+  }
+</script>
 </body>
 </html>
