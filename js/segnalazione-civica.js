@@ -640,28 +640,28 @@ async function sendReport() {
       ...Object.fromEntries(reportData.photos.map((p, i) => [`imageBase64_${i + 1}`, p.base64])),
     };
 try {
-  // Costruisci URL con parametri in GET
-  const params = new URLSearchParams();
-  params.append('action', 'add');
-  params.append('lat', reportData.lat);
-  params.append('lng', reportData.lng);
-  params.append('categoria', cat);
-  params.append('nome', nome);
-  params.append('email', emailSegnalante);
-  params.append('indirizzo', addr);
-  params.append('note', descr);
-  params.append('stato', 'aperta');
+  // Prepara i dati da inviare in POST
+  const formData = new URLSearchParams();
+  formData.append('action', 'add');
+  formData.append('lat', reportData.lat);
+  formData.append('lng', reportData.lng);
+  formData.append('indirizzo', addr);
+  formData.append('categoria', cat);
+  formData.append('note', descr);
+  formData.append('Nome_Segnalante', nome);        // ← Nome corretto per Apps Script
+  formData.append('Email_Segnalante', emailSegnalante);  // ← Nome corretto per Apps Script
   
-  const url = APP_CONFIG.appsScriptUrl + '?' + params.toString();
-  
-  await fetch(url, {
-    method: 'GET',
-    mode: 'no-cors'
+  const response = await fetch(APP_CONFIG.appsScriptUrl, {
+    method: 'POST',
+    mode: 'cors',
+    body: formData
   });
   
-  console.log('Richiesta inviata in GET');
+  const result = await response.json();
+  console.log('Risposta Apps Script:', result);
+  
 } catch(e) {
-  console.error('Errore:', e);
+  console.error('Errore invio:', e);
 }
 
     // Salva nel profilo locale (localStorage)
