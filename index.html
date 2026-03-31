@@ -1,7 +1,9 @@
 <script>
-// Messaggio di benvenuto (appare una sola volta)
-if (!localStorage.getItem('benvenuto_visto')) {
-  alert("🗑️ Benvenuto in SegnalaCestiniVenezia!\n\n📸 1. Scatta una foto\n📍 2. Indica la posizione\n📧 3. Invia — ricevi conferma via email\n\nLe segnalazioni vanno a Veritas e al Comune di Venezia.\n\n📊 I dati sono pubblici come Open Data.");
-  localStorage.setItem('benvenuto_visto', '1');
+// Messaggio di benvenuto semplice (funziona sempre)
+if (!localStorage.getItem('welcome_shown')) {
+  setTimeout(function() {
+    alert("🗑️ Benvenuto in SegnalaCestiniVenezia!\n\n📸 Scatta una foto del cestino pieno\n📍 Controlla la posizione sulla mappa\n📧 Invia e ricevi conferma via email\n\nLe segnalazioni vanno a Veritas e Comune di Venezia");
+  }, 500);
+  localStorage.setItem('welcome_shown', '1');
 }
 </script>
