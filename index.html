@@ -49,6 +49,7 @@
 <meta name="twitter:description"      content="Segnala in modo semplice e georeferenziato i cestini pieni nel territorio di Venezia. Servizio del Comune di Venezia e Veritas." />
 <meta name="twitter:image"            content="https://frabragadin.github.io/Segnala-cestini-venezia/img/og-image.jpg" />
 <meta name="twitter:image:alt"        content="Segnala Cestini - Venezia – mappa interattiva delle segnalazioni" />
+<link rel="manifest" href="/manifest.json">	
 </head>
 <body class="page-form">
 <div class="demo-banner"><i class="fa-solid fa-trash-can"></i> Segnala Cestini - Venezia <button class="demo-banner-close" onclick="this.parentElement.style.display='none'" title="Chiudi"><i class="fa-solid fa-xmark"></i></button></div>
@@ -255,7 +256,16 @@
   </div>
 </div>
 <script src="js/cookie-consent.js"></script>
-
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('SW registrato:', reg.scope))
+        .catch(err => console.log('SW fallito:', err));
+    });
+  }
+</script>
+	
 <!-- INFO POPUP -->
 <div class="info-overlay" id="infoOverlay">
   <div class="info-card">
@@ -319,5 +329,6 @@ function closeInfoPopup(){
     <span>Info</span>
   </a>
 </nav>
+	
 </body>
 </html>
