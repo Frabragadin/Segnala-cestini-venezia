@@ -83,7 +83,7 @@ async function refreshStatuses(reports) {
 }
 
 // ─────────────────────────────────────────────
-//  MERGE + SYNC DA EMAIL
+//  MERGE + SYNC DA EMAIL (legge direttamente dal CSV)
 // ─────────────────────────────────────────────
 
 // Unisce newReports nel localStorage: aggiorna stato/token, aggiunge nuovi
@@ -112,7 +112,7 @@ function mergeIntoLocal(newReports) {
   return existing;
 }
 
-// Recupera segnalazioni per email tramite Apps Script, le merge e aggiorna la UI
+// Recupera segnalazioni per email direttamente dal CSV
 async function syncFromEmail(email, showFeedback) {
   if (showFeedback) {
     const btn = document.getElementById('searchBtn');
@@ -120,23 +120,32 @@ async function syncFromEmail(email, showFeedback) {
   }
 
   try {
-    const url  = APPS_SCRIPT_URL + '?action=cerca&email=' + encodeURIComponent(email) + '&t=' + Date.now();
-    const resp = await fetch(url);
-    const json = await resp.json();
-
-    if (!json.ok) throw new Error(json.error || 'Errore server');
-
-    const rows = json.data || [];
+    const bust = (u) => u + (u.includes('?') ? '&' : '?') + 't=' + Date.now();
+    const response = await fetch(bust(SHEETS_CSV));
+    const text = await response.text();
+    const allData = parseCSV(text);
+    
+    console.log('📊 CSV caricato:', allData.length, 'segnalazioni totali');
+    
+    // Filtra per email (case insensitive)
+    const rows = allData.filter(r => {
+      const emailSegnalante = r.Email_Segnalante || r.Email || '';
+      return emailSegnalante.toLowerCase() === email.toLowerCase();
+    });
+    
+    console.log('📊 Trovate per', email, ':', rows.length, 'segnalazioni');
+    
     const converted = rows.map(r => ({
-      ticketId:  r.ID_Segnalazione,
-      categoria: r.Categoria,
-      catEmoji:  r.Categoria_Emoji,
-      indirizzo: r.Via || r.Indirizzo_Completo,
-      data: r.Data, ora: r.Ora,
-      urgenza: r.Urgenza,
-      stato:   r.Stato,
-      nome:    r.Nome_Segnalante,
-      token:   r.Token_Risoluzione || '',
+      ticketId:  r.ID_Segnalazione || r.id || '',
+      categoria: r.Categoria || r.categoria || '',
+      catEmoji:  r.Categoria_Emoji || '',
+      indirizzo: r.Indirizzo_Completo || r.indirizzo || '',
+      data: r.Data || r.data || '',
+      ora: r.Ora || r.ora || '',
+      urgenza: r.Urgenza || r.urgenza || 'Normale',
+      stato:   r.Stato || r.stato || 'Nuova',
+      nome:    r.Nome_Segnalante || r.nome || '',
+      token:   r.Token_Risoluzione || r.token || '',
     }));
 
     const merged = mergeIntoLocal(converted);
@@ -159,7 +168,7 @@ async function syncFromEmail(email, showFeedback) {
     console.error('Errore sync:', e);
     if (showFeedback) {
       document.getElementById('profileList').innerHTML =
-        '<div class="no-reports">Errore di rete. Controlla la connessione e riprova.</div>';
+        '<div class="no-reports">❌ Errore nel caricamento dei dati. Riprova.</div>';
     }
   } finally {
     if (showFeedback) {
