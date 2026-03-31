@@ -10,7 +10,7 @@ const APP_CONFIG = {
   // 1. GOOGLE SERVICES
   //    Ottieni questi valori dal tuo Google Workspace.
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    appsScriptUrl: 'https://script.google.com/macros/s/AKfycbyGvP7g2RypTKeBeh_g7s22jrXfcWjwXU-YCUZWORSJ0c5ncDRgGVYm2o6Y5X0Yf9Ezlg/exec',
+    appsScriptUrl: 'https://script.google.com/macros/s/AKfycbxiA4Q3U8aysJmuPZiqTVzhHLSIGr1BdPRlx48KMdFKUpbKbIGXOMWhua408uz4pwJrSQ/exec',
 sheetsCsvAperte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?gid=0&single=true&output=csv' + new Date().getTime(),
 sheetsCsvRisolte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?gid=0&single=true&output=csv' + new Date().getTime(),
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
