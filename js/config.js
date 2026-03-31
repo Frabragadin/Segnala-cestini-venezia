@@ -12,9 +12,8 @@ const APP_CONFIG = {
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   appsScriptUrl: 'https://script.google.com/macros/s/AKfycbx8SDm9x9SYLTRSP2EcaSx5ikNjqPon6cNAddj4VF2qFCKn2Lu6EsCkHs3zYgAypKH8eA/exec',
                     // Usato da: segnalazione-civica.js (POST nuova seg.) + map.js (risolvi)
-  sheetsCsvAperte:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzGnyHVzcSbnLKsp1gkFi5a8xJeeFTK8YhmA67XJUEGaJIQ5sMNwqG4Jdhxg9DqaAWU2bdWGHGfnpR/pub?gid=144049557&single=true&output=csv',
-  sheetsCsvRisolte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzGnyHVzcSbnLKsp1gkFi5a8xJeeFTK8YhmA67XJUEGaJIQ5sMNwqG4Jdhxg9DqaAWU2bdWGHGfnpR/pub?gid=707341479&single=true&output=csv',
-
+  sheetsCsvAperte:  'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?gid=0&single=true&output=csv',
+sheetsCsvRisolte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?gid=0&single=true&output=csv',
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // 2. IDENTITA' APP
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
