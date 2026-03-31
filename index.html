@@ -1,9 +1,298 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://segnalaora.coseerobe.it/" />
+<meta name="description" content="Segnala in modo semplice e georeferenziato i problemi del tuo territorio. Un progetto civico basato su opendata per migliorare la comunicazione tra cittadini e pubblica amministrazione." />
+    <meta name="author" content="Francesco Bragadin">
+    <meta http-equiv="content-language" content="IT">
+    <meta name="robots" content="index,follow">
+    <meta name="creation_Date" content="01/03/2026">
+<title>Segnala Cestini - Venezia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<link rel="stylesheet" href="css/app.css">
+    <link rel="shortcut icon" href="img/favicon.ico"/>
+    <link rel="icon" href="img/favicon.png" type="image/png"/>
+<script src="js/theme.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87653723-4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-87653723-4');
+    </script>
+<!-- Open Graph / Facebook -->
+<meta property="og:type"              content="website" />
+<meta property="og:url"               content="https://frabragadin.github.io/Segnala-cestini-venezia/" />
+<meta property="og:site_name"         content="Segnala Cestini - Venezia" />
+<meta property="og:title"             content="Segnala Cestini - Venezia | Segnala un cestino pieno" />
+<meta property="og:description"       content="Segnala in modo semplice e georeferenziato i cestini pieni nel territorio di Venezia. Servizio del Comune di Venezia e Veritas." />
+<meta property="og:image"             content="https://frabragadin.github.io/Segnala-cestini-venezia/img/og-image.jpg" />
+<meta property="og:image:width"       content="1200" />
+<meta property="og:image:height"      content="630" />
+<meta property="og:image:alt"         content="Segnala Cestini - Venezia – mappa interattiva delle segnalazioni" />
+<meta property="og:locale"            content="it_IT" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card"             content="summary_large_image" />
+<meta name="twitter:site"             content="@ComuneVenezia" />
+<meta name="twitter:creator"          content="@ComuneVenezia" />
+<meta name="twitter:title"            content="Segnala Cestini - Venezia | Segnala un cestino pieno" />
+<meta name="twitter:description"      content="Segnala in modo semplice e georeferenziato i cestini pieni nel territorio di Venezia. Servizio del Comune di Venezia e Veritas." />
+<meta name="twitter:image"            content="https://frabragadin.github.io/Segnala-cestini-venezia/img/og-image.jpg" />
+<meta name="twitter:image:alt"        content="Segnala Cestini - Venezia – mappa interattiva delle segnalazioni" />
+<link rel="manifest" href="/manifest.json">	
+</head>
+<body class="page-form">
+<div class="demo-banner"><i class="fa-solid fa-trash-can"></i> Segnala Cestini - Venezia <button class="demo-banner-close" onclick="this.parentElement.style.display='none'" title="Chiudi"><i class="fa-solid fa-xmark"></i></button></div>
+
+<header>
+  <div class="logo-mark"><i class="fa-solid fa-location-dot"></i></div>
+  <div>
+    <h1>Segnala Cestini Venezia</h1>
+<p>Segnala un cestino pieno nel territorio comunale</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="Tema">
+      <i class="fa-solid fa-moon"></i>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ① POSIZIONE — mappa sempre visibile -->
+  <section class="form-section form-section--geo">
+    <div class="geo-bar" id="geoStatus">
+      <div class="geo-bar-left">
+        <div class="dot"></div>
+        <span id="geoText">In attesa di posizione…</span>
+      </div>
+      <div class="geo-bar-right">
+        <button class="btn-sm btn-sm--inline" type="button" onclick="getGPS()"><i class="fa-solid fa-location-crosshairs"></i> GPS</button>
+        <button class="btn-sm btn-sm--inline" type="button" onclick="useExifGps()" id="btnExif" style="display:none"><i class="fa-solid fa-camera"></i> EXIF</button>
+      </div>
+    </div>
+    <div class="map-collapsible" id="mapCollapsible">
+      <div class="exif-banner" id="exifBanner" style="display:none">
+        <i class="fa-solid fa-camera"></i> <strong>Posizione estratta dalla foto (EXIF).</strong> Verifica che il marker corrisponda al luogo del problema. Se non è corretto, trascinalo nella posizione giusta.
+        <button class="exif-banner-btn" type="button" onclick="dismissExifBanner()"><i class="fa-solid fa-location-crosshairs"></i> Usa GPS invece</button>
+      </div>
+      <div id="map"></div>
+      <label>Indirizzo rilevato</label>
+      <input type="text" id="addressInput" placeholder="Via/Piazza, Numero Civico — Città">
+    </div>
+  </section>
+
+  <!-- ② FOTO -->
+  <section class="form-section">
+    <div class="section-title"><i class="fa-solid fa-camera"></i> Foto del problema <span class="section-badge" id="photoCount">0 / 4</span></div>
+    <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
+    <div class="photo-grid" id="photoGrid">
+      <div class="photo-add-slot" id="photoAddSlot" onclick="document.getElementById('fileInput').click()">
+        <i class="fa-solid fa-plus"></i>
+        <span>Aggiungi foto</span>
+        <small>JPG · PNG · HEIC · max 1280 px</small>
+      </div>
+    </div>
+    <div class="photo-info" id="photoInfo"></div>
+    <div class="btn-row" style="margin-top:0.8rem">
+      <button class="btn-sm" type="button" onclick="openCamera()"><i class="fa-solid fa-camera"></i> Fotocamera</button>
+      <button class="btn-sm" type="button" onclick="openGallery()"><i class="fa-solid fa-images"></i> Galleria</button>
+    </div>
+    <div class="field-error" id="photoZone-error">⚠️ Almeno una foto è obbligatoria.</div>
+  </section>
+
+  <!-- ③ DESTINATARIO -->
+  <section class="form-section">
+    <div class="section-title"><i class="fa-solid fa-paper-plane"></i> A chi segnali?</div>
+    <p class="section-hint">Seleziona il destinatario principale. Se il problema non è in elenco, aggiungi anche <strong>Altro</strong>.</p>
+    <div class="dest-grid" id="destGrid">
+      <!-- Popolato da JS da dati/destinatari.json -->
+    </div>
+    <button type="button" class="cat-expand-btn" id="destExpandBtn" onclick="toggleDestExpand()" style="display:none"></button>
+    <div class="custom-email-row" id="customEmailRow" style="display:none">
+      <label>Email destinatario <span class="label-note">(per Altro)</span></label>
+      <input type="email" id="customEmail" placeholder="ufficio@comune.it" oninput="onCustomEmailInput()">
+      <div class="field-error" id="customEmail-error">Inserisci un indirizzo email valido.</div>
+    </div>
+    <div class="custom-email-row" id="customCatRow" style="display:none">
+      <label>Categoria del problema <span class="label-note">(non presente nell'elenco)</span></label>
+      <input type="text" id="customCat" placeholder="Es: Vandalismi, Infiltrazioni, Allagamento…" oninput="clearFieldError('customCat')">
+      <div class="field-error" id="customCat-error">Descrivi brevemente la categoria del problema.</div>
+    </div>
+    <div class="field-error" id="dest-error">⚠️ Seleziona un destinatario PA oppure almeno un canale social.</div>
+  </section>
+
+  <!-- ④ DETTAGLI -->
+  <section class="form-section">
+    <div class="section-title"><i class="fa-solid fa-pen-to-square"></i> Urgenza e note</div>
+
+    <label>Urgenza</label>
+    <div class="select-wrap">
+      <select id="urgenza">
+        <option value="Normale">Normale</option>
+        <option value="Alta">Alta — pericolo immediato</option>
+        <option value="Bassa">Bassa — segnalazione informativa</option>
+      </select>
+    </div>
+
+    <label>Descrizione *</label>
+    <textarea id="descr" placeholder="Es: La buca si trova all'angolo con Via Roma, è larga circa 40 cm…" oninput="clearFieldError('descr')"></textarea>
+    <div class="field-error" id="descr-error">Inserisci una breve descrizione del problema.</div>
+  </section>
+
+  <!-- ⑤ MITTENTE -->
+  <section class="form-section">
+    <div class="section-title"><i class="fa-solid fa-user"></i> I tuoi dati</div>
+
+    <label>Nome o Nickname *</label>
+    <input type="text" id="nome" placeholder="Il tuo nome o nickname" oninput="clearFieldError('nome')" required>
+    <div class="field-error" id="nome-error">Inserisci il tuo nome o nickname.</div>
+
+    <label>Email * <span class="label-note">(ricevi la conferma di invio)</span></label>
+    <input type="email" id="email" placeholder="tua@email.it" required
+      oninput="onEmailInput()"
+      onblur="validateEmailField()">
+    <div class="field-error" id="email-error">Inserisci un indirizzo email valido (es: nome@dominio.it).</div>
+  </section>
+
+  <!-- ⑥ CONDIVIDI -->
+  <section class="form-section">
+    <div class="section-title"><i class="fa-solid fa-share-nodes"></i> Condividi la segnalazione</div>
+    <p class="section-hint">Diffondi il problema sui social per aumentare la visibilità</p>
+    <div class="social-chips" id="socialChips">
+      <button type="button" class="social-chip" data-platform="twitter"  title="X / Twitter" onclick="toggleSocial('twitter')">
+        <i class="fa-brands fa-x-twitter"></i>
+      </button>
+      <button type="button" class="social-chip" data-platform="whatsapp" title="WhatsApp" onclick="toggleSocial('whatsapp')">
+        <i class="fa-brands fa-whatsapp"></i>
+      </button>
+      <button type="button" class="social-chip" data-platform="facebook" title="Facebook" onclick="toggleSocial('facebook')">
+        <i class="fa-brands fa-facebook-f"></i>
+      </button>
+      <button type="button" class="social-chip" data-platform="telegram" title="Telegram" onclick="toggleSocial('telegram')">
+        <i class="fa-brands fa-telegram"></i>
+      </button>
+      <button type="button" class="social-chip" data-platform="bluesky"  title="Bluesky" onclick="toggleSocial('bluesky')">
+        <i class="fa-brands fa-bluesky"></i>
+      </button>
+    </div>
+    <p class="field-hint" id="socialHint" style="display:none"><i class="fa-solid fa-circle-info"></i> Il post viene generato automaticamente. Una volta aperta l'app, puoi allegare manualmente la foto prima di inviare.</p>
+  </section>
+
+  <!-- HONEYPOT anti-spam — non toccare, deve restare vuoto -->
+  <div style="position:absolute;left:-9999px;top:-9999px;width:0;height:0;overflow:hidden;" aria-hidden="true">
+    <label for="hp_website">Website</label>
+    <input type="text" id="hp_website" name="website" tabindex="-1" autocomplete="off">
+  </div>
+
+  <!-- ⑦ INVIA -->
+  <section class="form-section form-section--send">
+    <label class="consent-row">
+      <input type="checkbox" id="privacyConsent">
+      <span>Ho letto e accetto l'<a href="privacy.html" target="_blank">informativa privacy</a> e acconsento al trattamento dei dati personali ai sensi del GDPR 2016/679.</span>
+    </label>
+    <button class="send-btn" id="sendBtn" type="button" onclick="sendReport()">
+      <i class="fa-solid fa-paper-plane"></i> Invia Segnalazione
+    </button>
+  </section>
+
+</main>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-card">
+    <span class="success-icon"><i class="fa-solid fa-circle-check"></i></span>
+    <h2>Segnalazione inviata!</h2>
+    <p>Il tuo report è stato trasmesso. Riceverai una conferma via email. Conserva l'ID per seguire l'evoluzione.</p>
+    <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:1.5rem;">
+      <div class="tag-id" id="ticketId" style="margin-bottom:0">SGN-000000</div>
+      <button id="copyIdBtn" type="button" onclick="copyTicketId()" title="Copia ID"
+        style="background:none;border:1px solid rgba(26,18,8,0.25);border-radius:6px;padding:0.3rem 0.6rem;cursor:pointer;font-size:0.8rem;font-family:'Titillium Web',sans-serif;">
+        <i class="fa-regular fa-copy"></i> Copia
+      </button>
+    </div>
+    <div class="token-row">
+      <span class="token-label"><i class="fa-solid fa-key"></i> Token risoluzione:</span>
+      <span class="token-val" id="resolveToken">—</span>
+      <button id="copyTokenBtn" type="button" onclick="copyToken()" class="copy-btn-small" title="Copia token"><i class="fa-regular fa-copy"></i> Copia</button>
+    </div>
+    <p class="token-hint">Conserva questo codice: serve alla PA per marcare la segnalazione come risolta.</p>
+
+    <p id="successDetail" style="margin-bottom:0.5rem;"></p>
+    <div class="channels-sent" id="channelsSent"></div>
+    <div class="copy-reminder" id="copyReminder">
+      <i class="fa-solid fa-lightbulb"></i> Hai copiato il tuo ID segnalazione? Ne avrai bisogno per seguire l'evoluzione.
+      <button class="copy-reminder-close" type="button" onclick="forceClose()">Chiudi comunque</button>
+    </div>
+    <br>
+    <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+      <button class="btn-next" type="button" onclick="resetAll()" style="margin:0;"><i class="fa-solid fa-plus"></i> Nuova segnalazione</button>
+      <button type="button" onclick="closeSuccess()" style="margin:0;padding:0.75rem 1.5rem;border-radius:12px;border:1.5px solid rgba(26,18,8,0.25);background:transparent;font-family:'Titillium Web',sans-serif;font-size:0.95rem;font-weight:500;cursor:pointer;color:var(--ink);"><i class="fa-solid fa-xmark"></i> Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/segnalazione-civica.js"></script>
+
+<!-- Cookie Banner -->
+<div id="cookieBanner" class="cookie-banner" style="display:none">
+  <div class="cookie-banner__content">
+    <p><i class="fa-solid fa-cookie-bite"></i> Utilizziamo cookie analitici per migliorare il sito. Leggi la <a href="privacy.html">Privacy Policy</a>.</p>
+    <div class="cookie-banner__actions">
+      <button class="cookie-btn cookie-btn--accept" onclick="cookieAccept()">Accetta</button>
+      <button class="cookie-btn cookie-btn--refuse" onclick="cookieRefuse()">Rifiuta</button>
+    </div>
+  </div>
+</div>
+<script src="js/cookie-consent.js"></script>
+
+<!-- BOTTOM NAV mobile -->
+<nav class="bottom-nav">
+  <button class="bnav-item bnav-active" type="button">
+    <i class="fa-solid fa-camera"></i>
+    <span>Segnala</span>
+  </button>
+  <a class="bnav-item" href="mappa.html">
+    <i class="fa-solid fa-map-location-dot"></i>
+    <span>Mappa</span>
+  </a>
+  <a class="bnav-item" href="statistiche.html">
+    <i class="fa-solid fa-chart-simple"></i>
+    <span>Statistiche e Open Data</span>
+  </a>
+  <a class="bnav-item" href="profilo.html">
+    <i class="fa-solid fa-user"></i>
+    <span>Profilo</span>
+  </a>
+  <a class="bnav-item" href="info.html">
+    <i class="fa-solid fa-circle-info"></i>
+    <span>Info</span>
+  </a>
+</nav>
 <script>
-// Messaggio di benvenuto semplice (funziona sempre)
-if (!localStorage.getItem('welcome_shown')) {
-  setTimeout(function() {
-    alert("🗑️ Benvenuto in SegnalaCestiniVenezia!\n\n📸 Scatta una foto del cestino pieno\n📍 Controlla la posizione sulla mappa\n📧 Invia e ricevi conferma via email\n\nLe segnalazioni vanno a Veritas e Comune di Venezia");
-  }, 500);
-  localStorage.setItem('welcome_shown', '1');
-}
+  // Registra il Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('Service Worker registrato con successo:', registration.scope);
+        })
+        .catch(error => {
+          console.log('Registrazione Service Worker fallita:', error);
+        });
+    });
+  }
 </script>
+</body>
+</html>
