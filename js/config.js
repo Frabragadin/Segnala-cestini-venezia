@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════
-   SegnalaOra — FILE DI CONFIGURAZIONE
+   SegnalaCestiniVenezia — FILE DI CONFIGURAZIONE
    Modifica questo file per personalizzare l'app per il tuo comune.
    Tutti gli altri file JS leggono da APP_CONFIG — non toccarli.
    ═══════════════════════════════════════════════════════════════════ */
@@ -19,12 +19,12 @@ const APP_CONFIG = {
   // 2. IDENTITA' APP
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   app: {
-    nome:          'SegnalaOra',
+    nome:          'SegnalaCestiniVenezia',
     sottotitolo:   'Invia una nuova segnalazione',
     descrizione:   'Segnala in modo semplice e georeferenziato i problemi del tuo territorio.',
-    siteUrl:       '',         // URL del sito (es: https://segnalaora.comune.it) — lascia vuoto per auto-rilevamento
-    ogImage:       '',         // URL immagine Open Graph (1200x630 px)
-    hashtag:       '#SegnalaOra',
+    siteUrl: 'https://frabragadin.github.io/segnala-cestini-venezia/',
+    ogImage: 'https://placehold.co/1200x630/0066cc/white?text=Segnala+Cestini+Venezia',
+    hashtag:       '#SegnalaCestiniVenezia',
     bannerCrediti: 'Segnala Cestini - Venezia<br/>Servizio del  Comune di Venezia · Veritas',
     // Nota: bannerCrediti viene passato come `expandcontent` a L.controlCredits() in map.js
   },
@@ -73,19 +73,61 @@ const APP_CONFIG = {
   //      custom      — se true, l'utente puo inserire un'email libera
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   destinatari: [
-     // Esempio per i rifiuti:
-{
-  id:          'rifiuti',
-  nome:        'Rifiuti',
-  descrizione: 'Cestini pieni, rifiuti abbandonati',
-  categoria:   'Rifiuti abbandonati',
-  email:       'ambiente@gruppoveritas.it',
-  icon:        'fa-solid fa-trash-can',
-  custom:      false,
-},
-    
-  ],
-
+  {
+    id: 'cestini',
+    nome: 'Cestini pieni',
+    descrizione: 'Cestino pubblico pieno o traboccante',
+    categoria: 'Cestini pieni',
+    email: 'ambiente@gruppoveritas.it',
+    icon: 'fa-solid fa-trash-can',
+    custom: false,
+  },
+  {
+    id: 'rifiuti',
+    nome: 'Rifiuti abbandonati',
+    descrizione: 'Ingombri, sacchi o rifiuti fuori dai cestini',
+    categoria: 'Rifiuti abbandonati',
+    email: 'ambiente@gruppoveritas.it',
+    icon: 'fa-solid fa-dumpster',
+    custom: false,
+  },
+  {
+    id: 'manto_stradale',
+    nome: 'Manto stradale',
+    descrizione: 'Buche, dissesti o cedimenti',
+    categoria: 'Manto stradale',
+    email: 'lavoripubblici@comune.venezia.it',
+    icon: 'fa-solid fa-road',
+    custom: false,
+  },
+  {
+    id: 'illuminazione',
+    nome: 'Illuminazione',
+    descrizione: 'Lampione spento o guasto',
+    categoria: 'Illuminazione pubblica',
+    email: 'manutenzione@veritas.it',
+    icon: 'fa-solid fa-lightbulb',
+    custom: false,
+  },
+  {
+    id: 'verde',
+    nome: 'Verde pubblico',
+    descrizione: 'Erbacce, alberi pericolanti o aiuole incolte',
+    categoria: 'Verde pubblico',
+    email: 'verdepubblico@comune.venezia.it',
+    icon: 'fa-solid fa-tree',
+    custom: false,
+  },
+  {
+    id: 'mobilità',
+    nome: 'Mobilità',
+    descrizione: 'Segnaletica, dissuasori o barche in divieto',
+    categoria: 'Mobilità',
+    email: 'mobilita@comune.venezia.it',
+    icon: 'fa-solid fa-boat',
+    custom: false,
+  },
+],
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // 6. IMPOSTAZIONI FORM
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
