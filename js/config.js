@@ -10,9 +10,9 @@ const APP_CONFIG = {
   // 1. GOOGLE SERVICES
   //    Ottieni questi valori dal tuo Google Workspace.
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    appsScriptUrl: 'https://script.google.com/macros/s/AKfycbzqyh3LvMQu1Z4eoHg9t_KGhLfBKcQB53DqjLOT84mnf1o2Xxtf6BpowKgGamVUVCuGCw/exec',
-sheetsCsvAperte: 'https://script.google.com/macros/s/AKfycbzqyh3LvMQu1Z4eoHg9t_KGhLfBKcQB53DqjLOT84mnf1o2Xxtf6BpowKgGamVUVCuGCw/exec',
-sheetsCsvRisolte: 'https://script.google.com/macros/s/AKfycbzqyh3LvMQu1Z4eoHg9t_KGhLfBKcQB53DqjLOT84mnf1o2Xxtf6BpowKgGamVUVCuGCw/exec',
+    appsScriptUrl: 'https://script.google.com/macros/s/AKfycbzw8X5oy2Tlk57VV_ShmdYDWYCeAh7Sz-wh1t-VS9sLhTQXe0j_sxW0jFT8EWxtMn7nSw/exec',
+sheetsCsvAperte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?gid=0&single=true&output=csv',
+sheetsCsvRisolte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?gid=0&single=true&output=csv',
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // 2. IDENTITA' APP
