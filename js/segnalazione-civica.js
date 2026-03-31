@@ -286,6 +286,16 @@ function initMap() {
 }
 
 function setPosition(lat, lng, fonte, accuratezza) {
+  // CONVERTI SE I VALORI SONO TROPPO GRANDI (formato sbagliato)
+  if (lat > 90) {
+    lat = lat / 1000000;
+    console.log('Latitudine convertita:', lat);
+  }
+  if (lng > 180) {
+    lng = lng / 1000000;
+    console.log('Longitudine convertita:', lng);
+  }
+  
   reportData.lat            = lat;
   reportData.lng            = lng;
   reportData.fontePosizione = fonte || 'Manuale';
@@ -296,7 +306,6 @@ function setPosition(lat, lng, fonte, accuratezza) {
     marker.setLatLng([lat, lng]);
     marker.setOpacity(1);
   }
-  // Aggiorna l'indirizzo in tempo reale
   updateAddressFromCoords(lat, lng);
 }
 // Aggiorna l'indirizzo a partire dalle coordinate (in tempo reale)
