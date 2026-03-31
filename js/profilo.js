@@ -3,7 +3,7 @@
    Legge dal localStorage e incrocia con i CSV pubblici
    ═══════════════════════════════════════════════════════ */
 
-const SHEETS_CSV = APP_CONFIG.sheetsCsvAperte;
+const SHEETS_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv';
 const APPS_SCRIPT_URL    = APP_CONFIG.appsScriptUrl;
 const LS_KEY       = 'segnalaora_profilo';
 const LS_EMAIL_KEY = 'segnalaora_email';
