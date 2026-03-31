@@ -10,10 +10,12 @@ const APP_CONFIG = {
   // 1. GOOGLE SERVICES
   //    Ottieni questi valori dal tuo Google Workspace.
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    appsScriptUrl: 'https://script.google.com/macros/s/AKfycbxiA4Q3U8aysJmuPZiqTVzhHLSIGr1BdPRlx48KMdFKUpbKbIGXOMWhua408uz4pwJrSQ/exec',
-sheetsCsvAperte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv&t=' + new Date().getTime(),
+    // SOLO PER INVIARE SEGNALAZIONI (NON per la mappa)
+appsScriptUrl: 'https://script.google.com/macros/s/AKfycbxiA4Q3U8aysJmuPZiqTVzhHLSIGr1BdPRlx48KMdFKUpbKbIGXOMWhua408uz4pwJrSQ/exec',
 
-sheetsCsvRisolte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv&t=' + new Date().getTime(),
+// PER LA MAPPA: usa il CSV pubblicato (NON l'Apps Script)
+sheetsCsvAperte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv',
+sheetsCsvRisolte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv',
   // 2. IDENTITA' APP
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   app: {
