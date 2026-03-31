@@ -397,7 +397,7 @@ function renderCard(r, idx) {
 }
 
 // ─────────────────────────────────────────────
-//  SEGNA COME RISOLTA (inline)
+//  SEGNA COME RISOLTA (inline) - VERSIONE CORRETTA CON GET
 // ─────────────────────────────────────────────
 function resolveReport(btn) {
   let token = btn.dataset.token;
@@ -423,11 +423,12 @@ function resolveReport(btn) {
   msg.className   = 'resolve-inline-msg';
   msg.textContent = '';
 
-  fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    mode:   'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'risolvi', token, ID_Segnalazione: token })
+  // Usa GET con parametri per evitare CORS
+  const url = APPS_SCRIPT_URL + '?action=risolvi&token=' + encodeURIComponent(token);
+  
+  fetch(url, {
+    method: 'GET',
+    mode: 'no-cors'
   })
   .then(() => {
     msg.className   = 'resolve-inline-msg ok';
