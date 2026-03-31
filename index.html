@@ -17,3 +17,17 @@
     <button class="btn-next" type="button" onclick="closeInfoPopup()" style="margin:0;width:100%;"><i class="fa-solid fa-check"></i> Inizia</button>
   </div>
 </div>
+
+<script>
+// Gestione popup iniziale
+(function(){
+  if(!sessionStorage.getItem('infoShown')){
+    document.getElementById('infoOverlay').classList.add('is-open');
+  }
+})();
+
+function closeInfoPopup(){
+  sessionStorage.setItem('infoShown','1');
+  document.getElementById('infoOverlay').classList.remove('is-open');
+}
+</script>
