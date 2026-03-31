@@ -17,33 +17,23 @@ let pfActiveCats      = null;   // null = tutte; Set = solo queste
 //  INIT
 // ─────────────────────────────────────────────
 async function init() {
-  const reports    = loadLocal();
   const savedEmail = localStorage.getItem(LS_EMAIL_KEY) || '';
 
   // Pre-popola il campo email se salvato
   if (savedEmail) {
     const emailInput = document.getElementById('searchEmail');
     if (emailInput) emailInput.value = savedEmail;
-  }
-
-  if (reports.length > 0) {
-    renderList(reports);
-    updateSummary(reports);
-    document.getElementById('clearSection').style.display = 'block';
-    await refreshStatuses(reports);
-    // Sincronizza nuove segnalazioni in background tramite email salvata
-    if (savedEmail) syncFromEmail(savedEmail, false);
-  } else if (savedEmail) {
-    // Nessun dato locale ma email salvata: sincronizza subito mostrando il feedback
+    // CARICA SOLO LE SEGNALAZIONI DELL'EMAIL SALVATA
     document.getElementById('emailSearchForm').style.display = 'block';
     await syncFromEmail(savedEmail, true);
   } else {
     document.getElementById('profileList').innerHTML = `
       <div class="no-reports">
         <i class="fa-solid fa-inbox"></i>
-        Nessuna segnalazione salvata su questo dispositivo.<br>
-        <small style="margin-top:0.5rem;display:block">Le segnalazioni inviate da questo browser appariranno qui automaticamente.</small>
+        Inserisci la tua email per vedere le tue segnalazioni.<br>
+        <small style="margin-top:0.5rem;display:block">Le segnalazioni inviate con la tua email appariranno qui.</small>
       </div>`;
+    document.getElementById('emailSearchForm').style.display = 'block';
   }
 }
 
