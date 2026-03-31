@@ -10,10 +10,9 @@ const APP_CONFIG = {
   // 1. GOOGLE SERVICES
   //    Ottieni questi valori dal tuo Google Workspace.
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    appsScriptUrl: 'https://script.google.com/macros/s/AKfycbyxeJPcP--55r_j0xoUqNNdBNPI_RkDSqe9iXRU-A7k6poUL31hesYW9vk6MZhlLjLSsg/exec',
-                    // Usato da: segnalazione-civica.js (POST nuova seg.) + map.js (risolvi)
-    sheetsCsvAperte:  'https://script.google.com/macros/s/AKfycbyxeJPcP--55r_j0xoUqNNdBNPI_RkDSqe9iXRU-A7k6poUL31hesYW9vk6MZhlLjLSsg/exec',
-  sheetsCsvRisolte: 'https://script.google.com/macros/s/AKfycbyxeJPcP--55r_j0xoUqNNdBNPI_RkDSqe9iXRU-A7k6poUL31hesYW9vk6MZhlLjLSsg/exec',
+    appsScriptUrl: 'https://script.google.com/macros/s/AKfycbzqyh3LvMQu1Z4eoHg9t_KGhLfBKcQB53DqjLOT84mnf1o2Xxtf6BpowKgGamVUVCuGCw/exec',
+sheetsCsvAperte: 'https://script.google.com/macros/s/AKfycbzqyh3LvMQu1Z4eoHg9t_KGhLfBKcQB53DqjLOT84mnf1o2Xxtf6BpowKgGamVUVCuGCw/exec',
+sheetsCsvRisolte: 'https://script.google.com/macros/s/AKfycbzqyh3LvMQu1Z4eoHg9t_KGhLfBKcQB53DqjLOT84mnf1o2Xxtf6BpowKgGamVUVCuGCw/exec',
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // 2. IDENTITA' APP
