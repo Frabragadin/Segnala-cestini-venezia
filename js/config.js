@@ -10,10 +10,10 @@ const APP_CONFIG = {
   // 1. GOOGLE SERVICES
   //    Ottieni questi valori dal tuo Google Workspace.
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbx8SDm9x9SYLTRSP2EcaSx5ikNjqPon6cNAddj4VF2qFCKn2Lu6EsCkHs3zYgAypKH8eA/exec',
+  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbyxeJPcP--55r_j0xoUqNNdBNPI_RkDSqe9iXRU-A7k6poUL31hesYW9vk6MZhlLjLSsg/exec',
                     // Usato da: segnalazione-civica.js (POST nuova seg.) + map.js (risolvi)
-sheetsCsvAperte:  'https://corsproxy.io/?' + encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?gid=0&single=true&output=csv'),
-sheetsCsvRisolte: 'https://corsproxy.io/?' + encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?gid=0&single=true&output=csv'),
+sheetsCsvAperte:  'https://script.google.com/macros/s/AKfycbyxeJPcP--55r_j0xoUqNNdBNPI_RkDSqe9iXRU-A7k6poUL31hesYW9vk6MZhlLjLSsg/exec'),
+sheetsCsvRisolte: 'https://script.google.com/macros/s/AKfycbyxeJPcP--55r_j0xoUqNNdBNPI_RkDSqe9iXRU-A7k6poUL31hesYW9vk6MZhlLjLSsg/exec'),
    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // 2. IDENTITA' APP
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
