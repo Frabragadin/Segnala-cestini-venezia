@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Informazioni — SegnalaOra</title>
+<title>Informazioni — SegnalaCestiniVenezia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
@@ -13,12 +13,11 @@
 <script src="js/theme.js"></script>
 </head>
 <body class="page-info">
-<div class="demo-banner"><i class="fa-solid fa-flask"></i> Web App Demo by <a href="https://opendatasicilia.it" target="_blank" rel="noopener">@opendatasicilia</a><button class="demo-banner-close" onclick="this.parentElement.style.display='none'" title="Chiudi"><i class="fa-solid fa-xmark"></i></button></div>
 
 <header>
-  <div class="logo-mark"><i class="fa-solid fa-location-dot"></i></div>
+  <div class="logo-mark"><i class="fa-solid fa-trash-can"></i></div>
   <div>
-    <h1>SegnalaOra</h1>
+    <h1>SegnalaCestiniVenezia</h1>
     <p>Informazioni sul progetto</p>
   </div>
   <div class="header-actions">
@@ -31,37 +30,38 @@
 <main>
 
   <section class="info-section">
-    <h2><i class="fa-solid fa-location-dot"></i> Cos'è SegnalaOra</h2>
-    <p><strong>SegnalaOra</strong> è uno strumento open source per segnalare problemi del territorio al proprio Comune: buche stradali, rifiuti abbandonati, illuminazione pubblica guasta, verde incurato e molto altro. <br> <br> Un’architettura semplice e trasparente: <b>nessun backend dedicato </b>il sito è ospitato su GitHub Pages, i dati sono gestiti tramite Google Sheets (Google Apps Script ) e pubblicati come Open Data in formato CSV, senza includere informazioni sensibili.</p>
+    <h2><i class="fa-solid fa-trash-can"></i> Cos'è SegnalaCestiniVenezia</h2>
+    <p><strong>SegnalaCestiniVenezia</strong> è uno strumento per segnalare cestini pieni e rifiuti abbandonati nel territorio di Venezia. Le segnalazioni vengono inviate a <strong>Veritas</strong> e al <strong>Comune di Venezia</strong> per un tempestivo intervento.</p>
+    <p>Un'architettura semplice e trasparente: il sito è ospitato su GitHub Pages, i dati sono gestiti tramite Google Sheets e pubblicati come Open Data in formato CSV.</p>
   </section>
 
   <section class="info-section">
     <h2><i class="fa-solid fa-list-ol"></i> Come funziona</h2>
     <ol>
-      <li>Carica una foto del problema — il GPS viene estratto automaticamente dall'immagine</li>
-      <li>Verifica la posizione sulla mappa oppure lascia che il GPS del dispositivo la rilevi</li>
-      <li>Scegli a chi inviare, descrivi il problema e inserisci i tuoi dati</li>
-      <li>Invia la segnalazione al Comune — riceverai una conferma via email</li>
+      <li>Scatta una foto del cestino pieno o del rifiuto abbandonato</li>
+      <li>Verifica la posizione sulla mappa (GPS automatico o manuale)</li>
+      <li>Scegli la categoria, descrivi il problema e inserisci i tuoi dati</li>
+      <li>Invia la segnalazione — riceverai una conferma via email con ID e token</li>
     </ol>
-    <p>Tutte le segnalazioni sono archiviate automaticamente in Google Sheets e visibili sulla mappa pubblica.</p>
+    <p>Tutte le segnalazioni sono visibili sulla mappa pubblica e consultabili come Open Data.</p>
   </section>
 
   <section class="info-section">
     <h2><i class="fa-solid fa-circle-check"></i> Come segnalare una risoluzione</h2>
     <ol>
       <li>Vai in <a href="profilo.html"><strong>Le mie segnalazioni</strong></a> e trova la segnalazione da chiudere</li>
-      <li>Clicca <strong>Segna come risolta</strong> — se hai il codice salvato, l'invio è immediato</li>
-      <li>Altrimenti incolla il codice di risoluzione ricevuto via email e clicca <em>Conferma</em></li>
+      <li>Clicca <strong>Segna come risolta</strong> — se hai il token salvato, l'invio è immediato</li>
+      <li>Altrimenti incolla il token ricevuto via email e clicca <em>Conferma</em></li>
     </ol>
-    <p class="info-note">Il codice di risoluzione è incluso nell'email inviata alla PA al momento della segnalazione.</p>
+    <p class="info-note">Il token di risoluzione è incluso nell'email di conferma inviata al momento della segnalazione.</p>
   </section>
 
   <section class="info-section">
     <h2><i class="fa-solid fa-user"></i> Il tuo profilo</h2>
     <ol>
       <li>Accedi a <a href="profilo.html"><strong>Le mie segnalazioni</strong></a> per vedere tutte le segnalazioni inviate da questo dispositivo</li>
-      <li>Lo stato si aggiorna automaticamente incrociando i dati inseriti.</li>
-      <li>Puoi anche cercare le tue segnalazioni per email.</li>
+      <li>Lo stato si aggiorna automaticamente</li>
+      <li>Puoi anche cercare le tue segnalazioni per email</li>
     </ol>
   </section>
 
@@ -89,30 +89,16 @@
 
   <section class="info-section">
     <h2><i class="fa-solid fa-database"></i> Open Data &amp; Download</h2>
-    <p>Tutte le segnalazioni sono pubbliche e scaricabili liberamente in formato <strong>CSV</strong>, aggiornate automaticamente ogni 30 minuti tramite GitHub Actions.</p>
-    <p>I dati sono suddivisi in due archivi distinti:</p>
+    <p>Tutte le segnalazioni sono pubbliche e scaricabili liberamente in formato <strong>CSV</strong>, aggiornate automaticamente.</p>
+    <p>I dati sono suddivisi in due archivi:</p>
     <ul class="info-list">
-      <li><i class="fa-solid fa-folder-open" style="color:var(--amber)"></i> <strong>Segnalazioni aperte</strong> — tutte le segnalazioni con stato <em>Nuova</em> o <em>In lavorazione</em></li>
-      <li><i class="fa-solid fa-folder-open" style="color:var(--sage)"></i> <strong>Segnalazioni risolte</strong> — segnalazioni con stato <em>Risolta</em> o <em>Chiusa</em></li>
+      <li><i class="fa-solid fa-folder-open" style="color:var(--amber)"></i> <strong>Segnalazioni aperte</strong> — in attesa di risoluzione</li>
+      <li><i class="fa-solid fa-folder-open" style="color:var(--sage)"></i> <strong>Segnalazioni risolte</strong> — già chiuse</li>
     </ul>
-    <h3><i class="fa-solid fa-table-list"></i> Scarica via interfaccia</h3>
-    <ol>
-      <li>Vai alla pagina <a href="statistiche.html"><strong>Statistiche</strong></a></li>
-      <li>Clicca <strong>Tabella dati</strong> per aprire la tabella combinata (entrambi gli archivi)</li>
-      <li>Usa il menu <strong>Colonne selezionate</strong> per scegliere quali colonne includere</li>
-      <li>Clicca <strong>Esporta CSV</strong> — il file viene scaricato immediatamente nel tuo dispositivo</li>
-    </ol>
-    <p class="info-note">Il CSV esportato include solo le colonne visibili e rispetta la selezione corrente. Il campo <em>Foglio</em> indica la provenienza di ogni riga (Segnalazioni / Risolte).</p>
-    <h3><i class="fa-solid fa-file-csv"></i> File CSV diretti</h3>
-    <p>Puoi accedere direttamente ai file CSV grezzi pubblicati su GitHub:</p>
     <div class="info-links" style="margin-top:0.75rem">
-      <a href="dati/segnalazioni.csv" class="info-link-card" download>
-        <i class="fa-solid fa-file-arrow-down" style="color:var(--amber)"></i>
-        <span>segnalazioni.csv</span>
-      </a>
-      <a href="dati/risolte.csv" class="info-link-card" download>
-        <i class="fa-solid fa-file-arrow-down" style="color:var(--sage)"></i>
-        <span>risolte.csv</span>
+      <a href="statistiche.html" class="info-link-card">
+        <i class="fa-solid fa-chart-simple"></i>
+        <span>Vedi statistiche e dati</span>
       </a>
     </div>
   </section>
@@ -132,36 +118,29 @@
         <i class="fa-solid fa-table"></i>
         <span>Google Sheets</span>
       </a>
-      <a href="#" target="_blank" rel="noopener" class="info-link-card">
+      <a href="https://github.com" target="_blank" rel="noopener" class="info-link-card">
         <i class="fa-brands fa-github"></i>
         <span>GitHub</span>
-      </a>
-      <a href="https://www.chartjs.org" target="_blank" rel="noopener" class="info-link-card">
-        <i class="fa-solid fa-chart-simple"></i>
-        <span>Chart.js</span>
-      </a>
-      <a href="https://github.com/MikeKovarik/exifr" target="_blank" rel="noopener" class="info-link-card">
-        <i class="fa-solid fa-camera"></i>
-        <span>exifr</span>
-      </a>
-      <a href="https://fontawesome.com" target="_blank" rel="noopener" class="info-link-card">
-        <i class="fa-solid fa-icons"></i>
-        <span>Font Awesome</span>
       </a>
     </div>
   </section>
 
   <section class="info-section">
-    <h2><i class="fa-brands fa-creative-commons"></i> Licenza</h2>
-    <p>
-      I contenuti e i dati di <strong>SegnalaOra</strong> sono rilasciati con licenza
-      <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener">
-        <strong>Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)</strong>
-      </a>.
-    </p>
-    <p>Sei libero di condividere e adattare il materiale per qualsiasi scopo, anche commerciale, a condizione di citare la fonte.</p>
+    <h2><i class="fa-brands fa-creative-commons"></i> Licenza e crediti</h2>
+    <p>Questo progetto è una versione modificata di <strong>SegnalaOra</strong>, realizzato da:</p>
+    <ul class="info-list">
+      <li><strong>Giovan Battista Vitrano</strong> (@gbvitrano) — sviluppo tecnico</li>
+      <li><strong>Andrea Borruso, Salvatore Fiandaca, Ciro Spataro</strong> — idea originale</li>
+      <li><strong>OpenDataSicilia</strong> — comunità promotrice</li>
+    </ul>
+    <p>Adattamento per Venezia e personalizzazioni a cura di <strong>Francesco Bragadin</strong>.</p>
+    <p>Il codice è rilasciato con licenza <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener"><strong>Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)</strong></a>.</p>
     <div class="info-links" style="margin-top:0.75rem">
-      <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" rel="noopener" class="info-link-card">
+      <a href="https://github.com/Frabragadin/segnala-cestini-venezia" target="_blank" class="info-link-card">
+        <i class="fa-brands fa-github"></i>
+        <span>Codice sorgente</span>
+      </a>
+      <a href="https://creativecommons.org/licenses/by/4.0/deed.it" target="_blank" class="info-link-card">
         <i class="fa-brands fa-creative-commons"></i>
         <span>CC BY 4.0</span>
       </a>
@@ -170,28 +149,13 @@
 
   <section class="info-section">
     <h2><i class="fa-solid fa-shield-halved"></i> Privacy &amp; Cookie</h2>
-    <p>SegnalaOra tratta i dati personali degli utenti nel rispetto del <strong>GDPR 2016/679</strong> e del D.Lgs. 196/2003. I dati inseriti nel modulo di segnalazione (nome, email, posizione, foto) sono utilizzati esclusivamente per la gestione delle segnalazioni civiche.</p>
+    <p>I dati personali (nome, email, posizione, foto) sono utilizzati esclusivamente per la gestione delle segnalazioni civiche, nel rispetto del <strong>GDPR 2016/679</strong>.</p>
     <div class="info-links" style="margin-top:0.75rem">
       <a href="privacy.html" class="info-link-card">
         <i class="fa-solid fa-shield-halved"></i>
-        <span>Privacy Policy &amp; Cookie</span>
-      </a>
-      <a href="privacy.html" class="info-link-card" onclick="event.preventDefault();cookieShowSettings()">
-        <i class="fa-solid fa-cookie-bite"></i>
-        <span>Impostazioni cookie</span>
+        <span>Privacy Policy</span>
       </a>
     </div>
-  </section>
-
-  <section class="info-section info-credits">
-    <strong>Idea di</strong> Andrea Borruso, Salvatore Fiandaca, Ciro Spataro e Giovan Battista Vitrano<br>
-    By <a href="https://opendatasicilia.it" target="_blank" rel="noopener">@opendatasicilia</a><br><br> 
-<a href="https://opendatasicilia.it/" target="_blank" style="display: block; text-align: center;">
-  <img src="img/opendatasicilia.png" alt="ODS" width="78" height="90" title="@opendatasicilia"/>
-</a>
-	<br>
-    <strong>Sviluppo tecnico</strong><br>
-    Web app progettata e sviluppata da <a href="https://www.linkedin.com/in/gbvitrano/" target="_blank" rel="noopener"><strong>@gbvitrano</strong></a> in collaborazione con <a href="https://www.anthropic.com/claude" target="_blank" rel="noopener"><strong>Claude AI</strong></a> (Anthropic), che ha affiancato le scelte architetturali, l'ottimizzazione del codice e lo sviluppo delle funzionalità di visualizzazione geospaziale.
   </section>
 
 </main>
@@ -220,7 +184,8 @@
   </a>
   <a class="bnav-item" href="statistiche.html">
     <i class="fa-solid fa-chart-simple"></i>
-    <span>Statistiche e Open Data</span>  </a>
+    <span>Statistiche e Open Data</span>
+  </a>
   <a class="bnav-item" href="profilo.html">
     <i class="fa-solid fa-user"></i>
     <span>Profilo</span>
