@@ -1,10 +1,9 @@
 /* ═══════════════════════════════════════════════════════
-   SegnalaOra — Profilo utente
+   SegnalaCestiniVenezia — Profilo utente
    Legge dal localStorage e incrocia con i CSV pubblici
    ═══════════════════════════════════════════════════════ */
 
-const SHEETS_CSV_APERTE  = APP_CONFIG.sheetsCsvAperte;
-const SHEETS_CSV_RISOLTE = APP_CONFIG.sheetsCsvRisolte;
+const SHEETS_CSV = APP_CONFIG.sheetsCsvAperte;
 const APPS_SCRIPT_URL    = APP_CONFIG.appsScriptUrl;
 const LS_KEY       = 'segnalaora_profilo';
 const LS_EMAIL_KEY = 'segnalaora_email';
@@ -62,16 +61,15 @@ function saveLocal(reports) {
 }
 
 // ─────────────────────────────────────────────
-//  AGGIORNAMENTO STATI DAL CSV
+//  AGGIORNAMENTO STATI DAL CSV (UN SOLO FILE)
 // ─────────────────────────────────────────────
 async function refreshStatuses(reports) {
   try {
     const bust = (u) => u + (u.includes('?') ? '&' : '?') + 't=' + Date.now();
-    const [t1, t2] = await Promise.all([
-      fetch(bust(SHEETS_CSV_APERTE)).then(r => r.text()).catch(() => ''),
-      fetch(bust(SHEETS_CSV_RISOLTE)).then(r => r.text()).catch(() => ''),
-    ]);
-    const rows  = [...parseCSV(t1), ...parseCSV(t2)];
+    const response = await fetch(bust(SHEETS_CSV));
+    const text = await response.text();
+    const rows = parseCSV(text);
+    
     const byId  = {};
     rows.forEach(r => { if (r.ID_Segnalazione) byId[r.ID_Segnalazione] = r; });
 
@@ -89,7 +87,9 @@ async function refreshStatuses(reports) {
       renderList(reports);
       updateSummary(reports);
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error('Errore refresh stati:', e);
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -166,6 +166,7 @@ async function syncFromEmail(email, showFeedback) {
       document.getElementById('clearSection').style.display = 'block';
     }
   } catch(e) {
+    console.error('Errore sync:', e);
     if (showFeedback) {
       document.getElementById('profileList').innerHTML =
         '<div class="no-reports">Errore di rete. Controlla la connessione e riprova.</div>';
@@ -400,7 +401,6 @@ function renderCard(r, idx) {
 //  SEGNA COME RISOLTA (inline)
 // ─────────────────────────────────────────────
 function resolveReport(btn) {
-  // Token da data-attribute (locale) oppure dal campo input (ricerca email)
   let token = btn.dataset.token;
   if (!token) {
     const prev = btn.previousElementSibling;
@@ -435,7 +435,6 @@ function resolveReport(btn) {
     msg.textContent = '✅ Richiesta inviata. La segnalazione sarà aggiornata entro qualche minuto.';
     btn.innerHTML   = '<i class="fa-solid fa-circle-check"></i> Inviata';
 
-    // Aggiorna stato nel localStorage
     const reports = loadLocal();
     const found   = reports.find(r => r.token === token);
     if (found) {
@@ -578,7 +577,6 @@ function parseCSVLine(line) {
   return result;
 }
 
-// ─────────────────────────────────────────────
 // Chiude il panel categorie al click fuori
 document.addEventListener('click', e => {
   const dd = document.getElementById('pfCatDropdown');
