@@ -1,49 +1,7 @@
-<!-- INFO POPUP -->
-<div class="info-overlay" id="infoOverlay">
-  <div class="info-card">
-    <button class="info-close" type="button" id="closeInfoBtn" title="Chiudi"><i class="fa-solid fa-xmark"></i></button>
-    <div class="info-card__icon"><i class="fa-solid fa-trash-can"></i></div>
-    <h2 class="info-card__title">🗑️ SegnalaCestiniVenezia</h2>
-    <div class="info-card__body">
-      <p><strong>Benvenuto in SegnalaCestiniVenezia!</strong></p>
-      <p>Questa app ti permette di segnalare <strong>cestini pieni e rifiuti abbandonati</strong> nel territorio di Venezia.</p>
-      <p>📸 <strong>1. Scatta una foto</strong><br>
-      📍 <strong>2. Indica la posizione</strong> (GPS automatico o manuale)<br>
-      📧 <strong>3. Invia</strong> — ricevi conferma via email con ID e token</p>
-      <p>Le segnalazioni vengono inviate a <strong>Veritas</strong> e al <strong>Comune di Venezia</strong>.</p>
-      <p class="info-card__highlight">📊 I dati sono pubblici e scaricabili come Open Data.</p>
-      <p style="font-size:0.7rem; margin-top:1rem; opacity:0.6; text-align:center;">Basato su SegnalaOra (CC BY 4.0) — Adattamento Venezia</p>
-    </div>
-    <button class="btn-next" type="button" id="startBtn" style="margin:0;width:100%;"><i class="fa-solid fa-check"></i> Inizia</button>
-  </div>
-</div>
-
 <script>
-(function() {
-  // Funzione per chiudere il popup
-  function chiudiPopup() {
-    sessionStorage.setItem('infoShown', '1');
-    var overlay = document.getElementById('infoOverlay');
-    if (overlay) {
-      overlay.classList.remove('is-open');
-      console.log('Popup chiuso');
-    }
-  }
-  
-  // Mostra il popup solo se non è già stato mostrato
-  if (!sessionStorage.getItem('infoShown')) {
-    var overlay = document.getElementById('infoOverlay');
-    if (overlay) {
-      overlay.classList.add('is-open');
-      console.log('Popup aperto');
-    }
-  }
-  
-  // Attacca eventi ai bottoni
-  var closeBtn = document.getElementById('closeInfoBtn');
-  var startBtn = document.getElementById('startBtn');
-  
-  if (closeBtn) closeBtn.onclick = chiudiPopup;
-  if (startBtn) startBtn.onclick = chiudiPopup;
-})();
+// Messaggio di benvenuto (appare una sola volta)
+if (!localStorage.getItem('benvenuto_visto')) {
+  alert("🗑️ Benvenuto in SegnalaCestiniVenezia!\n\n📸 1. Scatta una foto\n📍 2. Indica la posizione\n📧 3. Invia — ricevi conferma via email\n\nLe segnalazioni vanno a Veritas e al Comune di Venezia.\n\n📊 I dati sono pubblici come Open Data.");
+  localStorage.setItem('benvenuto_visto', '1');
+}
 </script>
