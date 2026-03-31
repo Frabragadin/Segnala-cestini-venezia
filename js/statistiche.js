@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   SegnalaOra — Statistiche
+   SegnalaCestiniVenezia — Statistiche
    ═══════════════════════════════════════════════════════ */
 
 // CSV locali — percorsi letti da js/config.js (APP_CONFIG)
@@ -69,19 +69,25 @@ let _allReports = [];
 const ALL_CATEGORIES = APP_CONFIG.destinatari.map(d => ({ cat: d.categoria, icon: d.icon }));
 
 // ─────────────────────────────────────────────
-//  CARICAMENTO DATI
+//  CARICAMENTO DATI (CORRETTO — carica un solo file)
 // ─────────────────────────────────────────────
 async function loadAll() {
   try {
     const t = Date.now();
     const bust = url => url.startsWith('http') ? url + '&t=' + t : url + '?t=' + t;
-    const [r1, r2] = await Promise.all([
-      fetch(bust(APP_CONFIG.sheetsCsvAperte)),
-      fetch(bust(APP_CONFIG.sheetsCsvRisolte))
-    ]);
-    const [t1, t2] = await Promise.all([r1.text(), r2.text()]);
-    renderStats(parseCSV(t1), parseCSV(t2));
+    
+    // Carica un solo file (il CSV principale)
+    const response = await fetch(bust(APP_CONFIG.sheetsCsvAperte));
+    const text = await response.text();
+    const allData = parseCSV(text);
+    
+    // Separa in aperte e risolte in base allo stato
+    const aperte = allData.filter(r => r.Stato === 'Nuova' || r.Stato === 'In lavorazione');
+    const risolte = allData.filter(r => r.Stato === 'Risolta');
+    
+    renderStats(aperte, risolte);
   } catch(e) {
+    console.error('Errore caricamento:', e);
     document.getElementById('loadingWrap').innerHTML =
       '<p style="color:#c0392b;padding:2rem;text-align:center">❌ Errore nel caricamento dei dati.</p>';
   }
@@ -166,7 +172,6 @@ function populateCategoryFilter(reports) {
     chip.type = 'button';
     chip.className = 'cat-chip';
     chip.dataset.cat = cat;
-    chip.innerHTML = `<i class="${icon}"></i><span>${cat}${n > 0 ? ' <em>(${n})</em>' : ''}</span>`;
     chip.innerHTML = `<i class="${icon}"></i><span>${cat} <em>(${n})</em></span>`;
     chip.addEventListener('click', () => filterByCategory(cat));
     container.appendChild(chip);
@@ -634,7 +639,7 @@ function renderDataTable() {
   const thead = document.getElementById('dataTableHead');
   const tbody = document.getElementById('dataTableBody');
 
-  thead.innerHTML = '<tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr>';
+  thead.innerHTML = ' <tr>' + cols.map(c => `<th>${c}</th>`).join('') + ' </tr>';
 
   const fragment = document.createDocumentFragment();
   _allReports.forEach(r => {
