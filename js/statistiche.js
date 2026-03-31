@@ -69,7 +69,7 @@ let _allReports = [];
 const ALL_CATEGORIES = APP_CONFIG.destinatari.map(d => ({ cat: d.categoria, icon: d.icon }));
 
 // ─────────────────────────────────────────────
-//  CARICAMENTO DATI (CORRETTO — carica un solo file)
+//  CARICAMENTO DATI (CARICA UN SOLO FILE)
 // ─────────────────────────────────────────────
 async function loadAll() {
   try {
@@ -81,7 +81,9 @@ async function loadAll() {
     const text = await response.text();
     const allData = parseCSV(text);
     
-    // Separa in aperte e risolte in base allo stato
+    console.log('📊 Statistiche: caricate', allData.length, 'segnalazioni');
+    
+    // Separa in aperte (Nuova) e risolte (Risolta)
     const aperte = allData.filter(r => r.Stato === 'Nuova' || r.Stato === 'In lavorazione');
     const risolte = allData.filter(r => r.Stato === 'Risolta');
     
@@ -193,21 +195,16 @@ function populateCategoryFilter(reports) {
 }
 
 function filterByCategory(cat) {
-  // Aggiorna stato attivo delle chips
   document.querySelectorAll('.cat-chip').forEach(chip => {
     chip.classList.toggle('active', chip.dataset.cat === cat);
   });
 
-  // Feedback visivo filter bar
   document.getElementById('filterBar').classList.toggle('active', !!cat);
 
-  // Filtra dati
   const reports = cat ? _allReports.filter(r => r.Categoria === cat) : _allReports;
 
-  // Aggiorna stat cards con dati filtrati
   updateStatCards(reports, cat || '');
 
-  // Distruggi e ridisegna i grafici
   ['chartCategorie', 'chartUrgenza', 'chartStato', 'chartTrend'].forEach(id => {
     const existing = Chart.getChart(id);
     if (existing) existing.destroy();
@@ -227,22 +224,19 @@ function renderCharts(reports) {
 //  CHART 1 — Per categoria (bar orizzontale)
 // ─────────────────────────────────────────────
 function renderCategorieChart(reports) {
-  const counts = {}, emojis = {};
+  const counts = {};
   reports.forEach(r => {
     const cat = r.Categoria || 'Altro';
     counts[cat] = (counts[cat] || 0) + 1;
-    if (r.Categoria_Emoji && !emojis[cat]) emojis[cat] = r.Categoria_Emoji;
   });
 
   const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
   const labels = sorted.map(([cat]) => cat);
   const data   = sorted.map(([, n]) => n);
 
-  // Palette amber→teal in base alla posizione
   const palette = APP_CONFIG.grafici.paletteCategorie;
   const bgColors = sorted.map((_, i) => palette[i % palette.length]);
 
-  // Altezza dinamica: 32px per barra + spazio per assi
   const barH  = 32;
   const wrapH = Math.max(180, sorted.length * barH + 40);
   document.getElementById('wrapCategorie').style.height = wrapH + 'px';
@@ -252,15 +246,7 @@ function renderCategorieChart(reports) {
   new Chart(document.getElementById('chartCategorie'), {
     type: 'bar',
     plugins: [ChartDataLabels],
-    data: {
-      labels,
-      datasets: [{
-        data,
-        backgroundColor: bgColors,
-        borderRadius: 5,
-        borderSkipped: false,
-      }]
-    },
+    data: { labels, datasets: [{ data, backgroundColor: bgColors, borderRadius: 5, borderSkipped: false }] },
     options: {
       indexAxis: 'y',
       responsive: true,
@@ -270,28 +256,15 @@ function renderCategorieChart(reports) {
         legend: { display: false },
         tooltip: { callbacks: { label: ctx => `  ${ctx.raw} segnalazioni` } },
         datalabels: {
-          anchor: 'end',
-          align: 'end',
-          clip: false,
-          formatter: val => {
-            const pct = total ? Math.round(val / total * 100) : 0;
-            return `${val}  (${pct}%)`;
-          },
+          anchor: 'end', align: 'end', clip: false,
+          formatter: val => { const pct = total ? Math.round(val / total * 100) : 0; return `${val}  (${pct}%)`; },
           font: { family: 'DM Sans', size: 10, weight: '600' },
-          color: chartTickColor(),
-          padding: { left: 6 },
+          color: chartTickColor(), padding: { left: 6 },
         }
       },
       scales: {
-        x: {
-          beginAtZero: true,
-          ticks: { stepSize: 1, font: { family: 'DM Sans', size: 11 }, color: chartTickColor() },
-          grid: { color: chartGridColor() }
-        },
-        y: {
-          ticks: { font: { family: 'DM Sans', size: 11 }, color: chartTickColor() },
-          grid: { display: false }
-        }
+        x: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 }, color: chartTickColor() }, grid: { color: chartGridColor() } },
+        y: { ticks: { font: { size: 11 }, color: chartTickColor() }, grid: { display: false } }
       }
     }
   });
@@ -303,7 +276,6 @@ function renderCategorieChart(reports) {
 function renderUrgenzaChart(reports) {
   const counts = { Alta: 0, Normale: 0, Bassa: 0 };
   reports.forEach(r => { if (r.Urgenza in counts) counts[r.Urgenza]++; });
-
   const total = reports.length || 1;
 
   new Chart(document.getElementById('chartUrgenza'), {
@@ -314,32 +286,18 @@ function renderUrgenzaChart(reports) {
       datasets: [{
         data: [counts.Alta, counts.Normale, counts.Bassa],
         backgroundColor: [APP_CONFIG.grafici.urgenza.Alta, APP_CONFIG.grafici.urgenza.Normale, APP_CONFIG.grafici.urgenza.Bassa],
-        borderColor: chartBorderColor(),
-        borderWidth: 3,
-        hoverOffset: 8,
+        borderColor: chartBorderColor(), borderWidth: 3, hoverOffset: 8,
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '62%',
+      responsive: true, maintainAspectRatio: false, cutout: '62%',
       plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { font: { family: 'DM Sans', size: 11 }, padding: 10, boxWidth: 12, color: chartTickColor() }
-        },
-        tooltip: {
-          callbacks: {
-            label: ctx => `  ${ctx.label}: ${ctx.raw}  (${Math.round(ctx.raw / total * 100)}%)`
-          }
-        },
+        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10, boxWidth: 12, color: chartTickColor() } },
+        tooltip: { callbacks: { label: ctx => `  ${ctx.label}: ${ctx.raw}  (${Math.round(ctx.raw / total * 100)}%)` } },
         datalabels: {
           display: ctx => total > 0 && ctx.dataset.data[ctx.dataIndex] / total >= 0.05,
           formatter: val => total ? Math.round(val / total * 100) + '%' : '',
-          color: '#fff',
-          font: { family: 'DM Sans', size: 11, weight: '700' },
-          textShadowBlur: 4,
-          textShadowColor: 'rgba(0,0,0,0.35)',
+          color: '#fff', font: { size: 11, weight: '700' }, textShadowBlur: 4, textShadowColor: 'rgba(0,0,0,0.35)',
         }
       }
     }
@@ -350,15 +308,11 @@ function renderUrgenzaChart(reports) {
 //  CHART 3 — Per stato (doughnut)
 // ─────────────────────────────────────────────
 function renderStatoChart(reports) {
-  const order  = ['Nuova', 'In lavorazione', 'Risolta', 'Chiusa'];
+  const order = ['Nuova', 'In lavorazione', 'Risolta', 'Chiusa'];
   const colors = order.map(s => APP_CONFIG.grafici.stato[s]);
   const counts = {};
-  reports.forEach(r => {
-    const s = r.Stato || 'Nuova';
-    counts[s] = (counts[s] || 0) + 1;
-  });
+  reports.forEach(r => { const s = r.Stato || 'Nuova'; counts[s] = (counts[s] || 0) + 1; });
   const entries = order.filter(s => counts[s] > 0);
-
   const statoTotal = entries.reduce((a, s) => a + counts[s], 0);
 
   new Chart(document.getElementById('chartStato'), {
@@ -369,30 +323,18 @@ function renderStatoChart(reports) {
       datasets: [{
         data: entries.map(s => counts[s]),
         backgroundColor: entries.map(s => colors[order.indexOf(s)]),
-        borderColor: chartBorderColor(),
-        borderWidth: 3,
-        hoverOffset: 8,
+        borderColor: chartBorderColor(), borderWidth: 3, hoverOffset: 8,
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '62%',
+      responsive: true, maintainAspectRatio: false, cutout: '62%',
       plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { font: { family: 'DM Sans', size: 11 }, padding: 10, boxWidth: 12, color: chartTickColor() }
-        },
-        tooltip: {
-          callbacks: { label: ctx => `  ${ctx.label}: ${ctx.raw}  (${statoTotal ? Math.round(ctx.raw / statoTotal * 100) : 0}%)` }
-        },
+        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10, boxWidth: 12, color: chartTickColor() } },
+        tooltip: { callbacks: { label: ctx => `  ${ctx.label}: ${ctx.raw}  (${statoTotal ? Math.round(ctx.raw / statoTotal * 100) : 0}%)` } },
         datalabels: {
           display: ctx => statoTotal > 0 && ctx.dataset.data[ctx.dataIndex] / statoTotal >= 0.05,
           formatter: val => statoTotal ? Math.round(val / statoTotal * 100) + '%' : '',
-          color: '#fff',
-          font: { family: 'DM Sans', size: 11, weight: '700' },
-          textShadowBlur: 4,
-          textShadowColor: 'rgba(0,0,0,0.35)',
+          color: '#fff', font: { size: 11, weight: '700' }, textShadowBlur: 4, textShadowColor: 'rgba(0,0,0,0.35)',
         }
       }
     }
@@ -403,13 +345,8 @@ function renderStatoChart(reports) {
 //  CHART 4 — Andamento nel tempo (bar verticale)
 // ─────────────────────────────────────────────
 function renderTrendChart(reports) {
-  // Raggruppa per data (DD/MM/YYYY → ordina come YYYYMMDD)
   const counts = {};
-  reports.forEach(r => {
-    const d = (r.Data || '').trim();
-    if (d) counts[d] = (counts[d] || 0) + 1;
-  });
-
+  reports.forEach(r => { const d = (r.Data || '').trim(); if (d) counts[d] = (counts[d] || 0) + 1; });
   const sorted = Object.entries(counts).sort((a, b) => {
     const da = a[0].split('/').reverse().join('');
     const db = b[0].split('/').reverse().join('');
@@ -422,42 +359,24 @@ function renderTrendChart(reports) {
     data: {
       labels: sorted.map(([d]) => d),
       datasets: [{
-        label: 'Segnalazioni',
-        data: sorted.map(([, n]) => n),
-        backgroundColor: APP_CONFIG.grafici.trend.sfondo,
-        borderColor: APP_CONFIG.grafici.trend.bordo,
-        borderWidth: 1,
-        borderRadius: 4,
-        borderSkipped: false,
+        label: 'Segnalazioni', data: sorted.map(([, n]) => n),
+        backgroundColor: APP_CONFIG.grafici.trend.sfondo, borderColor: APP_CONFIG.grafici.trend.bordo,
+        borderWidth: 1, borderRadius: 4, borderSkipped: false,
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      layout: { padding: { top: 22 } },
+      responsive: true, maintainAspectRatio: false, layout: { padding: { top: 22 } },
       plugins: {
         legend: { display: false },
         tooltip: { callbacks: { label: ctx => `  ${ctx.raw} segnalazioni` } },
         datalabels: {
-          anchor: 'end',
-          align: 'top',
-          display: ctx => ctx.dataset.data[ctx.dataIndex] > 0,
-          formatter: val => val,
-          font: { family: 'DM Sans', size: 10, weight: '600' },
-          color: chartTickColor(),
-          padding: { bottom: 2 },
+          anchor: 'end', align: 'top', display: ctx => ctx.dataset.data[ctx.dataIndex] > 0,
+          formatter: val => val, font: { size: 10, weight: '600' }, color: chartTickColor(), padding: { bottom: 2 },
         }
       },
       scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { stepSize: 1, font: { family: 'DM Sans', size: 11 }, color: chartTickColor() },
-          grid: { color: chartGridColor() }
-        },
-        x: {
-          ticks: { font: { family: 'DM Sans', size: 10 }, maxRotation: 45, color: chartTickColor() },
-          grid: { display: false }
-        }
+        y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 }, color: chartTickColor() }, grid: { color: chartGridColor() } },
+        x: { ticks: { font: { size: 10 }, maxRotation: 45, color: chartTickColor() }, grid: { display: false } }
       }
     }
   });
@@ -466,17 +385,11 @@ function renderTrendChart(reports) {
 // ─────────────────────────────────────────────
 //  DARK MODE HELPERS
 // ─────────────────────────────────────────────
-function isDark() {
-  return document.documentElement.classList.contains('dark');
-}
-
+function isDark() { return document.documentElement.classList.contains('dark'); }
 function chartGridColor()   { return isDark() ? 'rgba(245,240,232,0.07)' : 'rgba(26,18,8,0.06)'; }
 function chartTickColor()   { return isDark() ? 'rgba(245,240,232,0.5)'  : '#6b5e4e'; }
 function chartBorderColor() { return isDark() ? '#1a1410' : '#f5f0e8'; }
 
-// ─────────────────────────────────────────────
-//  CENTER TEXT PLUGIN (doughnut)
-// ─────────────────────────────────────────────
 const centerTextPlugin = {
   id: 'centerText',
   beforeDraw(chart) {
@@ -486,8 +399,7 @@ const centerTextPlugin = {
     const cx = (chartArea.left + chartArea.right) / 2;
     const cy = (chartArea.top + chartArea.bottom) / 2;
     ctx.save();
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.font = `700 1.4rem 'DM Sans', sans-serif`;
     ctx.fillStyle = isDark() ? 'rgba(245,240,232,0.9)' : '#1a1208';
     ctx.fillText(total, cx, cy - 9);
@@ -498,66 +410,44 @@ const centerTextPlugin = {
   }
 };
 
-// Aggiorna i colori degli assi di tutti i grafici attivi
 function updateChartColors() {
   ['chartCategorie', 'chartUrgenza', 'chartStato', 'chartTrend'].forEach(id => {
     const chart = Chart.getChart(id);
     if (!chart) return;
-    const grid = chartGridColor();
-    const tick = chartTickColor();
+    const grid = chartGridColor(); const tick = chartTickColor();
     Object.values(chart.options.scales || {}).forEach(scale => {
-      if (scale.grid)  scale.grid.color = grid;
+      if (scale.grid) scale.grid.color = grid;
       if (scale.ticks) scale.ticks.color = tick;
     });
-    if (chart.options.plugins?.legend?.labels) {
-      chart.options.plugins.legend.labels.color = tick;
-    }
-    // aggiorna borderColor delle doughnut (separatore fette)
-    if (chart.data.datasets) {
-      chart.data.datasets.forEach(ds => {
-        if (ds.borderColor !== undefined) ds.borderColor = chartBorderColor();
-      });
-    }
-    // aggiorna colore etichette datalabels sui bar chart (non doughnut, il cui colore è sempre #fff)
-    if (chart.options.plugins?.datalabels && ['chartCategorie', 'chartTrend'].includes(id)) {
-      chart.options.plugins.datalabels.color = tick;
-    }
+    if (chart.options.plugins?.legend?.labels) chart.options.plugins.legend.labels.color = tick;
+    if (chart.data.datasets) chart.data.datasets.forEach(ds => { if (ds.borderColor !== undefined) ds.borderColor = chartBorderColor(); });
+    if (chart.options.plugins?.datalabels && ['chartCategorie', 'chartTrend'].includes(id)) chart.options.plugins.datalabels.color = tick;
     chart.update();
   });
 }
 
-// Re-render completo al cambio tema (i grafici a barre e doughnut usano colori aggiornati)
-document.addEventListener('themechange', function() {
-  updateChartColors();
-});
+document.addEventListener('themechange', () => updateChartColors());
 
 // ─────────────────────────────────────────────
 //  TABELLA DATI
 // ─────────────────────────────────────────────
-let _tableInited  = false;
-let _tableVisible = false;
-let _allCols      = [];
-let _visibleCols  = new Set();
-
+let _tableInited = false, _tableVisible = false, _allCols = [], _visibleCols = new Set();
 const COLS_EXCLUDED = new Set(['Ha_Immagine', 'Dimensioni_Immagine', 'Accuratezza_GPS_m', 'URL_Segnalazione']);
 
 function toggleTable() {
   _tableVisible = !_tableVisible;
   const section = document.getElementById('tableSection');
-  const btn     = document.getElementById('btnTableToggle');
+  const btn = document.getElementById('btnTableToggle');
   section.style.display = _tableVisible ? 'block' : 'none';
   btn.classList.toggle('active', _tableVisible);
   btn.innerHTML = `<i class="fa-solid fa-table-list"></i> ${_tableVisible ? 'Nascondi tabella' : 'Tabella dati'}`;
-  if (_tableVisible && !_tableInited) {
-    _tableInited = true;
-    initTable();
-  }
+  if (_tableVisible && !_tableInited) { _tableInited = true; initTable(); }
 }
 
 function initTable() {
   const colSet = new Set(['Foglio']);
   _allReports.forEach(r => Object.keys(r).forEach(k => { if (k !== '_foglio') colSet.add(k); }));
-  _allCols     = [...colSet].filter(c => !COLS_EXCLUDED.has(c));
+  _allCols = [...colSet].filter(c => !COLS_EXCLUDED.has(c));
   _visibleCols = new Set(_allCols);
   buildColPanel();
   renderDataTable();
@@ -573,10 +463,9 @@ function buildColPanel() {
     const sel = _visibleCols.has(col);
     div.innerHTML = `<span class="col-chk${sel ? ' checked' : ''}"></span><span class="col-opt-label${sel ? ' selected' : ''}">${col}</span>`;
     div.addEventListener('click', () => {
-      const active = _visibleCols.has(col);
-      if (active) _visibleCols.delete(col); else _visibleCols.add(col);
-      div.querySelector('.col-chk').className        = 'col-chk' + (_visibleCols.has(col) ? ' checked' : '');
-      div.querySelector('.col-opt-label').className  = 'col-opt-label' + (_visibleCols.has(col) ? ' selected' : '');
+      if (_visibleCols.has(col)) _visibleCols.delete(col); else _visibleCols.add(col);
+      div.querySelector('.col-chk').className = 'col-chk' + (_visibleCols.has(col) ? ' checked' : '');
+      div.querySelector('.col-opt-label').className = 'col-opt-label' + (_visibleCols.has(col) ? ' selected' : '');
       syncColAllCheckbox();
       renderDataTable();
     });
@@ -586,46 +475,37 @@ function buildColPanel() {
 }
 
 function syncColAllCheckbox() {
-  const badge  = document.getElementById('colDdBadge');
+  const badge = document.getElementById('colDdBadge');
   if (badge) badge.textContent = _visibleCols.size;
   const chk = document.getElementById('colChkAll');
   if (!chk) return;
-  const all  = _visibleCols.size === _allCols.length;
+  const all = _visibleCols.size === _allCols.length;
   const none = _visibleCols.size === 0;
   chk.className = 'col-chk' + (all ? ' checked' : none ? '' : ' indeterminate');
   const lbl = document.querySelector('#colOptAll .col-opt-label');
   if (lbl) lbl.className = 'col-opt-label col-opt-all-label' + (all ? ' selected' : '');
 }
 
-function toggleAllColsClick() {
-  toggleAllCols(_visibleCols.size < _allCols.length);
-}
-
+function toggleAllColsClick() { toggleAllCols(_visibleCols.size < _allCols.length); }
 function toggleAllCols(checked) {
   if (checked) _allCols.forEach(c => _visibleCols.add(c));
   else _visibleCols.clear();
   document.querySelectorAll('#colChecks .col-panel-option').forEach(div => {
     const col = div.dataset.col;
-    div.querySelector('.col-chk').className       = 'col-chk' + (checked ? ' checked' : '');
+    div.querySelector('.col-chk').className = 'col-chk' + (checked ? ' checked' : '');
     div.querySelector('.col-opt-label').className = 'col-opt-label' + (checked ? ' selected' : '');
   });
   syncColAllCheckbox();
   renderDataTable();
 }
-
-function clearAllCols(e) {
-  e.stopPropagation();
-  toggleAllCols(false);
-}
-
+function clearAllCols(e) { e.stopPropagation(); toggleAllCols(false); }
 function toggleColPanel() {
-  const panel   = document.getElementById('colPanel');
+  const panel = document.getElementById('colPanel');
   const chevron = document.getElementById('colPanelChevron');
-  const open    = panel.style.display === 'block';
+  const open = panel.style.display === 'block';
   panel.style.display = open ? 'none' : 'block';
-  chevron.className   = 'col-dd-chevron fa-solid ' + (open ? 'fa-chevron-down' : 'fa-chevron-up');
+  chevron.className = 'col-dd-chevron fa-solid ' + (open ? 'fa-chevron-down' : 'fa-chevron-up');
 }
-
 document.addEventListener('click', e => {
   const dd = document.getElementById('colDropdown');
   if (dd && !dd.contains(e.target)) {
@@ -635,12 +515,10 @@ document.addEventListener('click', e => {
 });
 
 function renderDataTable() {
-  const cols  = _allCols.filter(c => _visibleCols.has(c));
+  const cols = _allCols.filter(c => _visibleCols.has(c));
   const thead = document.getElementById('dataTableHead');
   const tbody = document.getElementById('dataTableBody');
-
-  thead.innerHTML = ' <tr>' + cols.map(c => `<th>${c}</th>`).join('') + ' </tr>';
-
+  thead.innerHTML = ' 效果' + cols.map(c => `<th>${c}</th>`).join('') + '  </tr>';
   const fragment = document.createDocumentFragment();
   _allReports.forEach(r => {
     const tr = document.createElement('tr');
@@ -649,10 +527,7 @@ function renderDataTable() {
       if (col === 'Foglio') {
         const isRisolta = r._foglio === 'Risolte';
         td.innerHTML = `<span class="badge-foglio ${isRisolta ? 'badge-risolta' : 'badge-aperta'}">${r._foglio}</span>`;
-      } else {
-        td.textContent = r[col] || '';
-        td.title = r[col] || '';
-      }
+      } else { td.textContent = r[col] || ''; td.title = r[col] || ''; }
       tr.appendChild(td);
     });
     fragment.appendChild(tr);
@@ -662,42 +537,21 @@ function renderDataTable() {
 }
 
 function exportTableCSV() {
-  const cols  = _allCols.filter(c => _visibleCols.has(c));
+  const cols = _allCols.filter(c => _visibleCols.has(c));
   const lines = [cols.map(csvEsc).join(',')];
-  _allReports.forEach(r => {
-    lines.push(cols.map(col => csvEsc(col === 'Foglio' ? r._foglio : (r[col] || ''))).join(','));
-  });
+  _allReports.forEach(r => { lines.push(cols.map(col => csvEsc(col === 'Foglio' ? r._foglio : (r[col] || ''))).join(',')); });
   const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = 'segnalazioni.csv';
-  a.click();
-  URL.revokeObjectURL(url);
+  const url = URL.createObjectURL(blob); const a = document.createElement('a');
+  a.href = url; a.download = 'segnalazioni.csv'; a.click(); URL.revokeObjectURL(url);
 }
-
 function exportTableJSON() {
   const cols = _allCols.filter(c => _visibleCols.has(c));
-  const data = _allReports.map(r => {
-    const obj = {};
-    cols.forEach(col => { obj[col] = col === 'Foglio' ? r._foglio : (r[col] || ''); });
-    return obj;
-  });
+  const data = _allReports.map(r => { const obj = {}; cols.forEach(col => { obj[col] = col === 'Foglio' ? r._foglio : (r[col] || ''); }); return obj; });
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8;' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = 'segnalazioni.json';
-  a.click();
-  URL.revokeObjectURL(url);
+  const url = URL.createObjectURL(blob); const a = document.createElement('a');
+  a.href = url; a.download = 'segnalazioni.json'; a.click(); URL.revokeObjectURL(url);
 }
-
-function csvEsc(val) {
-  const s = String(val ?? '');
-  return (s.includes(',') || s.includes('"') || s.includes('\n'))
-    ? '"' + s.replace(/"/g, '""') + '"'
-    : s;
-}
+function csvEsc(val) { const s = String(val ?? ''); return (s.includes(',') || s.includes('"') || s.includes('\n')) ? '"' + s.replace(/"/g, '""') + '"' : s; }
 
 // ─────────────────────────────────────────────
 //  INIT
