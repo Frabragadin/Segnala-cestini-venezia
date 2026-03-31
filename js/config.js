@@ -12,9 +12,10 @@ const APP_CONFIG = {
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     appsScriptUrl: 'https://script.google.com/macros/s/AKfycbyxeJPcP--55r_j0xoUqNNdBNPI_RkDSqe9iXRU-A7k6poUL31hesYW9vk6MZhlLjLSsg/exec',
                     // Usato da: segnalazione-civica.js (POST nuova seg.) + map.js (risolvi)
-  sheetsCsvAperte:  'https://script.google.com/macros/s/AKfycbyxeJPcP--55r_j0xoUqNNdBNPI_RkDSqe9iXRU-A7k6poUL31hesYW9vk6MZhlLjLSsg/exec',
+    sheetsCsvAperte:  'https://script.google.com/macros/s/AKfycbyxeJPcP--55r_j0xoUqNNdBNPI_RkDSqe9iXRU-A7k6poUL31hesYW9vk6MZhlLjLSsg/exec',
   sheetsCsvRisolte: 'https://script.google.com/macros/s/AKfycbyxeJPcP--55r_j0xoUqNNdBNPI_RkDSqe9iXRU-A7k6poUL31hesYW9vk6MZhlLjLSsg/exec',
-   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // 2. IDENTITA' APP
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   app: {
