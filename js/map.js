@@ -179,7 +179,12 @@ function goHome() {
 //  CARICAMENTO CSV
 // ─────────────────────────────────────────────────────────
 async function loadData() {
-  const url = APP_CONFIG.sheetsCsvTutte;
+  // URL STATICO del tuo CSV pubblicato da Google Sheets
+  // BASTA UN SOLO FILE con TUTTE le segnalazioni (sia aperte che risolte)
+  const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTUOI_CSV_PUBBLICO/pub?output=csv';
+  
+  // Se vuoi usare quello da config.js, decommenta la riga sotto
+  // const url = APP_CONFIG.sheetsCsvTutte;
   
   if (!url) {
     showDemoData();
@@ -194,20 +199,36 @@ async function loadData() {
     const res  = await fetch(url + cacheBust + Date.now(), { signal: controller.signal });
     const text = await res.text();
     clearTimeout(timeoutId);
+    
+    // CARICA UNA SOLA VOLTA
     allReports = parseCSV(text);
+    
+    // Pulisce eventuali duplicati per ID_Segnalazione
+    const uniqueReports = [];
+    const seenIds = new Set();
+    for (const report of allReports) {
+      if (!seenIds.has(report.ID_Segnalazione)) {
+        seenIds.add(report.ID_Segnalazione);
+        uniqueReports.push(report);
+      }
+    }
+    allReports = uniqueReports;
+    
+    console.log(`Caricate ${allReports.length} segnalazioni uniche`);
     
     renderCategoryChips();
     renderAll();
     document.getElementById('loadingOverlay').style.display = 'none';
   } catch(e) {
     clearTimeout(timeoutId);
+    console.error('Errore caricamento CSV:', e);
     const msg = e.name === 'AbortError'
       ? '⏱ Caricamento troppo lento. Controlla la connessione o riprova.'
       : '❌ Impossibile caricare le segnalazioni. Controlla la connessione o riprova tra qualche minuto.';
     showError(msg);
+    showDemoData();
   }
 }
-
 function parseCSV(text) {
   const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
   const rows = splitCSVRows(normalized);
