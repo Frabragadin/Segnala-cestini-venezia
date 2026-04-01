@@ -668,7 +668,7 @@ for (let i = 0; i < reportData.photos.length; i++) {
    }
   const response = await fetch(APP_CONFIG.appsScriptUrl, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     body: formData
   });
   
