@@ -3304,3 +3304,20 @@ html.dark .privacy-footer a { color: rgba(245,240,232,0.35); }
 }
 .consent-row a { color: var(--amber); text-decoration: underline; }
 html.dark .consent-row { color: rgba(245,240,232,0.45); }
+.photo-legal-warning {
+  background: rgba(255, 193, 7, 0.15);
+  border-left: 4px solid #ff9900;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  color: var(--ink-light);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.photo-legal-warning i {
+  color: #ff9900;
+  font-size: 1.1rem;
+}
