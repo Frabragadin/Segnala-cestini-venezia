@@ -93,21 +93,27 @@
   </section>
 
   <!-- ② FOTO -->
-  <section class="form-section">
-    <div class="section-title"><i class="fa-solid fa-camera"></i> Foto del problema <span class="section-badge" id="photoCount">0 / 4</span></div>
-    <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
-    <div class="photo-grid" id="photoGrid">
-      <div class="photo-add-slot" id="photoAddSlot" onclick="document.getElementById('fileInput').click()">
-        <i class="fa-solid fa-plus"></i>
-        <span>Aggiungi foto</span>
-        <small>JPG · PNG · HEIC · max 1280 px</small>
-      </div>
-    </div>
-    <div class="photo-info" id="photoInfo"></div>
-    <div class="btn-row" style="margin-top:0.8rem">
-      <button class="btn-sm" type="button" onclick="openCamera()"><i class="fa-solid fa-camera"></i> Fotocamera</button>
-      <button class="btn-sm" type="button" onclick="openGallery()"><i class="fa-solid fa-images"></i> Galleria</button>
-    </div>
+<div class="photo-grid" id="photoGrid">
+  <div class="photo-add-slot" id="photoAddSlot" onclick="document.getElementById('fileInput').click()">
+    <i class="fa-solid fa-plus"></i>
+    <span>Aggiungi foto</span>
+    <small>JPG · PNG · HEIC · max 1280 px</small>
+  </div>
+</div>
+<div class="photo-info" id="photoInfo"></div>
+
+<!-- AVVISO LEGALE -->
+<div class="photo-legal-warning">
+  <i class="fa-solid fa-gavel"></i> 
+  <strong>Attenzione:</strong> Le foto false o inappropriate costituiscono un illecito. 
+  Chiunque carichi contenuti non veritieri potrà essere segnalato alle autorità e perseguito 
+  ai sensi della legge italiana.
+</div>
+
+<div class="btn-row" style="margin-top:0.8rem">
+  <button class="btn-sm" type="button" onclick="openCamera()"><i class="fa-solid fa-camera"></i> Fotocamera</button>
+  <button class="btn-sm" type="button" onclick="openGallery()"><i class="fa-solid fa-images"></i> Galleria</button>
+</div>
     <div class="field-error" id="photoZone-error">⚠️ Almeno una foto è obbligatoria.</div>
   </section>
 
