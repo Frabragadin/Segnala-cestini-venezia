@@ -181,7 +181,7 @@ function goHome() {
 async function loadData() {
   // URL STATICO del tuo CSV pubblicato da Google Sheets
   // BASTA UN SOLO FILE con TUTTE le segnalazioni (sia aperte che risolte)
-  const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTUOI_CSV_PUBBLICO/pub?output=csv';
+  const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?gid=0&single=true&output=csv';
   
   // Se vuoi usare quello da config.js, decommenta la riga sotto
   // const url = APP_CONFIG.sheetsCsvTutte;
