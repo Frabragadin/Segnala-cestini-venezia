@@ -550,11 +550,28 @@ function renderAll() {
 
 function updateStats() {
   if (viewMode === 'risolte') {
-    document.getElementById('statRes').textContent = allReports.length;
+    const statRes = document.getElementById('statRes');
+    if (statRes) statRes.textContent = allReports.length;
   } else {
-    document.getElementById('statNuove').textContent = allReports.filter(r => r.Stato === 'Nuova').length;
-    document.getElementById('statLav').textContent   = allReports.filter(r => r.Stato === 'In lavorazione').length;
-    document.getElementById('statTot').textContent   = allReports.length;
+    const statNuove = document.getElementById('statNuove');
+    const statLav = document.getElementById('statLav');
+    const statTot = document.getElementById('statTot');
+    if (statNuove) statNuove.textContent = allReports.filter(r => r.Stato === 'Nuova').length;
+    if (statLav) statLav.textContent = allReports.filter(r => r.Stato === 'In lavorazione').length;
+    if (statTot) statTot.textContent = allReports.length;
+  }
+  
+  // Aggiorna anche il badge delle risolte nel tab se presente
+  const risolteCount = allReports.filter(r => r.Stato === 'Risolta').length;
+  const tabRisolte = document.getElementById('tabRisolte');
+  if (tabRisolte) {
+    let badge = tabRisolte.querySelector('.tab-badge');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'tab-badge';
+      tabRisolte.appendChild(badge);
+    }
+    badge.textContent = risolteCount;
   }
 }
 
@@ -661,273 +678,3 @@ function renderList() {
       ${hasFilters ? '<br><button class="no-results-reset" onclick="resetFilters()">Rimuovi filtri</button>' : ''}
     </div>`;
     return;
-  }
-
-  const totalPages = Math.ceil(filteredReports.length / PAGE_SIZE);
-  const start      = (currentPage - 1) * PAGE_SIZE;
-  const pageItems  = filteredReports.slice(start, start + PAGE_SIZE);
-
-  list.innerHTML = '';
-  pageItems.forEach(r => {
-    const addrShort = r.Via || r.Comune || r.Indirizzo_Completo || 'Posizione non specificata';
-    const urg = (r.Urgenza || 'Normale').toLowerCase();
-    const el = document.createElement('div');
-    el.className = 'report-item';
-    el.id = 'ri-' + r.ID_Segnalazione;
-    const urgColor  = APP_CONFIG.marker[r.Urgenza] || APP_CONFIG.marker.default;
-    const urgLabel  = r.Urgenza === 'Alta' ? '🔴 Urgente' : r.Urgenza === 'Bassa' ? '🔵 Bassa' : '🟠 Normale';
-    const imgUrls   = (r.URL_Immagini || r.URL_Immagine || '').split(',').map(u => u.trim()).filter(Boolean);
-    const imgsHtml  = imgUrls.length > 0
-      ? `<div class="rid-imgs">${imgUrls.map(u =>
-          `<img src="${u}" loading="lazy" onerror="this.style.display='none'" onclick="openLightbox('${u}')">`
-        ).join('')}</div>`
-      : '';
-    el.innerHTML = `
-      <div class="ri-top">
-        <span class="ri-emoji">${catIcon(r.Categoria_Emoji)}</span>
-        <span class="ri-cat">${r.Categoria}</span>
-        <div class="urgency-dot ${urg}"></div>
-      </div>
-      <div class="ri-addr">${addrShort}</div>
-      <div class="ri-meta">
-        <span class="ri-date">${r.Data || ''}</span>
-        ${makeStatoBadge(r.Stato)}
-      </div>
-      <div class="ri-detail" id="rid-${r.ID_Segnalazione}">
-        ${r.Descrizione ? `<div class="rid-descr">${r.Descrizione}</div>` : ''}
-        <div class="rid-row"><i class="fa-solid fa-clock"></i> ${r.Data || ''} ${r.Ora || ''}</div>
-        ${r.Nome_Segnalante ? `<div class="rid-row"><i class="fa-solid fa-user"></i> ${r.Nome_Segnalante}</div>` : ''}
-        <div class="rid-row" style="color:${urgColor}"><i class="fa-solid fa-circle-exclamation"></i> ${urgLabel}</div>
-        ${imgsHtml}
-        <div class="rid-id">${r.ID_Segnalazione}</div>
-      </div>`;
-    el.addEventListener('click', () => {
-      if (window.innerWidth <= 768) {
-        expandReportItem(r.ID_Segnalazione);
-        const m = markerById[r.ID_Segnalazione];
-        if (m) map.setView([parseFloat(r.Lat), parseFloat(r.Long)], 17, { animate: true });
-      } else {
-        focusReport(r.ID_Segnalazione);
-      }
-    });
-    list.appendChild(el);
-  });
-
-  if (totalPages > 1) {
-    const pag = document.createElement('div');
-    pag.className = 'list-pagination';
-    pag.innerHTML = `
-      <button class="lpag-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-      <span class="lpag-info">${currentPage} / ${totalPages}</span>
-      <button class="lpag-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>`;
-    list.appendChild(pag);
-  }
-}
-
-function goToPage(page) {
-  const totalPages = Math.ceil(filteredReports.length / PAGE_SIZE);
-  if (page < 1 || page > totalPages) return;
-  currentPage = page;
-  renderList();
-  document.getElementById('reportList').scrollTop = 0;
-}
-
-function focusReport(id) {
-  const report = filteredReports.find(r => r.ID_Segnalazione === id);
-  if (!report) return;
-
-  highlightListItem(id);
-
-  const lat = parseFloat(report.Lat);
-  const lng = parseFloat(report.Long);
-  if (isNaN(lat) || isNaN(lng)) return;
-
-  const m = markerById[id];
-  map.setView([lat, lng], 17, { animate: true });
-
-  if (m && window.innerWidth > 768) {
-    clearTimeout(_focusTimer);
-    _focusTimer = setTimeout(() => m.openPopup(), APP_CONFIG.mappa.popupDelay);
-  }
-}
-
-function expandReportItem(id) {
-  // Naviga alla pagina corretta nella sidebar
-  const idx = filteredReports.findIndex(r => r.ID_Segnalazione === id);
-  if (idx !== -1) {
-    const page = Math.floor(idx / PAGE_SIZE) + 1;
-    if (page !== currentPage) { currentPage = page; renderList(); }
-  }
-
-  // Chiudi tutti i dettagli aperti e deseleziona
-  document.querySelectorAll('.report-item').forEach(el => {
-    el.classList.remove('highlighted');
-    const det = el.querySelector('.ri-detail');
-    if (det) det.classList.remove('open');
-  });
-
-  // Apri il dettaglio dell'item selezionato
-  const el = document.getElementById('ri-' + id);
-  if (el) {
-    el.classList.add('highlighted');
-    const det = el.querySelector('.ri-detail');
-    if (det) det.classList.add('open');
-
-    // Scrolla la sidebar in vista, poi scrolla sull'item
-    const panel = document.querySelector('.side-panel');
-    if (panel) {
-      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 250);
-    } else {
-      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-  }
-}
-
-function highlightListItem(id) {
-  const idx = filteredReports.findIndex(r => r.ID_Segnalazione === id);
-  if (idx !== -1) {
-    const page = Math.floor(idx / PAGE_SIZE) + 1;
-    if (page !== currentPage) { currentPage = page; renderList(); }
-  }
-  document.querySelectorAll('.report-item').forEach(el => el.classList.remove('highlighted'));
-  const el = document.getElementById('ri-' + id);
-  if (el) {
-    el.classList.add('highlighted');
-    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-}
-
-// ─────────────────────────────────────────────────────────
-//  MODALI — Lightbox / Risoluzione
-// ─────────────────────────────────────────────────────────
-function openLightbox(url) {
-  document.getElementById('lightboxImg').src = url;
-  document.getElementById('lightbox').classList.add('open');
-}
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-  document.getElementById('lightboxImg').src = '';
-}
-
-function openResolve(id) {
-  const input = document.getElementById('resolveIdDisplay');
-  input.value = id || '';
-  const res = document.getElementById('resolveResult');
-  res.className  = 'resolve-result';
-  res.textContent = '';
-  const btn = document.getElementById('resolveConfirmBtn');
-  btn.disabled    = false;
-  btn.textContent = '✅ Conferma risoluzione';
-  document.getElementById('resolveOverlay').classList.add('open');
-  if (!id) setTimeout(() => input.focus(), 80);
-}
-
-function closeResolve() {
-  document.getElementById('resolveOverlay').classList.remove('open');
-  history.replaceState({}, '', location.pathname);
-}
-
-function confirmResolve() {
-  const id  = document.getElementById('resolveIdDisplay').value.trim();
-  const res = document.getElementById('resolveResult');
-
-  if (!id) {
-    res.className   = 'resolve-result err';
-    res.textContent = '⚠️ Inserisci l\'ID della segnalazione.';
-    document.getElementById('resolveIdDisplay').focus();
-    return;
-  }
-
-  const btn = document.getElementById('resolveConfirmBtn');
-  btn.disabled    = true;
-  btn.textContent = 'Invio in corso…';
-  res.className   = 'resolve-result';
-  res.textContent = '';
-
-  fetch(APP_CONFIG.appsScriptUrl, {
-    method: 'POST',
-    mode:   'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'risolvi', token: id, ID_Segnalazione: id })
-  })
-  .then(() => {
-    res.className   = 'resolve-result ok';
-    res.textContent = '✅ Richiesta inviata. La mappa si aggiornerà a breve…';
-    btn.textContent = 'Inviato ✓';
-    setTimeout(() => {
-      loadData();
-      res.textContent = '✅ Mappa aggiornata. La segnalazione è ora nella sezione Risolte.';
-    }, 4000);
-  })
-  .catch(() => {
-    res.className   = 'resolve-result err';
-    res.textContent = '❌ Errore di rete. Riprova tra qualche istante.';
-    btn.disabled    = false;
-    btn.textContent = '✅ Conferma risoluzione';
-  });
-}
-
-// ─────────────────────────────────────────────────────────
-//  INIT
-// ─────────────────────────────────────────────────────────
-initMap();
-loadData();
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeResolve(); closeLightbox(); closeCatPanel(); }
-});
-
-// Chiude il panel categorie al click fuori dal dropdown
-document.addEventListener('click', e => {
-  const dd = document.getElementById('catDropdown');
-  if (dd && !dd.contains(e.target)) closeCatPanel();
-});
-
-function closeCatPanel() {
-  const panel   = document.getElementById('catPanel');
-  const chevron = document.getElementById('catPanelChevron');
-  if (panel)   panel.style.display = 'none';
-  if (chevron) chevron.className   = 'col-dd-chevron fa-solid fa-chevron-down';
-}
-
-// Ascolta il cambio tema per aggiornare la mappa
-document.addEventListener('themechange', function(e) {
-  // Ricarica i layer della mappa quando cambia il tema
-  applyMapTheme();
-  
-  // Aggiorna lo stile del toggle button se necessario
-  const btnOsm = document.querySelector('.mlt-btn:first-child');
-  const btnSat = document.querySelector('.mlt-btn:last-child');
-  if (btnOsm && btnSat) {
-    if (currentMapStyle === 'osm') {
-      btnOsm.classList.add('active');
-      btnSat.classList.remove('active');
-    } else {
-      btnSat.classList.add('active');
-      btnOsm.classList.remove('active');
-    }
-  }
-});
-
-// Rileva ?risolvi=TOKEN nell'URL e apre il modal automaticamente
-const _urlId = new URLSearchParams(location.search).get('risolvi');
-if (_urlId) openResolve(_urlId);
-
-// ─────────────────────────────────────────────────────────
-//  PING REGISTRO UTILIZZI — una volta al giorno per browser
-// ─────────────────────────────────────────────────────────
-(function pingRegistry() {
-  if (!SEGNALAORA_REGISTRY_URL) return;
-  const h = location.hostname;
-  if (!h || h === 'localhost' || h === '127.0.0.1') return;
-  const key   = 'segnalaora_ping';
-  const today = new Date().toDateString();
-  if (localStorage.getItem(key) === today) return;
-  localStorage.setItem(key, today);
-  fetch(SEGNALAORA_REGISTRY_URL + '?action=ping&host=' + encodeURIComponent(h), { mode: 'no-cors' });
-})();
