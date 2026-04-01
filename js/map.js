@@ -1,21 +1,8 @@
 /* ═══════════════════════════════════════════════════════
-   SegnalaOra — Mappa segnalazioni civiche
-   Logica JavaScript della pagina index.html
+   SegnalaCestini Venezia — Mappa segnalazioni civiche
+   Logica JavaScript della pagina mappa.html
    Versione con supporto tema chiaro/scuro per la mappa
    ═══════════════════════════════════════════════════════ */
-
-// ─────────────────────────────────────────────────────────
-//  CONFIGURAZIONE — valori letti da js/config.js (APP_CONFIG)
-// ─────────────────────────────────────────────────────────
-
-// ─────────────────────────────────────────────────────────
-//  REGISTRO UTILIZZI (progetto originale)
-//  Invia l'hostname di questa istanza all'autore del progetto
-//  una volta al giorno per browser, tramite il foglio "Utilizzi".
-//  Per non partecipare: lascia SEGNALAORA_REGISTRY_URL vuoto
-//  oppure rimuovi questo blocco.
-// ─────────────────────────────────────────────────────────
-const SEGNALAORA_REGISTRY_URL = '';   // ← incolla qui l'URL /exec del tuo Apps Script
 
 // ─────────────────────────────────────────────────────────
 //  STATO
@@ -23,17 +10,17 @@ const SEGNALAORA_REGISTRY_URL = '';   // ← incolla qui l'URL /exec del tuo App
 let allReports      = [];
 let filteredReports = [];
 let markers         = [];
-let markerById      = {};   // ID_Segnalazione → Leaflet marker
+let markerById      = {};
 let map;
-let osmLayerLight;          // Layer OSM chiaro (default)
-let osmLayerDark;           // Layer OSM scuro
-let satelliteLayer;         // Layer satellite
-let currentMapStyle = 'osm'; // 'osm' o 'satellite'
+let osmLayerLight;
+let osmLayerDark;
+let satelliteLayer;
+let currentMapStyle = 'osm';
 let activeFilters = { urgenza: 'all', stato: 'all', periodo: 'all' };
-let activeCats    = null;   // null = tutte selezionate; Set = solo queste categorie
+let activeCats    = null;
 let highlightedId = null;
-let viewMode      = 'aperte';   // 'aperte' | 'risolte'
-let _focusTimer   = null;       // timer per apertura popup da focusReport
+let viewMode      = 'aperte';
+let _focusTimer   = null;
 let currentPage   = 1;
 const PAGE_SIZE   = APP_CONFIG.mappa.pageSize;
 
@@ -46,27 +33,23 @@ function initMap() {
   );
   new L.Hash(map);
 
-  // Crea i layer mappa
   osmLayerLight = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> By <a href="https://opendatasicilia.it/" title="@opendatasicilia" target="_blank">@opendatasicilia</a>',
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19
   });
 
-  // Layer OSM scuro (Stadia Maps Alidade Smooth Dark)
   osmLayerDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://carto.com/attributions">CARTO</a> By <a href="https://opendatasicilia.it/" title="@opendatasicilia" target="_blank">@opendatasicilia</a>',
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://carto.com/attributions">CARTO</a>',
     maxZoom: 19
   });
 
   satelliteLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-    attribution: '© <a href="https://maps.google.com" target="_blank">Google Maps</a> By <a href="https://opendatasicilia.it/" title="@opendatasicilia" target="_blank">@opendatasicilia</a>',
+    attribution: '© <a href="https://maps.google.com" target="_blank">Google Maps</a>',
     maxZoom: 19
   });
 
-  // Applica il layer iniziale in base al tema
   applyMapTheme();
 
-  // Toggle grafico OSM / Satellite
   const LayerToggleControl = L.Control.extend({
     options: { position: 'topright' },
     onAdd(m) {
@@ -78,27 +61,23 @@ function initMap() {
       btnSat.innerHTML = '<i class="fa-solid fa-satellite"></i> Satellite';
     
       L.DomEvent.disableClickPropagation(wrap);
-
       L.DomEvent.on(btnOsm, 'click', () => {
         currentMapStyle = 'osm';
         applyMapTheme();
         btnOsm.classList.add('active');
         btnSat.classList.remove('active');
       });
-      
       L.DomEvent.on(btnSat, 'click', () => {
         currentMapStyle = 'satellite';
         applyMapTheme();
         btnSat.classList.add('active');
         btnOsm.classList.remove('active');
       });
-      
       return wrap;
     }
   });
   new LayerToggleControl().addTo(map);
 
-  // Pulsante Home — riporta la vista su tutti i marker visibili
   const HomeControl = L.Control.extend({
     options: { position: 'topleft' },
     onAdd() {
@@ -113,7 +92,6 @@ function initMap() {
   });
   new HomeControl().addTo(map);
 
-  // Legenda urgenza come controllo Leaflet (bottomleft)
   const LegendControl = L.Control.extend({
     options: { position: 'bottomleft' },
     onAdd() {
@@ -128,34 +106,15 @@ function initMap() {
     }
   });
   new LegendControl().addTo(map);
-
-  // Credits / logo — Leaflet-Control-Credits (L.controlCredits)
-  L.controlCredits({
-    position:      'bottomright',
-    imageurl:      'img/opendatasicilia.png',
-    imagealt:      'SegnalaOra — OpenDataSicilia',
-    tooltip:       'SegnalaOra — OpenDataSicilia',
-    width:         '50px',
-    height:        '58px',
-    expandcontent: APP_CONFIG.app.bannerCrediti,
-  }).addTo(map);
 }
 
-/**
- * Applica il layer mappa appropriato in base al tema corrente
- * e alla scelta dell'utente (OSM o Satellite)
- */
 function applyMapTheme() {
-  // Rimuovi tutti i tile layer correnti
   map.eachLayer((layer) => {
     if (layer instanceof L.TileLayer) {
       map.removeLayer(layer);
     }
   });
-
-  // Determina se il tema scuro è attivo
   const isDark = document.documentElement.classList.contains('dark');
-  
   if (currentMapStyle === 'satellite') {
     satelliteLayer.addTo(map);
   } else {
@@ -179,12 +138,7 @@ function goHome() {
 //  CARICAMENTO CSV
 // ─────────────────────────────────────────────────────────
 async function loadData() {
-  // URL STATICO del tuo CSV pubblicato da Google Sheets
-  // BASTA UN SOLO FILE con TUTTE le segnalazioni (sia aperte che risolte)
   const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?gid=0&single=true&output=csv';
-  
-  // Se vuoi usare quello da config.js, decommenta la riga sotto
-  // const url = APP_CONFIG.sheetsCsvTutte;
   
   if (!url) {
     showDemoData();
@@ -199,11 +153,8 @@ async function loadData() {
     const res  = await fetch(url + cacheBust + Date.now(), { signal: controller.signal });
     const text = await res.text();
     clearTimeout(timeoutId);
-    
-    // CARICA UNA SOLA VOLTA
     allReports = parseCSV(text);
     
-    // Pulisce eventuali duplicati per ID_Segnalazione
     const uniqueReports = [];
     const seenIds = new Set();
     for (const report of allReports) {
@@ -229,6 +180,7 @@ async function loadData() {
     showDemoData();
   }
 }
+
 function parseCSV(text) {
   const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
   const rows = splitCSVRows(normalized);
@@ -252,7 +204,6 @@ function parseCSV(text) {
     }
     reports.push(obj);
   }
-
   return reports;
 }
 
