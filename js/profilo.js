@@ -424,14 +424,16 @@ function resolveReport(btn) {
   msg.className = 'resolve-inline-msg';
   msg.textContent = '';
 
-  // Usa POST con FormData per inviare la richiesta
-  const formData = new FormData();
-  formData.append('action', 'risolvi');
-  formData.append('token', token);
-
+  // Invia i dati come JSON
   fetch(APPS_SCRIPT_URL, {
     method: 'POST',
-    body: formData
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      action: 'risolvi',
+      token: token
+    })
   })
   .then(response => response.json())
   .then(data => {
@@ -440,7 +442,7 @@ function resolveReport(btn) {
       msg.textContent = '✅ Segnalazione risolta con successo!';
       btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Risolta';
       
-      // Ora che il server ha confermato, aggiorna localStorage e UI
+      // Aggiorna localStorage e UI
       const reports = loadLocal();
       const found = reports.find(r => r.token === token);
       if (found) {
@@ -468,7 +470,7 @@ function resolveReport(btn) {
         if (resolveDiv) resolveDiv.style.display = 'none'; 
       }, 3000);
     } else {
-      throw new Error(data.error || 'Errore sconosciuto');
+      throw new Error(data.error || data.message || 'Errore sconosciuto');
     }
   })
   .catch((err) => {
