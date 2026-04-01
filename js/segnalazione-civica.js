@@ -660,7 +660,12 @@ try {
   formData.append('note', descr);
   formData.append('Nome_Segnalante', nome);        // ← Nome corretto per Apps Script
   formData.append('Email_Segnalante', emailSegnalante);  // ← Nome corretto per Apps Script
-  
+
+   // 📸 AGGIUNGI LE FOTO
+for (let i = 0; i < reportData.photos.length; i++) {
+  formData.append(`imageBase64_${i + 1}`, reportData.photos[i].base64);
+  console.log(`Foto ${i + 1} aggiunta (${reportData.photos[i].base64.length} caratteri)`);
+   }
   const response = await fetch(APP_CONFIG.appsScriptUrl, {
     method: 'POST',
     mode: 'cors',
