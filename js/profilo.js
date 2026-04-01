@@ -416,68 +416,67 @@ function resolveReport(btn) {
     }
     return;
   }
-  if (btn.previousElementSibling && btn.previousElementSibling.tagName === 'INPUT') {
-    btn.previousElementSibling.classList.remove('input-invalid');
-  }
 
   if (!confirm('Sei sicuro di voler segnare questa segnalazione come risolta?\nQuesta operazione non può essere annullata.')) return;
 
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Invio…';
-  msg.className   = 'resolve-inline-msg';
+  msg.className = 'resolve-inline-msg';
   msg.textContent = '';
 
-  // Usa GET con parametri per evitare CORS
-  const url = APPS_SCRIPT_URL + '?action=risolvi&token=' + encodeURIComponent(token);
-  
-  fetch(url, {
-    method: 'GET',
-    mode: 'no-cors'
+  // Usa POST con FormData per inviare la richiesta
+  const formData = new FormData();
+  formData.append('action', 'risolvi');
+  formData.append('token', token);
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: formData
   })
-  .then(() => {
-    msg.className   = 'resolve-inline-msg ok';
-    msg.textContent = '✅ Richiesta inviata. La segnalazione sarà aggiornata entro qualche minuto.';
-    btn.innerHTML   = '<i class="fa-solid fa-circle-check"></i> Inviata';
-
-    // Aggiorna localStorage
-    const reports = loadLocal();
-    const found   = reports.find(r => r.token === token);
-    if (found) {
-      found.stato = 'Risolta';
-      saveLocal(reports);
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      msg.className = 'resolve-inline-msg ok';
+      msg.textContent = '✅ Segnalazione risolta con successo!';
+      btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Risolta';
       
-      // Aggiorna anche l'array principale profiloAllReports
-      const profiloFound = profiloAllReports.find(r => r.token === token);
-      if (profiloFound) {
-        profiloFound.stato = 'Risolta';
+      // Ora che il server ha confermato, aggiorna localStorage e UI
+      const reports = loadLocal();
+      const found = reports.find(r => r.token === token);
+      if (found) {
+        found.stato = 'Risolta';
+        saveLocal(reports);
+        
+        const profiloFound = profiloAllReports.find(r => r.token === token);
+        if (profiloFound) {
+          profiloFound.stato = 'Risolta';
+        }
+        
+        const card = btn.closest('.profile-card');
+        const badge = card.querySelector('.stato-badge');
+        if (badge) { 
+          badge.className = 'stato-badge stato-risolta';
+          badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Risolta';
+        }
+        
+        updateSummary(profiloAllReports);
+        applyProfiloFilters();
       }
       
-      // Aggiorna la card nella UI
-      const card = btn.closest('.profile-card');
-      const badge = card.querySelector('.stato-badge');
-      if (badge) { 
-        badge.className = 'stato-badge stato-risolta';
-        badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Risolta';
-      }
-      
-      // Ricalcola le statistiche in alto
-      updateSummary(profiloAllReports);
-      
-      // Ricarica la lista con i filtri attuali
-      applyProfiloFilters();
+      setTimeout(() => { 
+        const resolveDiv = btn.closest('.pc-resolve');
+        if (resolveDiv) resolveDiv.style.display = 'none'; 
+      }, 3000);
+    } else {
+      throw new Error(data.error || 'Errore sconosciuto');
     }
-
-    setTimeout(() => { 
-      const resolveDiv = btn.closest('.pc-resolve');
-      if (resolveDiv) resolveDiv.style.display = 'none'; 
-    }, 5000);
   })
   .catch((err) => {
     console.error('Errore:', err);
-    msg.className   = 'resolve-inline-msg err';
-    msg.textContent = '❌ Errore di rete. Riprova.';
-    btn.disabled    = false;
-    btn.innerHTML   = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
+    msg.className = 'resolve-inline-msg err';
+    msg.textContent = '❌ ' + (err.message || 'Errore durante l\'aggiornamento. Riprova.');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
   });
 }
 // ─────────────────────────────────────────────
