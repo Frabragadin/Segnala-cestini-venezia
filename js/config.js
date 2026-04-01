@@ -22,7 +22,7 @@ sheetsCsvRisolte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFH
     nome:          'SegnalaCestiniVenezia',
     sottotitolo:   'Invia una nuova segnalazione',
     descrizione:   'Segnala in modo semplice e georeferenziato i problemi del tuo territorio.',
-    siteUrl: 'https://frabragadin.github.io/segnala-cestini-venezia/',
+    siteUrl: 'https://frabragadin.github.io/Segnala-cestini-venezia/',
     ogImage: 'https://placehold.co/1200x630/0066cc/white?text=Segnala+Cestini+Venezia',
     hashtag:       '#SegnalaCestiniVenezia',
     bannerCrediti: 'Segnala Cestini - Venezia<br/>Servizio del  Comune di Venezia · Veritas',
