@@ -409,7 +409,11 @@ function resolveReport(btn) {
 
   if (!token) {
     const prev = btn.previousElementSibling;
-    if (prev && prev.tagName === 'INPUT') { prev.focus(); prev.classList.add('input-invalid'); }
+    if (prev && prev.tagName === 'INPUT') { 
+      prev.focus(); 
+      prev.classList.add('input-invalid');
+      setTimeout(() => prev.classList.remove('input-invalid'), 2000);
+    }
     return;
   }
   if (btn.previousElementSibling && btn.previousElementSibling.tagName === 'INPUT') {
@@ -435,26 +439,47 @@ function resolveReport(btn) {
     msg.textContent = '✅ Richiesta inviata. La segnalazione sarà aggiornata entro qualche minuto.';
     btn.innerHTML   = '<i class="fa-solid fa-circle-check"></i> Inviata';
 
+    // Aggiorna localStorage
     const reports = loadLocal();
     const found   = reports.find(r => r.token === token);
     if (found) {
       found.stato = 'Risolta';
       saveLocal(reports);
-      const card  = btn.closest('.profile-card');
+      
+      // Aggiorna anche l'array principale profiloAllReports
+      const profiloFound = profiloAllReports.find(r => r.token === token);
+      if (profiloFound) {
+        profiloFound.stato = 'Risolta';
+      }
+      
+      // Aggiorna la card nella UI
+      const card = btn.closest('.profile-card');
       const badge = card.querySelector('.stato-badge');
-      if (badge) { badge.className = 'stato-badge stato-risolta'; badge.textContent = 'Risolta'; }
+      if (badge) { 
+        badge.className = 'stato-badge stato-risolta';
+        badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Risolta';
+      }
+      
+      // Ricalcola le statistiche in alto
+      updateSummary(profiloAllReports);
+      
+      // Ricarica la lista con i filtri attuali
+      applyProfiloFilters();
     }
 
-    setTimeout(() => { btn.closest('.pc-resolve').style.display = 'none'; }, 5000);
+    setTimeout(() => { 
+      const resolveDiv = btn.closest('.pc-resolve');
+      if (resolveDiv) resolveDiv.style.display = 'none'; 
+    }, 5000);
   })
-  .catch(() => {
+  .catch((err) => {
+    console.error('Errore:', err);
     msg.className   = 'resolve-inline-msg err';
     msg.textContent = '❌ Errore di rete. Riprova.';
     btn.disabled    = false;
     btn.innerHTML   = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
   });
 }
-
 // ─────────────────────────────────────────────
 //  RIEPILOGO
 // ─────────────────────────────────────────────
