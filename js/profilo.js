@@ -407,8 +407,6 @@ function resolveReport(btn) {
   }
   const msg = btn.nextElementSibling;
 
-  console.log('🔍 1. Token trovato:', token);
-
   if (!token) {
     const prev = btn.previousElementSibling;
     if (prev && prev.tagName === 'INPUT') { 
@@ -419,97 +417,95 @@ function resolveReport(btn) {
     return;
   }
 
-  if (!confirm('Sei sicuro di voler segnare questa segnalazione come risolta?\nQuesta operazione non può essere annullata.')) return;
+  if (!confirm('Sei sicuro di voler segnare questa segnalazione come risolta?')) return;
 
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Invio…';
   msg.className = 'resolve-inline-msg';
   msg.textContent = '';
 
-  const url = APPS_SCRIPT_URL + '?action=risolvi&token=' + encodeURIComponent(token);
-  console.log('📡 2. URL chiamata:', url);
-  
+  const url = APP_CONFIG.appsScriptUrl + '?action=risolvi&token=' + encodeURIComponent(token);
+  console.log('URL chiamata:', url);
+
   const xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
   xhr.timeout = 15000;
-  
+
   xhr.onload = function() {
-    console.log('📥 3. Status HTTP:', xhr.status);
-    console.log('📄 4. Risposta RAW:', xhr.responseText);
-    
-    if (xhr.status === 200) {
+    console.log('Status:', xhr.status);
+    console.log('Risposta:', xhr.responseText);
+
+    if (xhr.status === 200 && xhr.responseText) {
       try {
         const response = JSON.parse(xhr.responseText);
-        console.log('✅ 5. JSON parsato:', response);
         
         if (response.success) {
           msg.className = 'resolve-inline-msg ok';
-          msg.textContent = '✅ ' + (response.message || 'Segnalazione risolta con successo!');
+          msg.textContent = '✅ ' + (response.message || 'Risolta!');
           btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Risolta';
           
+          // Aggiorna localStorage
           const reports = loadLocal();
           const found = reports.find(r => r.token === token);
           if (found) {
             found.stato = 'Risolta';
             saveLocal(reports);
-            
-            const profiloFound = profiloAllReports.find(r => r.token === token);
-            if (profiloFound) {
-              profiloFound.stato = 'Risolta';
-            }
-            
-            const card = btn.closest('.profile-card');
-            const badge = card.querySelector('.stato-badge');
-            if (badge) { 
-              badge.className = 'stato-badge stato-risolta';
-              badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Risolta';
-            }
-            
-            updateSummary(profiloAllReports);
-            applyProfiloFilters();
           }
           
-          setTimeout(() => { 
+          // Aggiorna array principale
+          const profiloFound = profiloAllReports.find(r => r.token === token);
+          if (profiloFound) profiloFound.stato = 'Risolta';
+          
+          // Aggiorna UI
+          const card = btn.closest('.profile-card');
+          const badge = card.querySelector('.stato-badge');
+          if (badge) {
+            badge.className = 'stato-badge stato-risolta';
+            badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Risolta';
+          }
+          
+          updateSummary(profiloAllReports);
+          applyProfiloFilters();
+          
+          setTimeout(() => {
             const resolveDiv = btn.closest('.pc-resolve');
-            if (resolveDiv) resolveDiv.style.display = 'none'; 
+            if (resolveDiv) resolveDiv.style.display = 'none';
           }, 3000);
         } else {
-          console.error('❌ 6. Server ha detto success=false:', response.error);
-          throw new Error(response.error || response.message || 'Errore dal server');
+          msg.className = 'resolve-inline-msg err';
+          msg.textContent = '❌ ' + (response.error || 'Token non valido');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
         }
       } catch(e) {
-        console.error('❌ 7. Errore nel parsing JSON:', e);
-        console.error('❌ 8. Risposta che ha causato errore:', xhr.responseText);
+        console.error('Errore parse:', e);
         msg.className = 'resolve-inline-msg err';
-        msg.textContent = '❌ ' + (e.message || 'Errore nella risposta del server');
+        msg.textContent = '❌ Risposta server non valida';
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
       }
     } else {
-      console.error('❌ 9. Errore HTTP:', xhr.status);
       msg.className = 'resolve-inline-msg err';
-      msg.textContent = '❌ Errore server (' + xhr.status + '). Riprova.';
+      msg.textContent = '❌ Errore server. Riprova.';
       btn.disabled = false;
       btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
     }
   };
-  
+
   xhr.onerror = function() {
-    console.error('❌ 10. Errore di rete - nessuna connessione');
     msg.className = 'resolve-inline-msg err';
-    msg.textContent = '❌ Errore di connessione. Verifica la tua connessione.';
+    msg.textContent = '❌ Errore di connessione';
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
   };
-  
+
   xhr.ontimeout = function() {
-    console.error('❌ 11. Timeout - server non risponde');
     msg.className = 'resolve-inline-msg err';
-    msg.textContent = '❌ Timeout. Il server non risponde. Riprova.';
+    msg.textContent = '❌ Timeout server';
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
   };
-  
+
   xhr.send();
 }
 // ─────────────────────────────────────────────
