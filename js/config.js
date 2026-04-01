@@ -11,7 +11,7 @@ const APP_CONFIG = {
   //    Ottieni questi valori dal tuo Google Workspace.
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // SOLO PER INVIARE SEGNALAZIONI (NON per la mappa)
-appsScriptUrl: 'https://script.google.com/macros/s/AKfycbz8WTLRZT0Q0FLYK_jSR18fD2eKJCrPd7E5But4efvPM1ridXZAuiOOklit5ARhpxxrlw/exec',
+appsScriptUrl: 'https://script.google.com/macros/s/AKfycbzCp4wKEElcuODdmGyQ-9V1EBpY9nJyT5-wmCxvbtaLYZHhYQmsPBmNZLmCADBFas6yzw/exec',
 
 // PER LA MAPPA: usa il CSV pubblicato (NON l'Apps Script)
 sheetsCsvAperte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?gid=0&single=true&output=csv',
