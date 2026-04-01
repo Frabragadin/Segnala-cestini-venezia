@@ -424,54 +424,81 @@ function resolveReport(btn) {
   msg.className = 'resolve-inline-msg';
   msg.textContent = '';
 
-  // Usa GET con parametri - EVITA PROBLEMI CORS
   const url = APPS_SCRIPT_URL + '?action=risolvi&token=' + encodeURIComponent(token);
   
-  fetch(url, {
-    method: 'GET',
-    mode: 'no-cors'
-  })
-  .then(() => {
-    // Con no-cors non possiamo leggere la risposta, ma possiamo assumere che funzioni
-    msg.className = 'resolve-inline-msg ok';
-    msg.textContent = '✅ Richiesta inviata. La segnalazione sarà aggiornata entro qualche minuto.';
-    btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Inviata';
-    
-    // Aggiorna localStorage e UI (ottimisticamente)
-    const reports = loadLocal();
-    const found = reports.find(r => r.token === token);
-    if (found) {
-      found.stato = 'Risolta';
-      saveLocal(reports);
-      
-      const profiloFound = profiloAllReports.find(r => r.token === token);
-      if (profiloFound) {
-        profiloFound.stato = 'Risolta';
+  // Usa XMLHttpRequest invece di fetch con no-cors
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.timeout = 10000; // 10 secondi timeout
+  
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      try {
+        const response = JSON.parse(xhr.responseText);
+        if (response.success) {
+          msg.className = 'resolve-inline-msg ok';
+          msg.textContent = '✅ ' + (response.message || 'Segnalazione risolta con successo!');
+          btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Risolta';
+          
+          // Aggiorna localStorage e UI
+          const reports = loadLocal();
+          const found = reports.find(r => r.token === token);
+          if (found) {
+            found.stato = 'Risolta';
+            saveLocal(reports);
+            
+            const profiloFound = profiloAllReports.find(r => r.token === token);
+            if (profiloFound) {
+              profiloFound.stato = 'Risolta';
+            }
+            
+            const card = btn.closest('.profile-card');
+            const badge = card.querySelector('.stato-badge');
+            if (badge) { 
+              badge.className = 'stato-badge stato-risolta';
+              badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Risolta';
+            }
+            
+            updateSummary(profiloAllReports);
+            applyProfiloFilters();
+          }
+          
+          setTimeout(() => { 
+            const resolveDiv = btn.closest('.pc-resolve');
+            if (resolveDiv) resolveDiv.style.display = 'none'; 
+          }, 3000);
+        } else {
+          throw new Error(response.error || response.message || 'Errore sconosciuto');
+        }
+      } catch(e) {
+        msg.className = 'resolve-inline-msg err';
+        msg.textContent = '❌ ' + (e.message || 'Errore nella risposta del server');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
       }
-      
-      const card = btn.closest('.profile-card');
-      const badge = card.querySelector('.stato-badge');
-      if (badge) { 
-        badge.className = 'stato-badge stato-risolta';
-        badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Risolta';
-      }
-      
-      updateSummary(profiloAllReports);
-      applyProfiloFilters();
+    } else {
+      msg.className = 'resolve-inline-msg err';
+      msg.textContent = '❌ Errore server (' + xhr.status + '). Riprova.';
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
     }
-    
-    setTimeout(() => { 
-      const resolveDiv = btn.closest('.pc-resolve');
-      if (resolveDiv) resolveDiv.style.display = 'none'; 
-    }, 3000);
-  })
-  .catch((err) => {
-    console.error('Errore:', err);
+  };
+  
+  xhr.onerror = function() {
     msg.className = 'resolve-inline-msg err';
-    msg.textContent = '❌ Errore di rete. Riprova.';
+    msg.textContent = '❌ Errore di connessione. Verifica la tua connessione.';
     btn.disabled = false;
     btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
-  });
+  };
+  
+  xhr.ontimeout = function() {
+    msg.className = 'resolve-inline-msg err';
+    msg.textContent = '❌ Timeout. Il server non risponde. Riprova.';
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
+  };
+  
+  xhr.send();
 }
 // ─────────────────────────────────────────────
 //  RIEPILOGO
