@@ -134,8 +134,8 @@ sheetsCsvRisolte: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFH
   form: {
     maxFoto:           4,     // numero massimo di foto allegabili
     categorieVisibili: 6,     // categorie visibili prima del pulsante "mostra altri"
-    maxRisoluzioneImg: 1280,  // larghezza/altezza max foto in px (lato lungo)
-    qualitaJpeg:       0.85,  // qualita compressione JPEG (0.0–1.0)
+    maxRisoluzioneImg: 800,  // larghezza/altezza max foto in px (lato lungo)
+    qualitaJpeg:       0.6,  // qualita compressione JPEG (0.0–1.0)
     maxStoriaProfilo:  50,    // max segnalazioni salvate in localStorage
   },
 
