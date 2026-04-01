@@ -157,10 +157,8 @@ function applyMapTheme() {
   const isDark = document.documentElement.classList.contains('dark');
   
   if (currentMapStyle === 'satellite') {
-    // Satellite: sempre lo stesso (già sufficientemente scuro)
     satelliteLayer.addTo(map);
   } else {
-    // Mappa OSM: scegli versione in base al tema
     if (isDark) {
       osmLayerDark.addTo(map);
     } else {
@@ -181,8 +179,7 @@ function goHome() {
 //  CARICAMENTO CSV
 // ─────────────────────────────────────────────────────────
 async function loadData() {
-  // Usa un unico file CSV per tutte le segnalazioni
-  const url = APP_CONFIG.sheetsCsvTutte; // o APP_CONFIG.sheetsCsvAperte se contiene già tutto
+  const url = APP_CONFIG.sheetsCsvTutte;
   
   if (!url) {
     showDemoData();
@@ -199,9 +196,8 @@ async function loadData() {
     clearTimeout(timeoutId);
     allReports = parseCSV(text);
     
-    // Filtra in base al viewMode per mostrare solo quelle appropriate
     renderCategoryChips();
-    renderAll(); // renderAll() già applica i filtri in base a viewMode
+    renderAll();
     document.getElementById('loadingOverlay').style.display = 'none';
   } catch(e) {
     clearTimeout(timeoutId);
@@ -227,9 +223,7 @@ function parseCSV(text) {
     headers.forEach((h, idx) => {
       obj[h.trim().replace(/^\uFEFF/, '')] = (vals[idx] !== undefined ? vals[idx] : '').trim();
     });
-    // Salta righe senza latitudine valida
     if (!obj.Lat || isNaN(parseFloat(obj.Lat))) continue;
-    // Fallback ID univoco se la colonna ID_Segnalazione manca nel foglio
     if (!obj.ID_Segnalazione) {
       obj.ID_Segnalazione = obj.Timestamp_UTC
         ? 'SGN-' + obj.Timestamp_UTC.replace(/\W/g, '')
@@ -241,7 +235,6 @@ function parseCSV(text) {
   return reports;
 }
 
-// Divide il testo CSV in righe logiche rispettando i campi quoted multiriga
 function splitCSVRows(text) {
   const rows = [];
   let rowStart = 0;
@@ -250,7 +243,7 @@ function splitCSVRows(text) {
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
     if (ch === '"') {
-      if (inQuotes && text[i + 1] === '"') { i++; } // "" escaped quote
+      if (inQuotes && text[i + 1] === '"') { i++; }
       else inQuotes = !inQuotes;
     } else if (ch === '\n' && !inQuotes) {
       rows.push(text.slice(rowStart, i));
@@ -284,28 +277,19 @@ function parseCSVLine(line) {
 }
 
 // ─────────────────────────────────────────────────────────
-//  DATI DEMO (quando gli URL CSV non sono configurati)
+//  DATI DEMO
 // ─────────────────────────────────────────────────────────
 function showDemoData() {
   const now = new Date();
   const fmt = d => d.toLocaleDateString('it-IT');
 
   allReports = [
-    { ID_Segnalazione:'SGN-demo1', Data: fmt(now),                    Categoria:'Buche e dissesti stradali',    Categoria_Emoji:'🕳️', Urgenza:'Alta',    Descrizione:'Buca profonda 30cm in mezzo alla carreggiata',    Nome_Segnalante:'Mario R.',  Indirizzo_Completo:'Via Maqueda 100, Palermo',      Via:'Via Maqueda',       Comune:'Palermo', Lat:'38.1144', Long:'13.3614', Stato:'Nuova',        Fonte_Posizione:'GPS'     },
-    { ID_Segnalazione:'SGN-demo2', Data: fmt(new Date(now-86400000)),  Categoria:'Illuminazione pubblica guasta',Categoria_Emoji:'💡',  Urgenza:'Normale', Descrizione:'Lampione spento da 3 giorni',                     Nome_Segnalante:'Anna B.',   Indirizzo_Completo:'Via Roma 45, Palermo',          Via:'Via Roma',          Comune:'Palermo', Lat:'38.1172', Long:'13.3644', Stato:'In lavorazione',Fonte_Posizione:'GPS'     },
-    { ID_Segnalazione:'SGN-demo3', Data: fmt(new Date(now-172800000)), Categoria:'Rifiuti abbandonati',          Categoria_Emoji:'🗑️', Urgenza:'Normale', Descrizione:'Cumulo di rifiuti ingombranti sul marciapiede',    Nome_Segnalante:'Luca M.',   Indirizzo_Completo:'Piazza Politeama, Palermo',     Via:'Piazza Politeama',  Comune:'Palermo', Lat:'38.1196', Long:'13.3568', Stato:'Risolta',      Fonte_Posizione:'EXIF'    },
-    { ID_Segnalazione:'SGN-demo4', Data: fmt(new Date(now-259200000)), Categoria:'Segnaletica danneggiata',      Categoria_Emoji:'🚧', Urgenza:'Bassa',   Descrizione:'Cartello stradale divelta dal vento',             Nome_Segnalante:'Sara T.',   Indirizzo_Completo:'Via Libertà 120, Palermo',      Via:'Via Libertà',       Comune:'Palermo', Lat:'38.1241', Long:'13.3583', Stato:'Nuova',        Fonte_Posizione:'Manuale' },
-    { ID_Segnalazione:'SGN-demo5', Data: fmt(new Date(now-345600000)), Categoria:'Alberi e verde pubblico',      Categoria_Emoji:'🌳', Urgenza:'Alta',    Descrizione:'Albero pericolante dopo la tempesta',             Nome_Segnalante:'Paolo G.',  Indirizzo_Completo:'Corso Calatafimi 80, Palermo',  Via:'Corso Calatafimi',  Comune:'Palermo', Lat:'38.1098', Long:'13.3412', Stato:'Risolta',      Fonte_Posizione:'GPS'     },
+    { ID_Segnalazione:'SGN-demo1', Data: fmt(now), Categoria:'Cestino pieno', Categoria_Emoji:'🗑️', Urgenza:'Alta', Descrizione:'Cestino traboccante in Piazza San Marco', Nome_Segnalante:'Mario R.', Indirizzo_Completo:'Piazza San Marco, Venezia', Via:'Piazza San Marco', Comune:'Venezia', Lat:'45.4342', Long:'12.3390', Stato:'Nuova', Fonte_Posizione:'GPS' },
+    { ID_Segnalazione:'SGN-demo2', Data: fmt(new Date(now-86400000)), Categoria:'Cestino danneggiato', Categoria_Emoji:'🗑️', Urgenza:'Normale', Descrizione:'Cestino rotto sul Ponte di Rialto', Nome_Segnalante:'Anna B.', Indirizzo_Completo:'Ponte di Rialto, Venezia', Via:'Ponte di Rialto', Comune:'Venezia', Lat:'45.4380', Long:'12.3355', Stato:'In lavorazione', Fonte_Posizione:'GPS' }
   ];
 
   document.getElementById('loadingOverlay').style.display = 'none';
   renderCategoryChips();
-
-  const notice = document.createElement('div');
-  notice.style.cssText = 'position:absolute;top:1rem;left:50%;transform:translateX(-50%);background:#fff8e1;border:1.5px solid #ffd54f;border-radius:8px;padding:0.6rem 1rem;font-size:0.75rem;z-index:300;color:#5a4000;white-space:nowrap;';
-  notice.textContent = '⚠ Dati demo — assicurati che dati/segnalazioni.csv esista nel repository';
-  document.querySelector('.app-body').appendChild(notice);
-
   renderAll();
 }
 
@@ -313,11 +297,7 @@ function showError(msg) {
   document.getElementById('loadingOverlay').innerHTML = `
     <div style="text-align:center;padding:1.5rem 1rem;">
       <p style="color:#c0392b;margin-bottom:0.85rem;font-size:0.9rem;line-height:1.5;">${msg}</p>
-      <button onclick="loadData()"
-        style="background:none;border:1.5px solid #c0392b;border-radius:8px;padding:0.4rem 1rem;
-               font-size:0.85rem;cursor:pointer;color:#c0392b;font-family:'DM Sans',sans-serif;">
-        🔄 Riprova
-      </button>
+      <button onclick="loadData()" style="background:none;border:1.5px solid #c0392b;border-radius:8px;padding:0.4rem 1rem;font-size:0.85rem;cursor:pointer;color:#c0392b;font-family:'DM Sans',sans-serif;">🔄 Riprova</button>
     </div>`;
 }
 
@@ -341,7 +321,7 @@ function resetFilters() {
   });
   const periodoSel = document.getElementById('periodoFilter');
   if (periodoSel) periodoSel.value = 'all';
-  renderCategoryChips();   // ricostruisce il panel con tutte checked
+  renderCategoryChips();
   updateFilterActiveBar();
   renderAll();
 }
@@ -384,16 +364,12 @@ function isInPeriod(dateStr, periodo) {
 
 function applyFilters() {
   return allReports.filter(r => {
-    // Filtra in base al viewMode (aperte/risolte)
     if (viewMode === 'aperte') {
-      // Mostra solo NON risolte (Nuova, In lavorazione)
       if (r.Stato === 'Risolta' || r.Stato === 'Chiusa') return false;
     } else if (viewMode === 'risolte') {
-      // Mostra solo risolte
       if (r.Stato !== 'Risolta') return false;
     }
     
-    // Altri filtri
     if (activeCats !== null && !activeCats.has(r.Categoria)) return false;
     if (!isInPeriod(r.Data, activeFilters.periodo)) return false;
     if (activeFilters.urgenza !== 'all' && r.Urgenza !== activeFilters.urgenza) return false;
@@ -404,7 +380,7 @@ function applyFilters() {
 }
 
 // ─────────────────────────────────────────────────────────
-//  DROPDOWN MULTI-SELECT CATEGORIA
+//  CATEGORIE
 // ─────────────────────────────────────────────────────────
 function renderCategoryChips() {
   const container = document.getElementById('catChecks');
@@ -420,10 +396,10 @@ function renderCategoryChips() {
     div.innerHTML  = `<span class="col-chk${sel ? ' checked' : ''}"></span>`
                    + `<span class="col-opt-label${sel ? ' selected' : ''}">${cat}</span>`;
     div.addEventListener('click', () => {
-      if (activeCats === null) activeCats = new Set(cats);  // da "tutte" a selettivo
+      if (activeCats === null) activeCats = new Set(cats);
       if (activeCats.has(cat)) activeCats.delete(cat);
       else activeCats.add(cat);
-      if (activeCats.size === cats.length) activeCats = null; // tutte selezionate → reset
+      if (activeCats.size === cats.length) activeCats = null;
       const isSel = activeCats === null || activeCats.has(cat);
       div.querySelector('.col-chk').className       = 'col-chk'       + (isSel ? ' checked' : '');
       div.querySelector('.col-opt-label').className = 'col-opt-label' + (isSel ? ' selected' : '');
@@ -465,9 +441,9 @@ function toggleAllCatsClick() {
                    .map(d => d.querySelector('.col-opt-label').textContent);
   const allSel = activeCats === null;
   if (allSel) {
-    activeCats = new Set();   // deseleziona tutte
+    activeCats = new Set();
   } else {
-    activeCats = null;        // seleziona tutte
+    activeCats = null;
   }
   document.querySelectorAll('#catChecks .col-panel-option').forEach(div => {
     const sel = activeCats === null;
@@ -515,7 +491,7 @@ function updateFilterActiveBar() {
 }
 
 // ─────────────────────────────────────────────────────────
-//  RICERCA INDIRIZZO (Nominatim)
+//  RICERCA INDIRIZZO
 // ─────────────────────────────────────────────────────────
 async function searchAddress() {
   const input = document.getElementById('addrInput');
@@ -533,7 +509,6 @@ async function searchAddress() {
     if (data && data.length > 0) {
       const { lat, lon, display_name } = data[0];
       map.setView([parseFloat(lat), parseFloat(lon)], 16, { animate: true });
-      // Marker temporaneo
       const pin = L.marker([parseFloat(lat), parseFloat(lon)], {
         icon: L.divIcon({
           className: '',
@@ -562,7 +537,6 @@ function renderAll() {
 }
 
 function updateStats() {
-  // Calcola i totali su TUTTE le segnalazioni (non filtrate)
   const totali = allReports.length;
   const nuove = allReports.filter(r => r.Stato === 'Nuova').length;
   const lavorazione = allReports.filter(r => r.Stato === 'In lavorazione').length;
@@ -580,7 +554,6 @@ function updateStats() {
     if (statTot) statTot.textContent = totali;
   }
   
-  // Aggiorna il badge nel tab Risolte
   const tabRisolte = document.getElementById('tabRisolte');
   if (tabRisolte) {
     let badge = tabRisolte.querySelector('.tab-badge');
@@ -592,7 +565,6 @@ function updateStats() {
     badge.textContent = risolte;
   }
   
-  // Aggiorna anche il badge nel tab Aperte (opzionale)
   const tabAperte = document.getElementById('tabAperte');
   if (tabAperte) {
     let badge = tabAperte.querySelector('.tab-badge');
@@ -681,4 +653,150 @@ function makePopupHTML(r) {
     html += `<img class="popup-img-thumb" src="${r.URL_Immagine}"
       loading="lazy" title="Clicca per ingrandire"
       onclick="openLightbox('${r.URL_Immagine}')"
-      onerror="this.style.display='none'
+      onerror="this.style.display='none'">`;
+  }
+  return html;
+}
+
+function catIcon(val) {
+  if (!val) return '📌';
+  return val.startsWith('fa-') ? `<i class="${val}"></i>` : val;
+}
+
+function makeStatoBadge(stato) {
+  const cls = { Nuova: 'stato-nuova', 'In lavorazione': 'stato-lavorazione', Risolta: 'stato-risolta', Chiusa: 'stato-chiusa' };
+  return `<span class="stato-badge ${cls[stato] || 'stato-nuova'}">${stato || 'Nuova'}</span>`;
+}
+
+function renderList() {
+  const list = document.getElementById('reportList');
+
+  if (filteredReports.length === 0) {
+    const hasFilters = activeFilters.urgenza !== 'all' || activeFilters.stato !== 'all';
+    list.innerHTML = `<div class="no-results">
+      🔍 Nessuna segnalazione trovata${hasFilters ? ' con i filtri selezionati' : ''}.
+      ${hasFilters ? '<br><button class="no-results-reset" onclick="resetFilters()">Rimuovi filtri</button>' : ''}
+    </div>`;
+    return;
+  }
+
+  const totalPages = Math.ceil(filteredReports.length / PAGE_SIZE);
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const end = start + PAGE_SIZE;
+  const pageReports = filteredReports.slice(start, end);
+
+  let html = '<div class="report-list-container">';
+  pageReports.forEach(report => {
+    const isHighlighted = highlightedId === report.ID_Segnalazione;
+    const addrShort = (report.Via ? report.Via + (report.Numero_Civico ? ' ' + report.Numero_Civico : '') + ', ' : '') +
+                      (report.Comune || report.Indirizzo_Completo || '');
+    
+    html += `
+      <div class="report-item ${isHighlighted ? 'highlight' : ''}" data-id="${report.ID_Segnalazione}" onclick="focusReport('${report.ID_Segnalazione}')">
+        <div class="report-item-header">
+          <span class="report-category">${catIcon(report.Categoria_Emoji)} ${report.Categoria}</span>
+          ${makeStatoBadge(report.Stato)}
+        </div>
+        <div class="report-item-address">📍 ${addrShort}</div>
+        <div class="report-item-date">📅 ${report.Data} ${report.Ora || ''}</div>
+        <div class="report-item-urgency" style="color:${APP_CONFIG.marker[report.Urgenza] || APP_CONFIG.marker.default}">
+          ${report.Urgenza === 'Alta' ? '🔴' : report.Urgenza === 'Bassa' ? '🔵' : '🟠'} ${report.Urgenza}
+        </div>
+        ${report.Descrizione ? `<div class="report-item-desc">${report.Descrizione.substring(0, 100)}${report.Descrizione.length > 100 ? '...' : ''}</div>` : ''}
+      </div>
+    `;
+  });
+  html += '</div>';
+
+  if (totalPages > 1) {
+    html += '<div class="pagination">';
+    html += `<button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹ Precedente</button>`;
+    html += `<span class="page-info">Pagina ${currentPage} di ${totalPages}</span>`;
+    html += `<button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Successiva ›</button>`;
+    html += '</div>';
+  }
+
+  list.innerHTML = html;
+}
+
+function changePage(page) {
+  const totalPages = Math.ceil(filteredReports.length / PAGE_SIZE);
+  if (page < 1 || page > totalPages) return;
+  currentPage = page;
+  renderList();
+  const listContainer = document.getElementById('reportList');
+  if (listContainer) listContainer.scrollTop = 0;
+}
+
+function highlightListItem(id) {
+  document.querySelectorAll('.report-item').forEach(item => {
+    item.classList.remove('highlight');
+  });
+  const item = document.querySelector(`.report-item[data-id="${id}"]`);
+  if (item) {
+    item.classList.add('highlight');
+    item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  highlightedId = id;
+}
+
+function expandReportItem(id) {
+  focusReport(id);
+}
+
+function focusReport(id) {
+  const marker = markerById[id];
+  if (!marker) return;
+  marker.openPopup();
+  highlightListItem(id);
+  map.setView(marker.getLatLng(), Math.max(map.getZoom(), 16), { animate: true });
+}
+
+function openLightbox(imgUrl) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  `;
+  const img = document.createElement('img');
+  img.src = imgUrl;
+  img.style.cssText = `
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  `;
+  overlay.appendChild(img);
+  overlay.onclick = () => overlay.remove();
+  document.body.appendChild(overlay);
+}
+
+// Inizializzazione al caricamento della pagina
+document.addEventListener('DOMContentLoaded', () => {
+  initMap();
+  loadData();
+  
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  if (darkModeToggle) {
+    darkModeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+      applyMapTheme();
+    });
+  }
+  
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+    applyMapTheme();
+  }
+});
