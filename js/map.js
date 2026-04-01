@@ -181,7 +181,9 @@ function goHome() {
 //  CARICAMENTO CSV
 // ─────────────────────────────────────────────────────────
 async function loadData() {
-  const url = viewMode === 'risolte' ? APP_CONFIG.sheetsCsvRisolte : APP_CONFIG.sheetsCsvAperte;
+  // Usa un unico file CSV per tutte le segnalazioni
+  const url = APP_CONFIG.sheetsCsvTutte; // o APP_CONFIG.sheetsCsvAperte se contiene già tutto
+  
   if (!url) {
     showDemoData();
     return;
@@ -196,8 +198,10 @@ async function loadData() {
     const text = await res.text();
     clearTimeout(timeoutId);
     allReports = parseCSV(text);
+    
+    // Filtra in base al viewMode per mostrare solo quelle appropriate
     renderCategoryChips();
-    renderAll();
+    renderAll(); // renderAll() già applica i filtri in base a viewMode
     document.getElementById('loadingOverlay').style.display = 'none';
   } catch(e) {
     clearTimeout(timeoutId);
@@ -380,12 +384,21 @@ function isInPeriod(dateStr, periodo) {
 
 function applyFilters() {
   return allReports.filter(r => {
+    // Filtra in base al viewMode (aperte/risolte)
     if (viewMode === 'aperte') {
-      if (activeFilters.urgenza !== 'all' && r.Urgenza !== activeFilters.urgenza) return false;
-      if (activeFilters.stato   !== 'all' && r.Stato   !== activeFilters.stato)   return false;
+      // Mostra solo NON risolte (Nuova, In lavorazione)
+      if (r.Stato === 'Risolta' || r.Stato === 'Chiusa') return false;
+    } else if (viewMode === 'risolte') {
+      // Mostra solo risolte
+      if (r.Stato !== 'Risolta') return false;
     }
+    
+    // Altri filtri
     if (activeCats !== null && !activeCats.has(r.Categoria)) return false;
     if (!isInPeriod(r.Data, activeFilters.periodo)) return false;
+    if (activeFilters.urgenza !== 'all' && r.Urgenza !== activeFilters.urgenza) return false;
+    if (activeFilters.stato !== 'all' && r.Stato !== activeFilters.stato) return false;
+    
     return true;
   });
 }
@@ -549,20 +562,25 @@ function renderAll() {
 }
 
 function updateStats() {
+  // Calcola i totali su TUTTE le segnalazioni (non filtrate)
+  const totali = allReports.length;
+  const nuove = allReports.filter(r => r.Stato === 'Nuova').length;
+  const lavorazione = allReports.filter(r => r.Stato === 'In lavorazione').length;
+  const risolte = allReports.filter(r => r.Stato === 'Risolta').length;
+  
   if (viewMode === 'risolte') {
     const statRes = document.getElementById('statRes');
-    if (statRes) statRes.textContent = allReports.length;
+    if (statRes) statRes.textContent = risolte;
   } else {
     const statNuove = document.getElementById('statNuove');
     const statLav = document.getElementById('statLav');
     const statTot = document.getElementById('statTot');
-    if (statNuove) statNuove.textContent = allReports.filter(r => r.Stato === 'Nuova').length;
-    if (statLav) statLav.textContent = allReports.filter(r => r.Stato === 'In lavorazione').length;
-    if (statTot) statTot.textContent = allReports.length;
+    if (statNuove) statNuove.textContent = nuove;
+    if (statLav) statLav.textContent = lavorazione;
+    if (statTot) statTot.textContent = totali;
   }
   
-  // Aggiorna anche il badge delle risolte nel tab se presente
-  const risolteCount = allReports.filter(r => r.Stato === 'Risolta').length;
+  // Aggiorna il badge nel tab Risolte
   const tabRisolte = document.getElementById('tabRisolte');
   if (tabRisolte) {
     let badge = tabRisolte.querySelector('.tab-badge');
@@ -571,7 +589,19 @@ function updateStats() {
       badge.className = 'tab-badge';
       tabRisolte.appendChild(badge);
     }
-    badge.textContent = risolteCount;
+    badge.textContent = risolte;
+  }
+  
+  // Aggiorna anche il badge nel tab Aperte (opzionale)
+  const tabAperte = document.getElementById('tabAperte');
+  if (tabAperte) {
+    let badge = tabAperte.querySelector('.tab-badge');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'tab-badge';
+      tabAperte.appendChild(badge);
+    }
+    badge.textContent = nuove + lavorazione;
   }
 }
 
