@@ -407,6 +407,8 @@ function resolveReport(btn) {
   }
   const msg = btn.nextElementSibling;
 
+  console.log('🔍 1. Token trovato:', token);
+
   if (!token) {
     const prev = btn.previousElementSibling;
     if (prev && prev.tagName === 'INPUT') { 
@@ -425,22 +427,26 @@ function resolveReport(btn) {
   msg.textContent = '';
 
   const url = APPS_SCRIPT_URL + '?action=risolvi&token=' + encodeURIComponent(token);
+  console.log('📡 2. URL chiamata:', url);
   
-  // Usa XMLHttpRequest invece di fetch con no-cors
   const xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
-  xhr.timeout = 10000; // 10 secondi timeout
+  xhr.timeout = 15000;
   
   xhr.onload = function() {
+    console.log('📥 3. Status HTTP:', xhr.status);
+    console.log('📄 4. Risposta RAW:', xhr.responseText);
+    
     if (xhr.status === 200) {
       try {
         const response = JSON.parse(xhr.responseText);
+        console.log('✅ 5. JSON parsato:', response);
+        
         if (response.success) {
           msg.className = 'resolve-inline-msg ok';
           msg.textContent = '✅ ' + (response.message || 'Segnalazione risolta con successo!');
           btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Risolta';
           
-          // Aggiorna localStorage e UI
           const reports = loadLocal();
           const found = reports.find(r => r.token === token);
           if (found) {
@@ -468,15 +474,19 @@ function resolveReport(btn) {
             if (resolveDiv) resolveDiv.style.display = 'none'; 
           }, 3000);
         } else {
-          throw new Error(response.error || response.message || 'Errore sconosciuto');
+          console.error('❌ 6. Server ha detto success=false:', response.error);
+          throw new Error(response.error || response.message || 'Errore dal server');
         }
       } catch(e) {
+        console.error('❌ 7. Errore nel parsing JSON:', e);
+        console.error('❌ 8. Risposta che ha causato errore:', xhr.responseText);
         msg.className = 'resolve-inline-msg err';
         msg.textContent = '❌ ' + (e.message || 'Errore nella risposta del server');
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Segna come risolta';
       }
     } else {
+      console.error('❌ 9. Errore HTTP:', xhr.status);
       msg.className = 'resolve-inline-msg err';
       msg.textContent = '❌ Errore server (' + xhr.status + '). Riprova.';
       btn.disabled = false;
@@ -485,6 +495,7 @@ function resolveReport(btn) {
   };
   
   xhr.onerror = function() {
+    console.error('❌ 10. Errore di rete - nessuna connessione');
     msg.className = 'resolve-inline-msg err';
     msg.textContent = '❌ Errore di connessione. Verifica la tua connessione.';
     btn.disabled = false;
@@ -492,6 +503,7 @@ function resolveReport(btn) {
   };
   
   xhr.ontimeout = function() {
+    console.error('❌ 11. Timeout - server non risponde');
     msg.className = 'resolve-inline-msg err';
     msg.textContent = '❌ Timeout. Il server non risponde. Riprova.';
     btn.disabled = false;
