@@ -3465,3 +3465,8 @@ html.dark .stat-card.danger {
 html.dark .stat-card.ok {
   background: linear-gradient(135deg, #1a2a1a 0%, #2a3a2a 100%);
 }
+
+.form-section {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(10px) !important;
+}
