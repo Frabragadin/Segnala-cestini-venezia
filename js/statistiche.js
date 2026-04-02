@@ -87,17 +87,37 @@ function parseCSV(text) {
     return reports;
 }
 function updateStatsCards() {
+    console.log('=== CALCOLO STATISTICHE ===');
+    console.log('Totale report:', allReports.length);
+    
     const totale = allReports.length;
-    const aperte = allReports.filter(r => r.Stato !== 'Risolta' && r.Stato !== 'Chiusa').length;
+    const aperte = allReports.filter(r => r.Stato === 'Nuova' || r.Stato === 'In lavorazione').length;
     const alta = allReports.filter(r => r.Urgenza === 'Alta').length;
     const risolte = allReports.filter(r => r.Stato === 'Risolta').length;
     
-    document.getElementById('scTotale').textContent = totale;
-    document.getElementById('scAperte').textContent = aperte;
-    document.getElementById('scAlta').textContent = alta;
-    document.getElementById('scRisolte').textContent = risolte;
+    console.log('Totale calcolato:', totale);
+    console.log('Aperte (Nuova/In lavorazione):', aperte);
+    console.log('Alta urgenza:', alta);
+    console.log('Risolte:', risolte);
+    
+    // Verifica che gli elementi esistano
+    const elTotale = document.getElementById('scTotale');
+    const elAperte = document.getElementById('scAperte');
+    const elAlta = document.getElementById('scAlta');
+    const elRisolte = document.getElementById('scRisolte');
+    
+    console.log('Elementi DOM trovati:', { 
+        scTotale: !!elTotale, 
+        scAperte: !!elAperte, 
+        scAlta: !!elAlta, 
+        scRisolte: !!elRisolte 
+    });
+    
+    if (elTotale) elTotale.textContent = totale;
+    if (elAperte) elAperte.textContent = aperte;
+    if (elAlta) elAlta.textContent = alta;
+    if (elRisolte) elRisolte.textContent = risolte;
 }
-
 function renderCategoryFilters() {
     const container = document.getElementById('catChips');
     if (!container) return;
