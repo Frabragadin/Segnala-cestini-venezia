@@ -1,6 +1,5 @@
 /**
  * SegnalaCestiniVenezia - Statistiche
- * Gestione grafici e statistiche
  */
 
 let allReports = [];
@@ -12,11 +11,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function loadData() {
-   const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv'; 
+    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv';
+    
+    console.log('URL utilizzato:', url);
+    
     try {
         const response = await fetch(url + '?t=' + Date.now());
+        console.log('Status:', response.status);
         const text = await response.text();
-        console.log('CSV caricato, prime righe:', text.substring(0, 500));
+        console.log('CSV ricevuto, prime 300 caratteri:', text.substring(0, 300));
         
         allReports = parseCSV(text);
         console.log('Segnalazioni trovate:', allReports.length);
@@ -32,6 +35,7 @@ async function loadData() {
         document.getElementById('loadingWrap').innerHTML = '<p>❌ Errore caricamento dati</p>';
     }
 }
+
 function parseCSV(text) {
     const lines = text.split('\n');
     if (lines.length < 2) return [];
@@ -101,7 +105,6 @@ function getFilteredReports() {
 function renderCharts() {
     const filtered = getFilteredReports();
     
-    // Distruggi grafici esistenti
     Object.values(charts).forEach(chart => {
         if (chart) chart.destroy();
     });
@@ -125,11 +128,7 @@ function renderCharts() {
                 borderRadius: 8
             }]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: { legend: { position: 'bottom' } }
-        }
+        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } }
     });
     
     // Grafico urgenza
