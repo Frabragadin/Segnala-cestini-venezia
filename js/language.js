@@ -433,7 +433,9 @@ const translations = {
 // Funzioni principali
 function toggleLangMenu() {
   const menu = document.getElementById('langMenu');
-  menu.classList.toggle('open');
+    if (menu) {
+    menu.classList.toggle('open');
+}
 }
 
 function setLanguage(lang) {
