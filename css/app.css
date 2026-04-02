@@ -3331,3 +3331,137 @@ html.dark .consent-row { color: rgba(245,240,232,0.45); }
 .btn-export-json {
   display: none !important;
 }
+/* ============================================
+   DESIGN MODERNO - GLASSMORPHISM
+   ============================================ */
+
+/* Effetto vetro per le card */
+.form-section,
+.stat-card,
+.chart-card,
+.info-section {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-section:hover,
+.stat-card:hover,
+.chart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Dark mode vetro */
+html.dark .form-section,
+html.dark .stat-card,
+html.dark .chart-card,
+html.dark .info-section {
+  background: rgba(30, 30, 40, 0.85);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Bottoni con gradiente */
+.send-btn,
+.btn-next,
+.btn-sm,
+.cat-chip.active {
+  background: linear-gradient(135deg, var(--amber) 0%, #e8961a 100%);
+  border: none;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.send-btn:hover,
+.btn-next:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 15px rgba(212, 130, 10, 0.3);
+}
+
+/* Animazione pulse per il caricamento */
+.spinner {
+  border: 3px solid rgba(212, 130, 10, 0.2);
+  border-top-color: var(--amber);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Gradiente per l'header */
+header,
+.stats-header {
+  background: linear-gradient(135deg, #1a1208 0%, #2d1f10 100%);
+  color: white;
+}
+
+header h1,
+.stats-header h1 {
+  color: white;
+}
+
+header p,
+.stats-header p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Dark mode header */
+html.dark header,
+html.dark .stats-header {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+}
+
+/* Pulsanti social moderni */
+.social-chip {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.social-chip:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Foto con effetto moderno */
+.photo-thumb {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.photo-thumb:hover {
+  transform: scale(1.03);
+}
+
+/* Card statistiche con gradienti */
+.stat-card.warn {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff0c0 100%);
+}
+
+.stat-card.danger {
+  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+}
+
+.stat-card.ok {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+}
+
+/* Dark mode per le card statistiche */
+html.dark .stat-card.warn {
+  background: linear-gradient(135deg, #3a2a10 0%, #4a3a20 100%);
+}
+
+html.dark .stat-card.danger {
+  background: linear-gradient(135deg, #3a1515 0%, #4a2020 100%);
+}
+
+html.dark .stat-card.ok {
+  background: linear-gradient(135deg, #1a2a1a 0%, #2a3a2a 100%);
+}
