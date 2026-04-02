@@ -12,19 +12,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function loadData() {
-    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?gid=0&single=true&output=csv';
+    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv';
     
-    if (!url) {
-        console.error('URL CSV non configurato');
-        document.getElementById('loadingWrap').style.display = 'none';
-        document.getElementById('statsContent').style.display = 'block';
-        return;
-    }
-
     try {
         const response = await fetch(url + '?t=' + Date.now());
         const text = await response.text();
+        console.log('CSV caricato, prime righe:', text.substring(0, 500));
+        
         allReports = parseCSV(text);
+        console.log('Segnalazioni trovate:', allReports.length);
         
         updateStatsCards();
         renderCategoryFilters();
@@ -37,7 +33,6 @@ async function loadData() {
         document.getElementById('loadingWrap').innerHTML = '<p>❌ Errore caricamento dati</p>';
     }
 }
-
 function parseCSV(text) {
     const lines = text.split('\n');
     if (lines.length < 2) return [];
