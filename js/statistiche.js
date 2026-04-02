@@ -37,23 +37,55 @@ function parseCSV(text) {
     const lines = text.split('\n');
     if (lines.length < 2) return [];
     
+    // Pulisci la prima riga
     const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+    // Rimuovi eventuali colonne vuote alla fine
+    while (headers.length > 0 && headers[headers.length - 1] === '') {
+        headers.pop();
+    }
+    
+    console.log('Headers trovati:', headers);
+    console.log('Numero colonne:', headers.length);
+    
     const reports = [];
     
     for (let i = 1; i < lines.length; i++) {
         if (!lines[i].trim()) continue;
-        const values = lines[i].split(',').map(v => v.replace(/"/g, '').trim());
+        
+        // Pulisci la riga
+        let values = lines[i].split(',').map(v => v.replace(/"/g, '').trim());
+        
+        // Taglia le colonne in eccesso
+        if (values.length > headers.length) {
+            values = values.slice(0, headers.length);
+        }
+        // Riempie le colonne mancanti
+        while (values.length < headers.length) {
+            values.push('');
+        }
+        
         const report = {};
         headers.forEach((h, idx) => {
             report[h] = values[idx] || '';
         });
+        
         if (report.Lat && !isNaN(parseFloat(report.Lat))) {
             reports.push(report);
         }
     }
+    
+    console.log('Report validi:', reports.length);
+    
+    // Controlla la distribuzione degli stati
+    const stati = {};
+    reports.forEach(r => {
+        const s = r.Stato || 'undefined';
+        stati[s] = (stati[s] || 0) + 1;
+    });
+    console.log('Distribuzione stati:', stati);
+    
     return reports;
 }
-
 function updateStatsCards() {
     const totale = allReports.length;
     const aperte = allReports.filter(r => r.Stato !== 'Risolta' && r.Stato !== 'Chiusa').length;
