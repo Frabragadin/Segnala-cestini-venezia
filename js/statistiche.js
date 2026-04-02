@@ -37,36 +37,39 @@ function parseCSV(text) {
     const lines = text.split('\n');
     if (lines.length < 2) return [];
     
-    // Pulisci la prima riga
-    const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
-    // Rimuovi eventuali colonne vuote alla fine
-    while (headers.length > 0 && headers[headers.length - 1] === '') {
-        headers.pop();
-    }
+    // Prendi la prima riga come intestazione
+    let headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
     
-    console.log('Headers trovati:', headers);
-    console.log('Numero colonne:', headers.length);
+    console.log('Headers originali:', headers);
     
     const reports = [];
     
     for (let i = 1; i < lines.length; i++) {
         if (!lines[i].trim()) continue;
         
-        // Pulisci la riga
-        let values = lines[i].split(',').map(v => v.replace(/"/g, '').trim());
+        // Usa regex per gestire le virgole dentro le virgolette
+        const values = [];
+        let inQuotes = false;
+        let current = '';
         
-        // Taglia le colonne in eccesso
-        if (values.length > headers.length) {
-            values = values.slice(0, headers.length);
+        for (let c of lines[i]) {
+            if (c === '"') {
+                inQuotes = !inQuotes;
+            } else if (c === ',' && !inQuotes) {
+                values.push(current.trim());
+                current = '';
+            } else {
+                current += c;
+            }
         }
-        // Riempie le colonne mancanti
-        while (values.length < headers.length) {
-            values.push('');
-        }
+        values.push(current.trim());
+        
+        // Pulisci le virgolette
+        const cleanValues = values.map(v => v.replace(/^"|"$/g, ''));
         
         const report = {};
         headers.forEach((h, idx) => {
-            report[h] = values[idx] || '';
+            report[h] = cleanValues[idx] || '';
         });
         
         if (report.Lat && !isNaN(parseFloat(report.Lat))) {
@@ -74,15 +77,9 @@ function parseCSV(text) {
         }
     }
     
-    console.log('Report validi:', reports.length);
-    
-    // Controlla la distribuzione degli stati
-    const stati = {};
-    reports.forEach(r => {
-        const s = r.Stato || 'undefined';
-        stati[s] = (stati[s] || 0) + 1;
-    });
-    console.log('Distribuzione stati:', stati);
+    console.log('Primo report:', reports[0]);
+    console.log('Stato primo report:', reports[0]?.Stato);
+    console.log('Urgenza primo report:', reports[0]?.Urgenza);
     
     return reports;
 }
