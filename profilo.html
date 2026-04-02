@@ -34,18 +34,31 @@
 <div class="demo-banner"><i class="fa-solid fa-trash-can"></i> Segnala Cestini - Venezia <button class="demo-banner-close" onclick="this.parentElement.style.display='none'" title="Chiudi"><i class="fa-solid fa-xmark"></i></button></div>
 
 <header>
-  <div class="logo-mark"><i class="fa-solid fa-trash-can"></i></div>
+  <div class="logo-mark"><i class="fa-solid fa-location-dot"></i></div>
   <div>
     <h1>Segnala Cestini Venezia</h1>
-    <p>Le mie segnalazioni</p>
+    <p>Segnala un cestino pieno nel territorio comunale</p>
   </div>
   <div class="header-actions">
+    <div class="lang-dropdown">
+      <button class="btn-lang" id="langToggle" onclick="toggleLangMenu()" title="Language">
+        <i class="fa-solid fa-globe"></i> <span id="langText">IT</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="lang-menu" id="langMenu">
+        <button onclick="setLanguage('it')">🇮🇹 Italiano</button>
+        <button onclick="setLanguage('en')">🇬🇧 English</button>
+        <button onclick="setLanguage('es')">🇪🇸 Español</button>
+        <button onclick="setLanguage('fr')">🇫🇷 Français</button>
+        <button onclick="setLanguage('de')">🇩🇪 Deutsch</button>
+        <button onclick="setLanguage('vec')">🦁 Veneziano</button>
+      </div>
+    </div>
     <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="Tema">
       <i class="fa-solid fa-moon"></i>
     </button>
   </div>
 </header>
-
 <main>
   <!-- Riepilogo statistiche -->
   <div class="profile-summary" id="profileSummary" style="display:none"></div>
