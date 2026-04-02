@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function loadData() {
-    const url = APP_CONFIG.sheetsCsvTutte || APP_CONFIG.sheetsCsvAperte;
+    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv';
     
     if (!url) {
         console.error('URL CSV non configurato');
