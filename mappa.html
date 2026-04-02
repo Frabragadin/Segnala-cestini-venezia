@@ -62,15 +62,28 @@
   <div class="logo-mark"><i class="fa-solid fa-location-dot"></i></div>
   <div>
     <h1>Segnala Cestini Venezia</h1>
-    <p>Mappa segnalazioni cestini pieni</p>
+    <p>Segnala un cestino pieno nel territorio comunale</p>
   </div>
-  <div class="header-right">
-    <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="Passa al tema scuro">
+  <div class="header-actions">
+    <div class="lang-dropdown">
+      <button class="btn-lang" id="langToggle" onclick="toggleLangMenu()" title="Language">
+        <i class="fa-solid fa-globe"></i> <span id="langText">IT</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="lang-menu" id="langMenu">
+        <button onclick="setLanguage('it')">🇮🇹 Italiano</button>
+        <button onclick="setLanguage('en')">🇬🇧 English</button>
+        <button onclick="setLanguage('es')">🇪🇸 Español</button>
+        <button onclick="setLanguage('fr')">🇫🇷 Français</button>
+        <button onclick="setLanguage('de')">🇩🇪 Deutsch</button>
+        <button onclick="setLanguage('vec')">🦁 Veneziano</button>
+      </div>
+    </div>
+    <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="Tema">
       <i class="fa-solid fa-moon"></i>
     </button>
   </div>
 </header>
-
 <!-- MODAL RISOLUZIONE (aperto via ?risolvi=TOKEN nell'URL) -->
 <div class="info-overlay" id="resolveOverlay" onclick="if(event.target===this)closeResolve()">
   <div class="info-modal" style="max-width:420px">
