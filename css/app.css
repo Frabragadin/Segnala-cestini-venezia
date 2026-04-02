@@ -3335,14 +3335,14 @@ html.dark .consent-row { color: rgba(245,240,232,0.45); }
    DESIGN MODERNO - GLASSMORPHISM
    ============================================ */
 
-/* Effetto vetro per le card */
+/* Effetto vetro per le card - MENO TRASPARENTE */
 .form-section,
 .stat-card,
 .chart-card,
 .info-section {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -3354,31 +3354,61 @@ html.dark .consent-row { color: rgba(245,240,232,0.45); }
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
 
-/* Dark mode vetro */
+/* Dark mode vetro - MENO TRASPARENTE */
 html.dark .form-section,
 html.dark .stat-card,
 html.dark .chart-card,
 html.dark .info-section {
-  background: rgba(30, 30, 40, 0.85);
+  background: rgba(30, 30, 40, 0.95);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Bottoni con gradiente */
+/* Bottoni con gradiente - PIÙ VISIBILI */
 .send-btn,
 .btn-next,
-.btn-sm,
 .cat-chip.active {
-  background: linear-gradient(135deg, var(--amber) 0%, #e8961a 100%);
+  background: linear-gradient(135deg, var(--amber) 0%, #c07010 100%);
   border: none;
   color: white;
   font-weight: 600;
   transition: all 0.3s ease;
+  opacity: 1;
+  backdrop-filter: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Pulsanti secondari */
+.btn-sm {
+  background: var(--paper);
+  border: 1.5px solid rgba(61, 47, 30, 0.25);
+  color: var(--ink);
+  font-weight: 500;
+  opacity: 1;
+  backdrop-filter: none;
+}
+
+.btn-sm:hover {
+  background: var(--amber);
+  color: white;
+  border-color: var(--amber);
 }
 
 .send-btn:hover,
 .btn-next:hover {
   transform: scale(1.02);
-  box-shadow: 0 4px 15px rgba(212, 130, 10, 0.3);
+  box-shadow: 0 6px 18px rgba(212, 130, 10, 0.4);
+}
+
+/* Dark mode pulsanti secondari */
+html.dark .btn-sm {
+  background: #2a2018;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(245, 240, 232, 0.85);
+}
+
+html.dark .btn-sm:hover {
+  background: var(--amber);
+  color: white;
 }
 
 /* Animazione pulse per il caricamento */
@@ -3466,10 +3496,6 @@ html.dark .stat-card.ok {
   background: linear-gradient(135deg, #1a2a1a 0%, #2a3a2a 100%);
 }
 
-.form-section {
-  background: rgba(255, 255, 255, 0.85) !important;
-  backdrop-filter: blur(10px) !important;
-}
 /* Pulsante cambio lingua */
 .btn-lang {
   background: none;
@@ -3559,9 +3585,7 @@ html.dark .btn-lang:hover { border-color: var(--amber); color: var(--amber); }
 .lang-menu.open {
   display: flex;
 }
-.lang-dropdown {
-  position: relative;
-}
+
 .lang-menu button {
   background: none;
   border: none;
