@@ -3470,3 +3470,29 @@ html.dark .stat-card.ok {
   background: rgba(255, 255, 255, 0.85) !important;
   backdrop-filter: blur(10px) !important;
 }
+/* Pulsante cambio lingua */
+.btn-lang {
+  background: none;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid rgba(61, 47, 30, 0.18);
+  border-radius: 8px;
+  color: #9a8f80;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.btn-lang:hover { border-color: var(--amber); color: var(--amber); }
+.btn-lang i { font-size: 0.8rem; }
+
+html.dark .btn-lang {
+  border-color: rgba(255,255,255,0.15);
+  color: rgba(245,240,232,0.55);
+}
+html.dark .btn-lang:hover { border-color: var(--amber); color: var(--amber); }
