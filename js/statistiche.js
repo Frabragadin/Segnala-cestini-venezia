@@ -11,12 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function loadData() {
-    const originalUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv';
-    const proxyUrl = 'https://api.allorigins.win/raw?url=';
-    const url = proxyUrl + encodeURIComponent(originalUrl);
+      const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv';
     
-    console.log('Caricamento tramite proxy...');
-    
+       
     try {
         const response = await fetch(url + '&t=' + Date.now());
         const text = await response.text();
