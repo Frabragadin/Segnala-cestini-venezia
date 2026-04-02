@@ -11,15 +11,16 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function loadData() {
-    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv';
+    const originalUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRuFsEGIFOFHPeRKV-3UiSpmyxc1nDXhoOEfL6ZghT0p9vIS26zhNdKbjXUDbWvqR193c2FYHOXlOE/pub?output=csv';
+    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+    const url = proxyUrl + encodeURIComponent(originalUrl);
     
-    console.log('URL utilizzato:', url);
+    console.log('Caricamento tramite proxy...');
     
     try {
-        const response = await fetch(url + '?t=' + Date.now());
-        console.log('Status:', response.status);
+        const response = await fetch(url + '&t=' + Date.now());
         const text = await response.text();
-        console.log('CSV ricevuto, prime 300 caratteri:', text.substring(0, 300));
+        console.log('CSV caricato, prime righe:', text.substring(0, 300));
         
         allReports = parseCSV(text);
         console.log('Segnalazioni trovate:', allReports.length);
@@ -35,7 +36,6 @@ async function loadData() {
         document.getElementById('loadingWrap').innerHTML = '<p>❌ Errore caricamento dati</p>';
     }
 }
-
 function parseCSV(text) {
     const lines = text.split('\n');
     if (lines.length < 2) return [];
