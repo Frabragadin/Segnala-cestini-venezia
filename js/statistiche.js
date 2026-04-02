@@ -6,10 +6,10 @@
 
 <link rel="canonical" href="https://frabragadin.github.io/Segnala-cestini-venezia/" />
 <meta name="description" content="Statistiche delle segnalazioni di cestini pieni e rifiuti abbandonati nel territorio di Venezia." />
-    <meta name="author" content="Francesco Bragadin">
-    <meta http-equiv="content-language" content="IT">
-    <meta name="robots" content="index,follow">
-    <meta name="creation_Date" content="01/03/2026">
+<meta name="author" content="Francesco Bragadin">
+<meta http-equiv="content-language" content="IT">
+<meta name="robots" content="index,follow">
+<meta name="creation_Date" content="01/03/2026">
 <title>Statistiche — Segnala Cestini Venezia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
@@ -96,6 +96,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/statistiche.js"></script>
+
+<!-- Cookie Banner -->
+<div id="cookieBanner" class="cookie-banner" style="display:none">
+  <div class="cookie-banner__content">
+    <p><i class="fa-solid fa-cookie-bite"></i> Utilizziamo cookie analitici per migliorare il sito. Leggi la <a href="privacy.html">Privacy Policy</a>.</p>
+    <div class="cookie-banner__actions">
+      <button class="cookie-btn cookie-btn--accept" onclick="cookieAccept()">Accetta</button>
+      <button class="cookie-btn cookie-btn--refuse" onclick="cookieRefuse()">Rifiuta</button>
+    </div>
+  </div>
+</div>
+<script src="js/cookie-consent.js"></script>
 
 <!-- BOTTOM NAV mobile -->
 <nav class="bottom-nav">
