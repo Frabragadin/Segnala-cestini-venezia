@@ -61,15 +61,25 @@
     <p>Segnala un cestino pieno nel territorio comunale</p>
   </div>
   <div class="header-actions">
-    <button class="btn-lang" id="langToggle" onclick="toggleLanguage()" title="Language">
-      <i class="fa-solid fa-globe"></i> <span id="langText">EN</span>
-    </button>
+    <div class="lang-dropdown">
+      <button class="btn-lang" id="langToggle" onclick="toggleLangMenu()" title="Language">
+        <i class="fa-solid fa-globe"></i> <span id="langText">IT</span>
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="lang-menu" id="langMenu">
+        <button onclick="setLanguage('it')">🇮🇹 Italiano</button>
+        <button onclick="setLanguage('en')">🇬🇧 English</button>
+        <button onclick="setLanguage('es')">🇪🇸 Español</button>
+        <button onclick="setLanguage('fr')">🇫🇷 Français</button>
+        <button onclick="setLanguage('de')">🇩🇪 Deutsch</button>
+        <button onclick="setLanguage('vec')">🦁 Veneziano</button>
+      </div>
+    </div>
     <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="Tema">
       <i class="fa-solid fa-moon"></i>
     </button>
   </div>
 </header>
-
 <main>
 
   <!-- ① POSIZIONE — mappa sempre visibile -->
