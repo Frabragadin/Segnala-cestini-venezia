@@ -3559,7 +3559,9 @@ html.dark .btn-lang:hover { border-color: var(--amber); color: var(--amber); }
 .lang-menu.open {
   display: flex;
 }
-
+.lang-dropdown {
+  position: relative;
+}
 .lang-menu button {
   background: none;
   border: none;
