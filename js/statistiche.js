@@ -4,50 +4,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="canonical" href="https://frabragadin.github.io/Segnala-cestini-venezia/" />
-<meta name="description" content="Statistiche delle segnalazioni di cestini pieni e rifiuti abbandonati nel territorio di Venezia." />
-<meta name="author" content="Francesco Bragadin">
-<meta http-equiv="content-language" content="IT">
-<meta name="robots" content="index,follow">
-<meta name="creation_Date" content="01/03/2026">
+<link rel="canonical" href="https://frabragadin.github.io/segnala-cestini-venezia/" />
+<meta name="description" content="Statistiche delle segnalazioni di cestini pieni e rifiuti abbandonati nel territorio di Venezia. Dati aperti e scaricabili." />
+    <meta name="author" content="Francesco Bragadin">
+    <meta http-equiv="content-language" content="IT">
+    <meta name="robots" content="index,follow">
+    <meta name="creation_Date" content="01/03/2026">
 <title>Statistiche — Segnala Cestini Venezia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 <link rel="stylesheet" href="css/app.css">
-<link rel="shortcut icon" href="img/favicon.ico"/>
-<link rel="icon" href="img/favicon.png" type="image/png"/>
-<script src="js/theme.js"></script>
+    <link rel="shortcut icon" href="img/favicon.ico"/>
+    <link rel="icon" href="img/favicon.png" type="image/png"/>
+<script src="js/theme.js"></script> 
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-87653723-4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'UA-87653723-4');
-</script>
 
-<!-- Open Graph / Facebook -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87653723-4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-87653723-4');
+    </script>
+
+    <!-- Open Graph / Facebook -->
 <meta property="og:type"              content="website" />
-<meta property="og:url"               content="https://frabragadin.github.io/Segnala-cestini-venezia/statistiche.html" />
+<meta property="og:url"               content="https://frabragadin.github.io/segnala-cestini-venezia/statistiche.html" />
 <meta property="og:site_name"         content="Segnala Cestini - Venezia" />
-<meta property="og:title"             content="Segnala Cestini Venezia | Statistiche" />
-<meta property="og:description"       content="Statistiche delle segnalazioni di cestini pieni e rifiuti abbandonati nel territorio di Venezia." />
-<meta property="og:image"             content="https://frabragadin.github.io/Segnala-cestini-venezia/img/og-image.jpg" />
+<meta property="og:title"             content="Segnala Cestini Venezia | Statistiche e Open Data" />
+<meta property="og:description"       content="Statistiche delle segnalazioni di cestini pieni e rifiuti abbandonati nel territorio di Venezia. Dati aperti e scaricabili." />
+<meta property="og:image"             content="https://frabragadin.github.io/segnala-cestini-venezia/img/og-image.jpg" />
 <meta property="og:image:width"       content="1200" />
 <meta property="og:image:height"      content="630" />
-<meta property="og:image:alt"         content="Segnala Cestini Venezia – statistiche" />
+<meta property="og:image:alt"         content="Segnala Cestini Venezia – statistiche e open data" />
 <meta property="og:locale"            content="it_IT" />
 
 <!-- Twitter Card -->
 <meta name="twitter:card"             content="summary_large_image" />
 <meta name="twitter:site"             content="@ComuneVenezia" />
 <meta name="twitter:creator"          content="@ComuneVenezia" />
-<meta name="twitter:title"            content="Segnala Cestini Venezia | Statistiche" />
+<meta name="twitter:title"            content="Segnala Cestini Venezia | Statistiche e Open Data" />
 <meta name="twitter:description"      content="Statistiche delle segnalazioni di cestini pieni e rifiuti abbandonati nel territorio di Venezia." />
-<meta name="twitter:image"            content="https://frabragadin.github.io/Segnala-cestini-venezia/img/og-image.jpg" />
-<meta name="twitter:image:alt"        content="Segnala Cestini Venezia – statistiche" />
+<meta name="twitter:image"            content="https://frabragadin.github.io/segnala-cestini-venezia/img/og-image.jpg" />
+<meta name="twitter:image:alt"        content="Segnala Cestini Venezia – statistiche e open data" />
+    
+
 </head>
 <body class="page-stats">
 <div class="demo-banner"><i class="fa-solid fa-trash-can"></i> Segnala Cestini - Venezia <button class="demo-banner-close" onclick="this.parentElement.style.display='none'" title="Chiudi"><i class="fa-solid fa-xmark"></i></button></div>
@@ -56,7 +59,7 @@
   <div class="logo-mark"><i class="fa-solid fa-trash-can"></i></div>
   <div>
     <h1>Segnala Cestini Venezia</h1>
-    <p>Statistiche segnalazioni</p>
+    <p>Statistiche segnalazioni e Open Data</p>
   </div>
   <button class="btn-theme" id="themeToggle" onclick="toggleTheme()" title="Tema">
     <i class="fa-solid fa-moon"></i>
@@ -121,9 +124,64 @@
 
   </div>
 
+  <!-- OPENDATA -->
+  <div class="opendata-divider">
+    <div class="opendata-title">
+      <i class="fa-solid fa-database"></i>
+      <span>Open Data</span>
+    </div>
+    <p class="opendata-desc">I dati sono pubblici e scaricabili liberamente. Esplora la tabella, seleziona le colonne e scarica il CSV.</p>
+    <div class="opendata-actions">
+      <button class="btn-table-toggle" id="btnTableToggle" onclick="toggleTable()">
+        <i class="fa-solid fa-table-list"></i> Tabella dati
+      </button>
+      <a class="btn-metadata btn-metadata--csv" href="dati/metadata-segnalazioni.csv" download="metadata-segnalazioni.csv" title="Scarica i metadati del dataset (CSV — compatibile Excel)">
+        <i class="fa-solid fa-file-csv"></i> Metadati CSV
+      </a>
+      <a class="btn-metadata" href="dati/metadata-segnalazioni.json" download="metadata-segnalazioni.json" title="Scarica i metadati del dataset (JSON)">
+        <i class="fa-solid fa-file-code"></i> Metadati JSON
+      </a>
+    </div>
+  </div>
+
+  <!-- SEZIONE TABELLA -->
+  <div id="tableSection" class="table-section" style="display:none">
+    <div class="table-toolbar">
+      <div class="col-dropdown" id="colDropdown">
+        <div class="col-dropdown-trigger" onclick="toggleColPanel()">
+          <span class="col-dd-badge" id="colDdBadge">0</span>
+          <span class="col-dd-label">Colonne selezionate</span>
+          <span class="col-dd-clear" onclick="clearAllCols(event)" title="Deseleziona tutte"><i class="fa-solid fa-xmark"></i></span>
+          <span class="col-dd-sep">|</span>
+          <i class="col-dd-chevron fa-solid fa-chevron-down" id="colPanelChevron"></i>
+        </div>
+        <div class="col-panel" id="colPanel" style="display:none">
+          <div class="col-panel-option col-panel-opt-all" id="colOptAll" onclick="toggleAllColsClick()">
+            <span class="col-chk" id="colChkAll"></span>
+            <span class="col-opt-label col-opt-all-label">Seleziona tutte</span>
+          </div>
+          <div class="col-checks" id="colChecks"></div>
+        </div>
+      </div>
+      <button class="btn-export-csv" onclick="exportTableCSV()">
+        <i class="fa-solid fa-file-csv"></i> Esporta CSV
+      </button>
+      <button class="btn-export-json" onclick="exportTableJSON()">
+        <i class="fa-solid fa-file-code"></i> Esporta JSON
+      </button>
+    </div>
+    <div class="table-wrap">
+      <table id="dataTable" class="data-table">
+        <thead id="dataTableHead"></thead>
+        <tbody id="dataTableBody"></tbody>
+       </table>
+    </div>
+  </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script src="js/config.js"></script>
 <script src="js/statistiche.js"></script>
 
@@ -151,7 +209,7 @@
   </a>
   <button class="bnav-item bnav-active" type="button">
     <i class="fa-solid fa-chart-simple"></i>
-    <span>Statistiche</span>
+    <span>Statistiche e Open Data</span>
   </button>
   <a class="bnav-item" href="profilo.html">
     <i class="fa-solid fa-user"></i>
