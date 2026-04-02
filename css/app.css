@@ -3321,3 +3321,13 @@ html.dark .consent-row { color: rgba(245,240,232,0.45); }
   color: #ff9900;
   font-size: 1.1rem;
 }
+/* Nasconde la sezione Open Data nelle statistiche */
+.opendata-divider,
+.table-section,
+.btn-table-toggle,
+.opendata-actions,
+.btn-metadata,
+.btn-export-csv,
+.btn-export-json {
+  display: none !important;
+}
