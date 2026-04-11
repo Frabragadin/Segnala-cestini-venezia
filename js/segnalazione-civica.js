@@ -435,38 +435,19 @@ async function updateAddressFromCoords(lat, lng) {
 
 function getGPS() {
   const geoText = document.getElementById('geoText');
-  
-  // Usa t() se disponibile, altrimenti usa il testo in italiano
-  let searching = 'Rilevamento GPS in corso…';
-  if (typeof t === 'function' && t('gps_searching') !== 'gps_searching') {
-    searching = t('gps_searching');
-  }
-  if (geoText) geoText.textContent = searching;
-  
+  if (geoText) geoText.textContent = 'Rilevamento GPS in corso…';
   if (!navigator.geolocation) {
-    let unavailable = 'GPS non disponibile — Clicca sulla mappa per posizionare il marker';
-    if (typeof t === 'function' && t('gps_unavailable') !== 'gps_unavailable') {
-      unavailable = t('gps_unavailable');
-    }
-    if (geoText) geoText.textContent = unavailable;
+    if (geoText) geoText.textContent = 'GPS non disponibile';
     return;
   }
-  
   navigator.geolocation.getCurrentPosition(pos => {
     const { latitude: lat, longitude: lng, accuracy } = pos.coords;
     setPosition(lat, lng, 'GPS', Math.round(accuracy));
-    
-    let success = `✓ Posizione GPS rilevata (±${Math.round(accuracy)} m)`;
-    if (typeof t === 'function' && t('gps_success') !== 'gps_success') {
-      success = t('gps_success', { accuracy: Math.round(accuracy) });
-    }
-    if (geoText) geoText.textContent = success;
+    if (geoText) geoText.textContent = `✓ Posizione GPS rilevata (±${Math.round(accuracy)} m)`;
+    console.log('GPS OK:', lat, lng);
   }, () => {
-    let unavailable = '⚠ GPS non disponibile — Clicca sulla mappa per posizionare il marker';
-    if (typeof t === 'function' && t('gps_unavailable') !== 'gps_unavailable') {
-      unavailable = t('gps_unavailable');
-    }
-    if (geoText) geoText.textContent = unavailable;
+    if (geoText) geoText.textContent = '⚠ GPS non disponibile';
+    console.log('GPS fallito');
   }, { enableHighAccuracy: true, timeout: 10000 });
 }
 
@@ -879,18 +860,10 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Inizializza mappa
   setTimeout(initMap, 150);
-  
-  // GPS: aspetta 1 secondo poi prova, e riprova se fallisce
-  setTimeout(function() {
-    console.log('Primo tentativo GPS');
-    getGPS();
-  }, 500);
-  
-  // Secondo tentativo dopo 2 secondi se ancora non c'è posizione
-  setTimeout(function() {
-    if (!_positionSet) {
-      console.log('Secondo tentativo GPS');
-      getGPS();
-    }
-  }, 2000);
 });
+
+// Forza il GPS dopo 1 secondo (indipendentemente da tutto)
+setTimeout(function() {
+  console.log('Avvio GPS automatico');
+  getGPS();
+}, 1000);
