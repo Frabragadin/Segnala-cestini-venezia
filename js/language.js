@@ -135,6 +135,39 @@ const translations = {
     category_green_areas_desc: 'Aiuola o area verde da manutenere',
     category_mobility_desc: 'Problema relativo a mobilità e trasporti',
     urgency_notes: 'Urgenza e note',
+    // Messaggi GPS e posizione
+  gps_searching: 'Rilevamento GPS in corso…',
+  gps_unavailable: 'GPS non disponibile — Clicca sulla mappa per posizionare il marker',
+  gps_success: '✓ Posizione GPS rilevata (±{accuracy} m)',
+  exif_extracted: '✓ Coordinate estratte dai metadati EXIF della foto',
+  exif_banner_title: 'Posizione estratta dalla foto (EXIF).',
+  exif_banner_text: 'Verifica che il marker corrisponda al luogo del problema. Se non è corretto, trascinalo nella posizione giusta.',
+  exif_banner_btn: 'Usa GPS invece',
+  
+  // Messaggi validazione e form
+  checking: '⏳ Controllo in corso…',
+  sending: '⏳ Invio in corso…',
+  email_invalid: 'Indirizzo email non valido (es: nome@dominio.it).',
+  email_required: 'L\'email è obbligatoria per ricevere la conferma di invio.',
+  category_error: 'Descrivi brevemente la categoria del problema.',
+  valid_email: '✓ Email valida',
+  
+  // Messaggi successo e copia
+  success_detail: 'Segnalazione registrata nell\'archivio. L\'ufficio competente è stato contattato.',
+  copied: '✓ Copiato',
+  copy: '📋 Copia',
+  remove: 'Rimuovi',
+  photos: 'foto',
+  
+  // Pulsanti espandi
+  show_more: '＋ Mostra altri ({count})',
+  show_less: '− Meno',
+  
+  // Titoli sezioni (se mancanti)
+  urgency_notes: 'Urgenza e note',
+  your_data: 'I tuoi dati',
+  detected_address: 'Indirizzo rilevato',
+  waiting_position: 'In attesa di posizione…',
   },
   en: {
     app_title: 'Report Full Bins Venice',
@@ -255,6 +288,39 @@ category_street_lighting_desc: 'Broken or off streetlight',
 category_green_areas_desc: 'Flowerbed or green area to maintain',
 category_mobility_desc: 'Mobility and transport issue',
     urgency_notes: 'Urgency and notes',
+     // GPS and location messages
+  gps_searching: 'GPS detection in progress…',
+  gps_unavailable: 'GPS unavailable — Click on the map to place the marker',
+  gps_success: '✓ GPS position detected (±{accuracy} m)',
+  exif_extracted: '✓ Coordinates extracted from photo EXIF metadata',
+  exif_banner_title: 'Position extracted from photo (EXIF).',
+  exif_banner_text: 'Check that the marker corresponds to the problem location. If not, drag it to the correct position.',
+  exif_banner_btn: 'Use GPS instead',
+  
+  // Validation and form messages
+  checking: '⏳ Checking…',
+  sending: '⏳ Sending…',
+  email_invalid: 'Invalid email address (e.g., name@domain.com).',
+  email_required: 'Email is required to receive confirmation.',
+  category_error: 'Briefly describe the problem category.',
+  valid_email: '✓ Valid email',
+  
+  // Success and copy messages
+  success_detail: 'Report recorded in the archive. The competent office has been contacted.',
+  copied: '✓ Copied',
+  copy: '📋 Copy',
+  remove: 'Remove',
+  photos: 'photos',
+  
+  // Expand buttons
+  show_more: '＋ Show more ({count})',
+  show_less: '− Less',
+  
+  // Section titles (if missing)
+  urgency_notes: 'Urgency and notes',
+  your_data: 'Your data',
+  detected_address: 'Detected address',
+  waiting_position: 'Waiting for position…',
   },
   es: {
     app_title: 'Reportar Contenedores Llenos Venecia',
@@ -375,6 +441,39 @@ category_street_lighting_desc: 'Farola rota o apagada',
 category_green_areas_desc: 'Jardín o zona verde a mantener',
 category_mobility_desc: 'Problema de movilidad y transporte',
      urgency_notes: 'Urgencia y notas',
+     // Mensajes GPS y ubicación
+  gps_searching: 'Detección GPS en curso…',
+  gps_unavailable: 'GPS no disponible — Haz clic en el mapa para colocar el marcador',
+  gps_success: '✓ Posición GPS detectada (±{accuracy} m)',
+  exif_extracted: '✓ Coordenadas extraídas de metadatos EXIF de la foto',
+  exif_banner_title: 'Posición extraída de la foto (EXIF).',
+  exif_banner_text: 'Verifica que el marcador corresponda al lugar del problema. Si no es correcto, arrástralo a la posición correcta.',
+  exif_banner_btn: 'Usar GPS en su lugar',
+  
+  // Mensajes de validación y formulario
+  checking: '⏳ Comprobando…',
+  sending: '⏳ Enviando…',
+  email_invalid: 'Dirección de correo no válida (ej: nombre@dominio.com).',
+  email_required: 'El correo es obligatorio para recibir confirmación.',
+  category_error: 'Describe brevemente la categoría del problema.',
+  valid_email: '✓ Correo válido',
+  
+  // Mensajes de éxito y copia
+  success_detail: 'Reporte registrado en el archivo. Se ha contactado con la oficina competente.',
+  copied: '✓ Copiado',
+  copy: '📋 Copiar',
+  remove: 'Eliminar',
+  photos: 'fotos',
+  
+  // Botones expandir
+  show_more: '＋ Mostrar más ({count})',
+  show_less: '− Menos',
+  
+  // Títulos de secciones
+  urgency_notes: 'Urgencia y notas',
+  your_data: 'Tus datos',
+  detected_address: 'Dirección detectada',
+  waiting_position: 'Esperando posición…',
   },
   fr: {
     app_title: 'Signaler Poubelles Pleines Venise',
@@ -495,6 +594,39 @@ category_street_lighting_desc: 'Lampadaire cassé ou éteint',
 category_green_areas_desc: 'Massif ou espace vert à entretenir',
 category_mobility_desc: 'Problème de mobilité et de transport',
      urgency_notes: 'Urgence et notes',
+    // Messages GPS et position
+  gps_searching: 'Détection GPS en cours…',
+  gps_unavailable: 'GPS indisponible — Cliquez sur la carte pour placer le marqueur',
+  gps_success: '✓ Position GPS détectée (±{accuracy} m)',
+  exif_extracted: '✓ Coordonnées extraites des métadonnées EXIF de la photo',
+  exif_banner_title: 'Position extraite de la photo (EXIF).',
+  exif_banner_text: 'Vérifiez que le marqueur correspond à l\'emplacement du problème. Sinon, faites-le glisser à la bonne position.',
+  exif_banner_btn: 'Utiliser le GPS à la place',
+  
+  // Messages de validation et formulaire
+  checking: '⏳ Vérification…',
+  sending: '⏳ Envoi…',
+  email_invalid: 'Adresse email invalide (ex: nom@domaine.fr).',
+  email_required: 'L\'email est obligatoire pour recevoir la confirmation.',
+  category_error: 'Décrivez brièvement la catégorie du problème.',
+  valid_email: '✓ Email valide',
+  
+  // Messages de succès et copie
+  success_detail: 'Signalement enregistré dans les archives. Le bureau compétent a été contacté.',
+  copied: '✓ Copié',
+  copy: '📋 Copier',
+  remove: 'Supprimer',
+  photos: 'photos',
+  
+  // Boutons d\'expansion
+  show_more: '＋ Afficher plus ({count})',
+  show_less: '− Moins',
+  
+  // Titres de sections
+  urgency_notes: 'Urgence et notes',
+  your_data: 'Vos données',
+  detected_address: 'Adresse détectée',
+  waiting_position: 'En attente de position…',
   },
   de: {
     app_title: 'Volle Mülleimer Venedig melden',
@@ -615,6 +747,39 @@ category_street_lighting_desc: 'Defekte oder ausgeschaltete Straßenlaterne',
 category_green_areas_desc: 'Blumenbeet oder Grünfläche zu pflegen',
 category_mobility_desc: 'Mobilitäts- und Verkehrsproblem',
     urgency_notes: 'Dringlichkeit und Notizen',
+    // GPS- und Positionsmeldungen
+  gps_searching: 'GPS-Erkennung läuft…',
+  gps_unavailable: 'GPS nicht verfügbar — Klicken Sie auf die Karte, um die Markierung zu setzen',
+  gps_success: '✓ GPS-Position erkannt (±{accuracy} m)',
+  exif_extracted: '✓ Koordinaten aus EXIF-Metadaten des Fotos extrahiert',
+  exif_banner_title: 'Position aus dem Foto extrahiert (EXIF).',
+  exif_banner_text: 'Überprüfen Sie, ob die Markierung dem Problemort entspricht. Wenn nicht, ziehen Sie sie an die richtige Position.',
+  exif_banner_btn: 'Stattdessen GPS verwenden',
+  
+  // Validierungs- und Formularmeldungen
+  checking: '⏳ Prüfung…',
+  sending: '⏳ Senden…',
+  email_invalid: 'Ungültige E-Mail-Adresse (z.B. name@domain.de).',
+  email_required: 'E-Mail ist erforderlich, um eine Bestätigung zu erhalten.',
+  category_error: 'Beschreiben Sie kurz die Problemkategorie.',
+  valid_email: '✓ Gültige E-Mail',
+  
+  // Erfolgs- und Kopiermeldungen
+  success_detail: 'Meldung im Archiv gespeichert. Das zuständige Büro wurde kontaktiert.',
+  copied: '✓ Kopiert',
+  copy: '📋 Kopieren',
+  remove: 'Entfernen',
+  photos: 'Fotos',
+  
+  // Erweiterungsbuttons
+  show_more: '＋ Mehr anzeigen ({count})',
+  show_less: '− Weniger',
+  
+  // Abschnittstitel
+  urgency_notes: 'Dringlichkeit und Notizen',
+  your_data: 'Ihre Daten',
+  detected_address: 'Erkannte Adresse',
+  waiting_position: 'Warten auf Position…',
   },
   vec: {
     app_title: 'Segnala Cestini Venesia',
@@ -735,6 +900,39 @@ category_street_lighting_desc: 'Lampion roto o spento',
 category_green_areas_desc: 'Aiuola o area verde da mantegnar',
 category_mobility_desc: 'Problema de mobilità e trasporti',
      urgency_notes: 'Urgensa e note',
+    // Messaggi GPS e posizione
+  gps_searching: 'Rilevamento GPS in corso…',
+  gps_unavailable: 'GPS non disponibile — Clicca sulla mappa par posizionar el marker',
+  gps_success: '✓ Posision GPS rilevata (±{accuracy} m)',
+  exif_extracted: '✓ Coordinate estratte dai metadati EXIF de la foto',
+  exif_banner_title: 'Posision estrata da la foto (EXIF).',
+  exif_banner_text: 'Verifica che el marker corisponda al logo del problema. Se no xe coreto, trascinalo neła posision justa.',
+  exif_banner_btn: 'Dopara GPS invese',
+  
+  // Messaggi validazione e form
+  checking: '⏳ Controło in corso…',
+  sending: '⏳ Invio in corso…',
+  email_invalid: 'Indiriso email no valido (es: nome@dominio.it).',
+  email_required: 'L\'email xe obligatoria par ricevare la conferma de invio.',
+  category_error: 'Descrivi in breve la categoria del problema.',
+  valid_email: '✓ Email valida',
+  
+  // Messaggi successo e copia
+  success_detail: 'Segnalassion rejistrà ne l\'archivio. L\'uficio conpetente xe sta contatà.',
+  copied: '✓ Copià',
+  copy: '📋 Copia',
+  remove: 'Rimuovi',
+  photos: 'foto',
+  
+  // Pulsanti espandi
+  show_more: '＋ Mostra altri ({count})',
+  show_less: '− Manco',
+  
+  // Titoli sezioni
+  urgency_notes: 'Urgensa e note',
+  your_data: 'I to dati',
+  detected_address: 'Indiriso rilevà',
+  waiting_position: 'In atesa de posision…',
   }
 };
 
