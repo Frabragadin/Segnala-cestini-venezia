@@ -739,9 +739,15 @@ function setLanguage(lang) {
   localStorage.setItem('language', currentLang);
   updateUILanguage();
   updateButtonText();
+  
+  // RIGENERA LE CATEGORIE (se la funzione esiste)
+  if (typeof loadDestinatari === 'function') {
+    loadDestinatari();
+  }
+  
   // Chiudi il menu
   const menu = document.getElementById('langMenu');
-  menu.classList.remove('open');
+  if (menu) menu.classList.remove('open');
 }
 
 function updateUILanguage() {
