@@ -435,18 +435,22 @@ async function updateAddressFromCoords(lat, lng) {
 
 function getGPS() {
   const geoText = document.getElementById('geoText');
-  if (geoText) geoText.textContent = 'Rilevamento GPS in corso…';
+  
+  let searching = t('gps_searching');
+  if (geoText) geoText.textContent = searching;
+  
   if (!navigator.geolocation) {
-    if (geoText) geoText.textContent = 'GPS non disponibile';
+    if (geoText) geoText.textContent = t('gps_unavailable');
     return;
   }
+  
   navigator.geolocation.getCurrentPosition(pos => {
     const { latitude: lat, longitude: lng, accuracy } = pos.coords;
     setPosition(lat, lng, 'GPS', Math.round(accuracy));
-    if (geoText) geoText.textContent = `✓ Posizione GPS rilevata (±${Math.round(accuracy)} m)`;
+    if (geoText) geoText.textContent = t('gps_success', { accuracy: Math.round(accuracy) });
     console.log('GPS OK:', lat, lng);
   }, () => {
-    if (geoText) geoText.textContent = '⚠ GPS non disponibile';
+    if (geoText) geoText.textContent = t('gps_unavailable');
     console.log('GPS fallito');
   }, { enableHighAccuracy: true, timeout: 10000 });
 }
@@ -852,18 +856,22 @@ function toggleSocial(platform) {
 // ─────────────────────────────────────────────
 //  INIT
 // ─────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  // Carica destinatari
-  setTimeout(function() {
-    loadDestinatari();
-  }, 100);
-  
-  // Inizializza mappa
-  setTimeout(initMap, 150);
-});
+// Funzione che aspetta la lingua prima di avviare il GPS
+function avviaGPSconTraduzioni() {
+  if (typeof translations !== 'undefined' && translations[currentLang]) {
+    console.log('✅ Lingua pronta, avvio GPS');
+    getGPS();
+  } else {
+    console.log('⏳ Attendo caricamento lingua...');
+    setTimeout(avviaGPSconTraduzioni, 100);
+  }
+}
 
-// Forza il GPS dopo 1 secondo (indipendentemente da tutto)
-setTimeout(function() {
-  console.log('Avvio GPS automatico');
-  getGPS();
-}, 1000);
+// Carica tutto
+loadDestinatari();
+
+// Aspetta che la lingua sia pronta, poi avvia GPS
+avviaGPSconTraduzioni();
+
+// Inizializza mappa
+document.addEventListener('DOMContentLoaded', () => { setTimeout(initMap, 150); });
