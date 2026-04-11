@@ -435,17 +435,38 @@ async function updateAddressFromCoords(lat, lng) {
 
 function getGPS() {
   const geoText = document.getElementById('geoText');
-  if (geoText) geoText.textContent = t('gps_searching');
+  
+  // Usa t() se disponibile, altrimenti usa il testo in italiano
+  let searching = 'Rilevamento GPS in corso…';
+  if (typeof t === 'function' && t('gps_searching') !== 'gps_searching') {
+    searching = t('gps_searching');
+  }
+  if (geoText) geoText.textContent = searching;
+  
   if (!navigator.geolocation) {
-    if (geoText) geoText.textContent = t('gps_unavailable');
+    let unavailable = 'GPS non disponibile — Clicca sulla mappa per posizionare il marker';
+    if (typeof t === 'function' && t('gps_unavailable') !== 'gps_unavailable') {
+      unavailable = t('gps_unavailable');
+    }
+    if (geoText) geoText.textContent = unavailable;
     return;
   }
+  
   navigator.geolocation.getCurrentPosition(pos => {
     const { latitude: lat, longitude: lng, accuracy } = pos.coords;
     setPosition(lat, lng, 'GPS', Math.round(accuracy));
-    if (geoText) geoText.textContent = t('gps_success', { accuracy: Math.round(accuracy) });
+    
+    let success = `✓ Posizione GPS rilevata (±${Math.round(accuracy)} m)`;
+    if (typeof t === 'function' && t('gps_success') !== 'gps_success') {
+      success = t('gps_success', { accuracy: Math.round(accuracy) });
+    }
+    if (geoText) geoText.textContent = success;
   }, () => {
-    if (geoText) geoText.textContent = t('gps_unavailable');
+    let unavailable = '⚠ GPS non disponibile — Clicca sulla mappa per posizionare il marker';
+    if (typeof t === 'function' && t('gps_unavailable') !== 'gps_unavailable') {
+      unavailable = t('gps_unavailable');
+    }
+    if (geoText) geoText.textContent = unavailable;
   }, { enableHighAccuracy: true, timeout: 10000 });
 }
 
@@ -850,17 +871,25 @@ function toggleSocial(platform) {
 // ─────────────────────────────────────────────
 //  INIT
 // ─────────────────────────────────────────────
-// Aspetta che il DOM e la lingua siano pronti
+// Attendi che la lingua sia pronta prima di avviare il GPS
+function avviaGPSquandoPronto() {
+  // Verifica che translations e currentLang siano disponibili
+  if (typeof translations !== 'undefined' && translations[currentLang]) {
+    console.log('Lingua pronta, avvio GPS');
+    getGPS();
+  } else {
+    console.log('Attendo lingua...');
+    setTimeout(avviaGPSquandoPronto, 100);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-  // Piccolo ritardo per assicurarsi che language.js abbia tradotto
   setTimeout(function() {
     loadDestinatari();
   }, 100);
-  getGPS();
+  
+  // Avvia il GPS solo quando la lingua è pronta
+  avviaGPSquandoPronto();
+  
   setTimeout(initMap, 150);
-});
-
-// AGGIUNGI QUESTA RIGA DOPO - Secondo tentativo
-window.addEventListener('load', function() {
-  setTimeout(getGPS, 300);
 });
