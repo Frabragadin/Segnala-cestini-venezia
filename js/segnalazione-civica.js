@@ -871,25 +871,26 @@ function toggleSocial(platform) {
 // ─────────────────────────────────────────────
 //  INIT
 // ─────────────────────────────────────────────
-// Attendi che la lingua sia pronta prima di avviare il GPS
-function avviaGPSquandoPronto() {
-  // Verifica che translations e currentLang siano disponibili
-  if (typeof translations !== 'undefined' && translations[currentLang]) {
-    console.log('Lingua pronta, avvio GPS');
-    getGPS();
-  } else {
-    console.log('Attendo lingua...');
-    setTimeout(avviaGPSquandoPronto, 100);
-  }
-}
-
 document.addEventListener('DOMContentLoaded', function() {
+  // Carica destinatari
   setTimeout(function() {
     loadDestinatari();
   }, 100);
   
-  // Avvia il GPS solo quando la lingua è pronta
-  avviaGPSquandoPronto();
-  
+  // Inizializza mappa
   setTimeout(initMap, 150);
+  
+  // GPS: aspetta 1 secondo poi prova, e riprova se fallisce
+  setTimeout(function() {
+    console.log('Primo tentativo GPS');
+    getGPS();
+  }, 500);
+  
+  // Secondo tentativo dopo 2 secondi se ancora non c'è posizione
+  setTimeout(function() {
+    if (!_positionSet) {
+      console.log('Secondo tentativo GPS');
+      getGPS();
+    }
+  }, 2000);
 });
