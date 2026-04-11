@@ -34,6 +34,32 @@ let reportData = {
 };
 
 // ─────────────────────────────────────────────
+//  FUNZIONE PER TRADURRE LE CATEGORIE
+// ─────────────────────────────────────────────
+function translateCategory(categoryName) {
+  // Verifica se translations è disponibile (da language.js)
+  if (typeof translations === 'undefined' || !translations[currentLang]) {
+    return categoryName;
+  }
+  
+  // Mappa delle categorie italiane alle chiavi di traduzione
+  const categoryMap = {
+    'Cestini pieni': 'category_full_bins',
+    'Rifiuti abbandonati': 'category_abandoned_waste',
+    'Manto stradale': 'category_road_surface',
+    'Illuminazione pubblica': 'category_street_lighting',
+    'Verde pubblico': 'category_green_areas',
+    'Mobilità': 'category_mobility'
+  };
+  
+  const key = categoryMap[categoryName];
+  if (key && translations[currentLang][key]) {
+    return translations[currentLang][key];
+  }
+  return categoryName;
+}
+
+// ─────────────────────────────────────────────
 //  CARICAMENTO DESTINATARI
 // ─────────────────────────────────────────────
 function loadDestinatari() {
@@ -45,13 +71,55 @@ function buildDestGrid() {
   const grid = document.getElementById('destGrid');
   if (!grid) return;
   const VISIBLE = APP_CONFIG.form.categorieVisibili;
-  grid.innerHTML = _destinatari.map((d, i) => `
-    <button type="button" class="dest-btn${i >= VISIBLE ? ' dest-extra' : ''}" id="dest-${d.id}" onclick="selectDest('${d.id}')"${i >= VISIBLE ? ' style="display:none"' : ''}>
-      <span class="dest-icon"><i class="${d.icon}"></i></span>
-      <span class="dest-nome">${d.nome}</span>
-      <span class="dest-sub">${d.descrizione}</span>
-    </button>
-  `).join('');
+  
+  // Ottieni la lingua corrente per le traduzioni
+  const currentLangForGrid = typeof currentLang !== 'undefined' ? currentLang : 'it';
+  
+  grid.innerHTML = _destinatari.map((d, i) => {
+    // Traduci nome e descrizione
+    let nomeTradotto = d.nome;
+    let descTradotta = d.descrizione;
+    
+    // Mappa delle traduzioni per categoria
+    const categoryMap = {
+      'Cestini pieni': 'category_full_bins',
+      'Rifiuti abbandonati': 'category_abandoned_waste',
+      'Manto stradale': 'category_road_surface',
+      'Illuminazione pubblica': 'category_street_lighting',
+      'Verde pubblico': 'category_green_areas',
+      'Mobilità': 'category_mobility'
+    };
+    
+    const key = categoryMap[d.nome];
+    if (key && typeof translations !== 'undefined' && translations[currentLangForGrid] && translations[currentLangForGrid][key]) {
+      nomeTradotto = translations[currentLangForGrid][key];
+      // Genera una descrizione tradotta
+      const descMap = {
+        'Cestini pieni': 'Cestino pubblico da svuotare',
+        'Rifiuti abbandonati': 'Rifiuti lasciati sul suolo pubblico',
+        'Manto stradale': 'Buca o dissesto del manto stradale',
+        'Illuminazione pubblica': 'Lampione guasto o spento',
+        'Verde pubblico': 'Aiuola o area verde da manutenere',
+        'Mobilità': 'Problema relativo a mobilità e trasporti'
+      };
+      if (descMap[d.nome]) {
+        const descKey = categoryMap[d.nome] + '_desc';
+        if (translations[currentLangForGrid][descKey]) {
+          descTradotta = translations[currentLangForGrid][descKey];
+        } else {
+          descTradotta = descMap[d.nome];
+        }
+      }
+    }
+    
+    return `
+      <button type="button" class="dest-btn${i >= VISIBLE ? ' dest-extra' : ''}" id="dest-${d.id}" onclick="selectDest('${d.id}')"${i >= VISIBLE ? ' style="display:none"' : ''}>
+        <span class="dest-icon"><i class="${d.icon}"></i></span>
+        <span class="dest-nome">${nomeTradotto}</span>
+        <span class="dest-sub">${descTradotta}</span>
+      </button>
+    `;
+  }).join('');
 
   const extra = _destinatari.length - VISIBLE;
   const expandBtn = document.getElementById('destExpandBtn');
