@@ -133,6 +133,7 @@ const translations = {
     category_street_lighting_desc: 'Lampione guasto o spento',
     category_green_areas_desc: 'Aiuola o area verde da manutenere',
     category_mobility_desc: 'Problema relativo a mobilità e trasporti',
+    urgency_notes: 'Urgenza e note',
   },
   en: {
     app_title: 'Report Full Bins Venice',
@@ -251,6 +252,7 @@ category_road_surface_desc: 'Pothole or road surface damage',
 category_street_lighting_desc: 'Broken or off streetlight',
 category_green_areas_desc: 'Flowerbed or green area to maintain',
 category_mobility_desc: 'Mobility and transport issue',
+    urgency_notes: 'Urgency and notes',
   },
   es: {
     app_title: 'Reportar Contenedores Llenos Venecia',
@@ -369,6 +371,7 @@ category_road_surface_desc: 'Bacheca o daño en el pavimento',
 category_street_lighting_desc: 'Farola rota o apagada',
 category_green_areas_desc: 'Jardín o zona verde a mantener',
 category_mobility_desc: 'Problema de movilidad y transporte',
+     urgency_notes: 'Urgencia y notas',
   },
   fr: {
     app_title: 'Signaler Poubelles Pleines Venise',
@@ -487,6 +490,7 @@ category_road_surface_desc: 'Nid-de-poule ou dégradation de la chaussée',
 category_street_lighting_desc: 'Lampadaire cassé ou éteint',
 category_green_areas_desc: 'Massif ou espace vert à entretenir',
 category_mobility_desc: 'Problème de mobilité et de transport',
+     urgency_notes: 'Urgence et notes',
   },
   de: {
     app_title: 'Volle Mülleimer Venedig melden',
@@ -605,6 +609,7 @@ category_road_surface_desc: 'Schlagloch oder Straßenschaden',
 category_street_lighting_desc: 'Defekte oder ausgeschaltete Straßenlaterne',
 category_green_areas_desc: 'Blumenbeet oder Grünfläche zu pflegen',
 category_mobility_desc: 'Mobilitäts- und Verkehrsproblem',
+    urgency_notes: 'Dringlichkeit und Notizen',
   },
   vec: {
     app_title: 'Segnala Cestini Venesia',
@@ -723,6 +728,7 @@ category_road_surface_desc: 'Buca o rovinadura del manto stradałe',
 category_street_lighting_desc: 'Lampion roto o spento',
 category_green_areas_desc: 'Aiuola o area verde da mantegnar',
 category_mobility_desc: 'Problema de mobilità e trasporti',
+     urgency_notes: 'Urgensa e note',
   }
 };
 
