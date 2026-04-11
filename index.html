@@ -9,7 +9,7 @@
     <meta http-equiv="content-language" content="IT">
     <meta name="robots" content="index,follow">
     <meta name="creation_Date" content="01/03/2026">
-<title>Segnala Cestini - Venezia</title>
+<title data-i18n="app_title">Segnala Cestini - Venezia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -57,8 +57,8 @@
 <header>
   <div class="logo-mark"><i class="fa-solid fa-location-dot"></i></div>
   <div>
-    <h1>Segnala Cestini Venezia</h1>
-    <p>Segnala un cestino pieno nel territorio comunale</p>
+    <h1 data-i18n="app_title">Segnala Cestini Venezia</h1>
+    <p data-i18n="app_subtitle">Segnala un cestino pieno nel territorio comunale</p>
   </div>
   <div class="header-actions">
     <div class="lang-dropdown">
@@ -87,7 +87,7 @@
     <div class="geo-bar" id="geoStatus">
       <div class="geo-bar-left">
         <div class="dot"></div>
-        <span id="geoText">In attesa di posizione…</span>
+        <span id="geoText" data-i18n="waiting_position">In attesa di posizione…</span>
       </div>
       <div class="geo-bar-right">
         <button class="btn-sm btn-sm--inline" type="button" onclick="getGPS()"><i class="fa-solid fa-location-crosshairs"></i> GPS</button>
@@ -100,101 +100,96 @@
         <button class="exif-banner-btn" type="button" onclick="dismissExifBanner()"><i class="fa-solid fa-location-crosshairs"></i> Usa GPS invece</button>
       </div>
       <div id="map"></div>
-      <label>Indirizzo rilevato</label>
+      <label data-i18n="detected_address">Indirizzo rilevato</label>
       <input type="text" id="addressInput" placeholder="Via/Piazza, Numero Civico — Città">
     </div>
   </section>
 
   <!-- ② FOTO -->
-<!-- ② FOTO -->
 <section class="form-section">
-  <div class="section-title"><i class="fa-solid fa-camera"></i> Foto del problema <span class="section-badge" id="photoCount">0 / 4</span></div>
+  <div class="section-title"><i class="fa-solid fa-camera"></i> <span data-i18n="photo_label">Foto del problema</span> <span class="section-badge" id="photoCount">0 / 4</span></div>
   
-  <!-- AGGIUNGI QUESTO INPUT NASCOSTO -->
   <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
   
   <div class="photo-grid" id="photoGrid">
     <div class="photo-add-slot" id="photoAddSlot" onclick="document.getElementById('fileInput').click()">
       <i class="fa-solid fa-plus"></i>
-      <span>Aggiungi foto</span>
-      <small>JPG · PNG · HEIC · max 1280 px</small>
+      <span data-i18n="add_photo">Aggiungi foto</span>
+      <small data-i18n="photo_note">JPG · PNG · HEIC · max 1280 px</small>
     </div>
   </div>
   <div class="photo-info" id="photoInfo"></div>
 
-  <!-- AVVISO LEGALE -->
   <div class="photo-legal-warning">
     <i class="fa-solid fa-gavel"></i> 
-    <strong>Attenzione:</strong> Le foto false o inappropriate costituiscono un illecito. 
-    Chiunque carichi contenuti non veritieri potrà essere segnalato alle autorità e perseguito 
-    ai sensi della legge italiana.
+    <strong data-i18n="legal_warning_title">Attenzione:</strong> <span data-i18n="legal_warning">Le foto false o inappropriate costituiscono un illecito. Chiunque carichi contenuti non veritieri potrà essere segnalato alle autorità e perseguito ai sensi della legge italiana.</span>
   </div>
 
   <div class="btn-row" style="margin-top:0.8rem">
-    <button class="btn-sm" type="button" onclick="openCamera()"><i class="fa-solid fa-camera"></i> Fotocamera</button>
-    <button class="btn-sm" type="button" onclick="openGallery()"><i class="fa-solid fa-images"></i> Galleria</button>
+    <button class="btn-sm" type="button" onclick="openCamera()"><i class="fa-solid fa-camera"></i> <span data-i18n="camera">Fotocamera</span></button>
+    <button class="btn-sm" type="button" onclick="openGallery()"><i class="fa-solid fa-images"></i> <span data-i18n="gallery">Galleria</span></button>
   </div>
-  <div class="field-error" id="photoZone-error">⚠️ Almeno una foto è obbligatoria.</div>
+  <div class="field-error" id="photoZone-error" data-i18n="photo_required">⚠️ Almeno una foto è obbligatoria.</div>
 </section>
 
   <!-- ③ DESTINATARIO -->
   <section class="form-section">
-    <div class="section-title"><i class="fa-solid fa-paper-plane"></i> A chi segnali?</div>
-    <p class="section-hint">Seleziona il destinatario principale. Se il problema non è in elenco, aggiungi anche <strong>Altro</strong>.</p>
+    <div class="section-title"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="dest_title">A chi segnali?</span></div>
+    <p class="section-hint" data-i18n="dest_hint">Seleziona il destinatario principale. Se il problema non è in elenco, aggiungi anche <strong>Altro</strong>.</p>
     <div class="dest-grid" id="destGrid">
       <!-- Popolato da JS da dati/destinatari.json -->
     </div>
     <button type="button" class="cat-expand-btn" id="destExpandBtn" onclick="toggleDestExpand()" style="display:none"></button>
     <div class="custom-email-row" id="customEmailRow" style="display:none">
-      <label>Email destinatario <span class="label-note">(per Altro)</span></label>
+      <label data-i18n="recipient_email">Email destinatario <span class="label-note">(per Altro)</span></label>
       <input type="email" id="customEmail" placeholder="ufficio@comune.it" oninput="onCustomEmailInput()">
-      <div class="field-error" id="customEmail-error">Inserisci un indirizzo email valido.</div>
+      <div class="field-error" id="customEmail-error" data-i18n="email_error">Inserisci un indirizzo email valido.</div>
     </div>
     <div class="custom-email-row" id="customCatRow" style="display:none">
-      <label>Categoria del problema <span class="label-note">(non presente nell'elenco)</span></label>
+      <label data-i18n="problem_category">Categoria del problema <span class="label-note">(non presente nell'elenco)</span></label>
       <input type="text" id="customCat" placeholder="Es: Vandalismi, Infiltrazioni, Allagamento…" oninput="clearFieldError('customCat')">
-      <div class="field-error" id="customCat-error">Descrivi brevemente la categoria del problema.</div>
+      <div class="field-error" id="customCat-error" data-i18n="category_error">Descrivi brevemente la categoria del problema.</div>
     </div>
-    <div class="field-error" id="dest-error">⚠️ Seleziona un destinatario PA oppure almeno un canale social.</div>
+    <div class="field-error" id="dest-error" data-i18n="dest_error">⚠️ Seleziona un destinatario PA oppure almeno un canale social.</div>
   </section>
 
   <!-- ④ DETTAGLI -->
   <section class="form-section">
-    <div class="section-title"><i class="fa-solid fa-pen-to-square"></i> Urgenza e note</div>
+    <div class="section-title"><i class="fa-solid fa-pen-to-square"></i> <span data-i18n="urgency_notes">Urgenza e note</span></div>
 
-    <label>Urgenza</label>
+    <label data-i18n="urgency">Urgenza</label>
     <div class="select-wrap">
       <select id="urgenza" name="urgenza">
-        <option value="Normale">Normale</option>
-        <option value="Alta">Alta — pericolo immediato</option>
-        <option value="Bassa">Bassa — segnalazione informativa</option>
+        <option value="Normale" data-i18n="normal">Normale</option>
+        <option value="Alta" data-i18n="high">Alta — pericolo immediato</option>
+        <option value="Bassa" data-i18n="low">Bassa — segnalazione informativa</option>
       </select>
     </div>
 
-    <label>Descrizione *</label>
+    <label data-i18n="description">Descrizione *</label>
     <textarea id="descr" placeholder="Es: La buca si trova all'angolo con Via Roma, è larga circa 40 cm…" oninput="clearFieldError('descr')"></textarea>
-    <div class="field-error" id="descr-error">Inserisci una breve descrizione del problema.</div>
+    <div class="field-error" id="descr-error" data-i18n="descr_error">Inserisci una breve descrizione del problema.</div>
   </section>
 
   <!-- ⑤ MITTENTE -->
   <section class="form-section">
-    <div class="section-title"><i class="fa-solid fa-user"></i> I tuoi dati</div>
+    <div class="section-title"><i class="fa-solid fa-user"></i> <span data-i18n="your_data">I tuoi dati</span></div>
 
-    <label>Nome o Nickname *</label>
+    <label data-i18n="name">Nome o Nickname *</label>
     <input type="text" id="nome" placeholder="Il tuo nome o nickname" oninput="clearFieldError('nome')" required>
-    <div class="field-error" id="nome-error">Inserisci il tuo nome o nickname.</div>
+    <div class="field-error" id="nome-error" data-i18n="name_error">Inserisci il tuo nome o nickname.</div>
 
-    <label>Email * <span class="label-note">(ricevi la conferma di invio)</span></label>
+    <label data-i18n="email">Email * <span class="label-note">(ricevi la conferma di invio)</span></label>
     <input type="email" id="email" placeholder="tua@email.it" required
       oninput="onEmailInput()"
       onblur="validateEmailField()">
-    <div class="field-error" id="email-error">Inserisci un indirizzo email valido (es: nome@dominio.it).</div>
+    <div class="field-error" id="email-error" data-i18n="email_error">Inserisci un indirizzo email valido (es: nome@dominio.it).</div>
   </section>
 
   <!-- ⑥ CONDIVIDI -->
   <section class="form-section">
-    <div class="section-title"><i class="fa-solid fa-share-nodes"></i> Condividi la segnalazione</div>
-    <p class="section-hint">Diffondi il problema sui social per aumentare la visibilità</p>
+    <div class="section-title"><i class="fa-solid fa-share-nodes"></i> <span data-i18n="share_title">Condividi la segnalazione</span></div>
+    <p class="section-hint" data-i18n="share_hint">Diffondi il problema sui social per aumentare la visibilità</p>
     <div class="social-chips" id="socialChips">
       <button type="button" class="social-chip" data-platform="twitter"  title="X / Twitter" onclick="toggleSocial('twitter')">
         <i class="fa-brands fa-x-twitter"></i>
@@ -215,7 +210,7 @@
     <p class="field-hint" id="socialHint" style="display:none"><i class="fa-solid fa-circle-info"></i> Il post viene generato automaticamente. Una volta aperta l'app, puoi allegare manualmente la foto prima di inviare.</p>
   </section>
 
-  <!-- HONEYPOT anti-spam — non toccare, deve restare vuoto -->
+  <!-- HONEYPOT anti-spam -->
   <div style="position:absolute;left:-9999px;top:-9999px;width:0;height:0;overflow:hidden;" aria-hidden="true">
     <label for="hp_website">Website</label>
     <input type="text" id="hp_website" name="website" tabindex="-1" autocomplete="off">
@@ -225,10 +220,10 @@
   <section class="form-section form-section--send">
     <label class="consent-row">
       <input type="checkbox" id="privacyConsent">
-      <span>Ho letto e accetto l'<a href="privacy.html" target="_blank">informativa privacy</a> e acconsento al trattamento dei dati personali ai sensi del GDPR 2016/679.</span>
+      <span data-i18n="privacy">Ho letto e accetto l'<a href="privacy.html" target="_blank">informativa privacy</a> e acconsento al trattamento dei dati personali ai sensi del GDPR 2016/679.</span>
     </label>
     <button class="send-btn" id="sendBtn" type="button" onclick="sendReport()">
-      <i class="fa-solid fa-paper-plane"></i> Invia Segnalazione
+      <i class="fa-solid fa-paper-plane"></i> <span data-i18n="send">Invia Segnalazione</span>
     </button>
   </section>
 
@@ -238,32 +233,32 @@
 <div class="success-overlay" id="successOverlay">
   <div class="success-card">
     <span class="success-icon"><i class="fa-solid fa-circle-check"></i></span>
-    <h2>Segnalazione inviata!</h2>
-    <p>Il tuo report è stato trasmesso. Riceverai una conferma via email. Conserva l'ID per seguire l'evoluzione.</p>
+    <h2 data-i18n="success_title">Segnalazione inviata!</h2>
+    <p data-i18n="success_msg">Il tuo report è stato trasmesso. Riceverai una conferma via email. Conserva l'ID per seguire l'evoluzione.</p>
     <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:1.5rem;">
       <div class="tag-id" id="ticketId" style="margin-bottom:0">SGN-000000</div>
       <button id="copyIdBtn" type="button" onclick="copyTicketId()" title="Copia ID"
         style="background:none;border:1px solid rgba(26,18,8,0.25);border-radius:6px;padding:0.3rem 0.6rem;cursor:pointer;font-size:0.8rem;font-family:'Titillium Web',sans-serif;">
-        <i class="fa-regular fa-copy"></i> Copia
+        <i class="fa-regular fa-copy"></i> <span data-i18n="copy">Copia</span>
       </button>
     </div>
     <div class="token-row">
-      <span class="token-label"><i class="fa-solid fa-key"></i> Token risoluzione:</span>
+      <span class="token-label"><i class="fa-solid fa-key"></i> <span data-i18n="token_label">Token risoluzione:</span></span>
       <span class="token-val" id="resolveToken">—</span>
-      <button id="copyTokenBtn" type="button" onclick="copyToken()" class="copy-btn-small" title="Copia token"><i class="fa-regular fa-copy"></i> Copia</button>
+      <button id="copyTokenBtn" type="button" onclick="copyToken()" class="copy-btn-small" title="Copia token"><i class="fa-regular fa-copy"></i> <span data-i18n="copy">Copia</span></button>
     </div>
-    <p class="token-hint">Conserva questo codice: serve alla PA per marcare la segnalazione come risolta.</p>
+    <p class="token-hint" data-i18n="token_hint">Conserva questo codice: serve alla PA per marcare la segnalazione come risolta.</p>
 
     <p id="successDetail" style="margin-bottom:0.5rem;"></p>
     <div class="channels-sent" id="channelsSent"></div>
     <div class="copy-reminder" id="copyReminder">
-      <i class="fa-solid fa-lightbulb"></i> Hai copiato il tuo ID segnalazione? Ne avrai bisogno per seguire l'evoluzione.
-      <button class="copy-reminder-close" type="button" onclick="forceClose()">Chiudi comunque</button>
+      <i class="fa-solid fa-lightbulb"></i> <span data-i18n="copy_reminder">Hai copiato il tuo ID segnalazione? Ne avrai bisogno per seguire l'evoluzione.</span>
+      <button class="copy-reminder-close" type="button" onclick="forceClose()" data-i18n="close_anyway">Chiudi comunque</button>
     </div>
     <br>
     <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
-      <button class="btn-next" type="button" onclick="resetAll()" style="margin:0;"><i class="fa-solid fa-plus"></i> Nuova segnalazione</button>
-      <button type="button" onclick="closeSuccess()" style="margin:0;padding:0.75rem 1.5rem;border-radius:12px;border:1.5px solid rgba(26,18,8,0.25);background:transparent;font-family:'Titillium Web',sans-serif;font-size:0.95rem;font-weight:500;cursor:pointer;color:var(--ink);"><i class="fa-solid fa-xmark"></i> Chiudi</button>
+      <button class="btn-next" type="button" onclick="resetAll()" style="margin:0;"><i class="fa-solid fa-plus"></i> <span data-i18n="new_report">Nuova segnalazione</span></button>
+      <button type="button" onclick="closeSuccess()" style="margin:0;padding:0.75rem 1.5rem;border-radius:12px;border:1.5px solid rgba(26,18,8,0.25);background:transparent;font-family:'Titillium Web',sans-serif;font-size:0.95rem;font-weight:500;cursor:pointer;color:var(--ink);"><i class="fa-solid fa-xmark"></i> <span data-i18n="close">Chiudi</span></button>
     </div>
   </div>
 </div>
@@ -274,10 +269,10 @@
 <!-- Cookie Banner -->
 <div id="cookieBanner" class="cookie-banner" style="display:none">
   <div class="cookie-banner__content">
-    <p><i class="fa-solid fa-cookie-bite"></i> Utilizziamo cookie analitici per migliorare il sito. Leggi la <a href="privacy.html">Privacy Policy</a>.</p>
+    <p><i class="fa-solid fa-cookie-bite"></i> <span data-i18n="cookie_text">Utilizziamo cookie analitici per migliorare il sito. Leggi la</span> <a href="privacy.html" data-i18n="privacy_policy">Privacy Policy</a>.</p>
     <div class="cookie-banner__actions">
-      <button class="cookie-btn cookie-btn--accept" onclick="cookieAccept()">Accetta</button>
-      <button class="cookie-btn cookie-btn--refuse" onclick="cookieRefuse()">Rifiuta</button>
+      <button class="cookie-btn cookie-btn--accept" onclick="cookieAccept()" data-i18n="accept">Accetta</button>
+      <button class="cookie-btn cookie-btn--refuse" onclick="cookieRefuse()" data-i18n="refuse">Rifiuta</button>
     </div>
   </div>
 </div>
@@ -287,27 +282,26 @@
 <nav class="bottom-nav">
   <button class="bnav-item bnav-active" type="button">
     <i class="fa-solid fa-camera"></i>
-    <span>Segnala</span>
+    <span data-i18n="nav_report">Segnala</span>
   </button>
   <a class="bnav-item" href="mappa.html">
     <i class="fa-solid fa-map-location-dot"></i>
-    <span>Mappa</span>
+    <span data-i18n="nav_map">Mappa</span>
   </a>
   <a class="bnav-item" href="statistiche.html">
     <i class="fa-solid fa-chart-simple"></i>
-    <span>Statistiche e Open Data</span>
+    <span data-i18n="nav_stats">Statistiche e Open Data</span>
   </a>
   <a class="bnav-item" href="profilo.html">
     <i class="fa-solid fa-user"></i>
-    <span>Profilo</span>
+    <span data-i18n="nav_profile">Profilo</span>
   </a>
   <a class="bnav-item" href="info.html">
     <i class="fa-solid fa-circle-info"></i>
-    <span>Info</span>
+    <span data-i18n="nav_info">Info</span>
   </a>
 </nav>
 <script>
-  // Registra il Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
@@ -320,7 +314,7 @@
     });
   }
 </script>
-    <!-- LANGUAGE - MULTILINGUA (ultimo) -->
-  <script src="js/language.js"></script>
+<!-- LANGUAGE - MULTILINGUA -->
+<script src="js/language.js"></script>
 </body>
 </html>
