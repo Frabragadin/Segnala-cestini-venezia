@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Informazioni — SegnalaCestiniVenezia</title>
+<title data-i18n="info_title">Informazioni — SegnalaCestiniVenezia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
@@ -17,8 +17,8 @@
 <header>
   <div class="logo-mark"><i class="fa-solid fa-location-dot"></i></div>
   <div>
-    <h1>Segnala Cestini Venezia</h1>
-    <p>Segnala un cestino pieno nel territorio comunale</p>
+    <h1 data-i18n="app_title">Segnala Cestini Venezia</h1>
+    <p data-i18n="app_subtitle">Segnala un cestino pieno nel territorio comunale</p>
   </div>
   <div class="header-actions">
     <div class="lang-dropdown">
@@ -40,84 +40,84 @@
     </button>
   </div>
 </header>
-  <main>
+<main>
 
   <section class="info-section">
-    <h2><i class="fa-solid fa-trash-can"></i> Cos'è SegnalaCestiniVenezia</h2>
-    <p><strong>SegnalaCestiniVenezia</strong> è uno strumento per segnalare cestini pieni e rifiuti abbandonati nel territorio di Venezia. Le segnalazioni vengono inviate a <strong>Veritas</strong> e al <strong>Comune di Venezia</strong> per un tempestivo intervento.</p>
-    <p>Un'architettura semplice e trasparente: il sito è ospitato su GitHub Pages, i dati sono gestiti tramite Google Sheets e pubblicati come Open Data in formato CSV.</p>
+    <h2><i class="fa-solid fa-trash-can"></i> <span data-i18n="what_is_title">Cos'è SegnalaCestiniVenezia</span></h2>
+    <p data-i18n="what_is_text"><strong>SegnalaCestiniVenezia</strong> è uno strumento per segnalare cestini pieni e rifiuti abbandonati nel territorio di Venezia. Le segnalazioni vengono inviate a <strong>Veritas</strong> e al <strong>Comune di Venezia</strong> per un tempestivo intervento.</p>
+    <p data-i18n="architecture_text">Un'architettura semplice e trasparente: il sito è ospitato su GitHub Pages, i dati sono gestiti tramite Google Sheets e pubblicati come Open Data in formato CSV.</p>
   </section>
 
   <section class="info-section">
-    <h2><i class="fa-solid fa-list-ol"></i> Come funziona</h2>
+    <h2><i class="fa-solid fa-list-ol"></i> <span data-i18n="how_it_works_title">Come funziona</span></h2>
     <ol>
-      <li>Scatta una foto del cestino pieno o del rifiuto abbandonato</li>
-      <li>Verifica la posizione sulla mappa (GPS automatico o manuale)</li>
-      <li>Scegli la categoria, descrivi il problema e inserisci i tuoi dati</li>
-      <li>Invia la segnalazione — riceverai una conferma via email con ID e token</li>
+      <li data-i18n="how_it_works_step1">Scatta una foto del cestino pieno o del rifiuto abbandonato</li>
+      <li data-i18n="how_it_works_step2">Verifica la posizione sulla mappa (GPS automatico o manuale)</li>
+      <li data-i18n="how_it_works_step3">Scegli la categoria, descrivi il problema e inserisci i tuoi dati</li>
+      <li data-i18n="how_it_works_step4">Invia la segnalazione — riceverai una conferma via email con ID e token</li>
     </ol>
-    <p>Tutte le segnalazioni sono visibili sulla mappa pubblica e consultabili come Open Data.</p>
+    <p data-i18n="how_it_works_text">Tutte le segnalazioni sono visibili sulla mappa pubblica e consultabili come Open Data.</p>
   </section>
 
   <section class="info-section">
-    <h2><i class="fa-solid fa-circle-check"></i> Come segnalare una risoluzione</h2>
+    <h2><i class="fa-solid fa-circle-check"></i> <span data-i18n="resolve_title">Come segnalare una risoluzione</span></h2>
     <ol>
-      <li>Vai in <a href="profilo.html"><strong>Le mie segnalazioni</strong></a> e trova la segnalazione da chiudere</li>
-      <li>Clicca <strong>Segna come risolta</strong> — se hai il token salvato, l'invio è immediato</li>
-      <li>Altrimenti incolla il token ricevuto via email e clicca <em>Conferma</em></li>
+      <li data-i18n="resolve_step1">Vai in <a href="profilo.html"><strong data-i18n="my_reports">Le mie segnalazioni</strong></a> e trova la segnalazione da chiudere</li>
+      <li data-i18n="resolve_step2">Clicca <strong data-i18n="mark_resolved">Segna come risolta</strong> — se hai il token salvato, l'invio è immediato</li>
+      <li data-i18n="resolve_step3">Altrimenti incolla il token ricevuto via email e clicca <em>Conferma</em></li>
     </ol>
-    <p class="info-note">Il token di risoluzione è incluso nell'email di conferma inviata al momento della segnalazione.</p>
+    <p class="info-note" data-i18n="resolve_note">Il token di risoluzione è incluso nell'email di conferma inviata al momento della segnalazione.</p>
   </section>
 
   <section class="info-section">
-    <h2><i class="fa-solid fa-user"></i> Il tuo profilo</h2>
+    <h2><i class="fa-solid fa-user"></i> <span data-i18n="profile_title">Il tuo profilo</span></h2>
     <ol>
-      <li>Accedi a <a href="profilo.html"><strong>Le mie segnalazioni</strong></a> per vedere tutte le segnalazioni inviate da questo dispositivo</li>
-      <li>Lo stato si aggiorna automaticamente</li>
-      <li>Puoi anche cercare le tue segnalazioni per email</li>
+      <li data-i18n="profile_step1">Accedi a <a href="profilo.html"><strong data-i18n="my_reports">Le mie segnalazioni</strong></a> per vedere tutte le segnalazioni inviate da questo dispositivo</li>
+      <li data-i18n="profile_step2">Lo stato si aggiorna automaticamente</li>
+      <li data-i18n="profile_step3">Puoi anche cercare le tue segnalazioni per email</li>
     </ol>
   </section>
 
   <section class="info-section info-section--links">
-    <h2><i class="fa-solid fa-compass"></i> Naviga</h2>
+    <h2><i class="fa-solid fa-compass"></i> <span data-i18n="navigate_title">Naviga</span></h2>
     <div class="info-links">
       <a href="index.html" class="info-link-card">
         <i class="fa-solid fa-camera"></i>
-        <span>Nuova segnalazione</span>
+        <span data-i18n="new_report">Nuova segnalazione</span>
       </a>
       <a href="mappa.html" class="info-link-card">
         <i class="fa-solid fa-map-location-dot"></i>
-        <span>Mappa pubblica</span>
+        <span data-i18n="nav_map">Mappa pubblica</span>
       </a>
       <a href="statistiche.html" class="info-link-card">
         <i class="fa-solid fa-chart-simple"></i>
-        <span>Statistiche</span>
+        <span data-i18n="nav_stats">Statistiche</span>
       </a>
       <a href="profilo.html" class="info-link-card">
         <i class="fa-solid fa-user"></i>
-        <span>Il mio profilo</span>
+        <span data-i18n="my_profile">Il mio profilo</span>
       </a>
     </div>
   </section>
 
   <section class="info-section">
-    <h2><i class="fa-solid fa-database"></i> Open Data &amp; Download</h2>
-    <p>Tutte le segnalazioni sono pubbliche e scaricabili liberamente in formato <strong>CSV</strong>, aggiornate automaticamente.</p>
-    <p>I dati sono suddivisi in due archivi:</p>
+    <h2><i class="fa-solid fa-database"></i> <span data-i18n="opendata_title">Open Data &amp; Download</span></h2>
+    <p data-i18n="opendata_text">Tutte le segnalazioni sono pubbliche e scaricabili liberamente in formato <strong>CSV</strong>, aggiornate automaticamente.</p>
+    <p data-i18n="opendata_archives">I dati sono suddivisi in due archivi:</p>
     <ul class="info-list">
-      <li><i class="fa-solid fa-folder-open" style="color:var(--amber)"></i> <strong>Segnalazioni aperte</strong> — in attesa di risoluzione</li>
-      <li><i class="fa-solid fa-folder-open" style="color:var(--sage)"></i> <strong>Segnalazioni risolte</strong> — già chiuse</li>
+      <li><i class="fa-solid fa-folder-open" style="color:var(--amber)"></i> <strong data-i18n="open_reports">Segnalazioni aperte</strong> <span data-i18n="open_reports_desc">— in attesa di risoluzione</span></li>
+      <li><i class="fa-solid fa-folder-open" style="color:var(--sage)"></i> <strong data-i18n="resolved_reports">Segnalazioni risolte</strong> <span data-i18n="resolved_reports_desc">— già chiuse</span></li>
     </ul>
     <div class="info-links" style="margin-top:0.75rem">
       <a href="statistiche.html" class="info-link-card">
         <i class="fa-solid fa-chart-simple"></i>
-        <span>Vedi statistiche e dati</span>
+        <span data-i18n="view_stats">Vedi statistiche e dati</span>
       </a>
     </div>
   </section>
 
   <section class="info-section">
-    <h2><i class="fa-solid fa-layer-group"></i> Tecnologie utilizzate</h2>
+    <h2><i class="fa-solid fa-layer-group"></i> <span data-i18n="tech_title">Tecnologie utilizzate</span></h2>
     <div class="info-links">
       <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" class="info-link-card">
         <i class="fa-solid fa-map"></i>
@@ -139,24 +139,24 @@
   </section>
 
   <section class="info-section">
-    <h2><i class="fa-brands fa-creative-commons"></i> Licenza e crediti</h2>
-    <p>Questo progetto è una versione modificata di <strong>SegnalaOra</strong>, realizzato da:</p>
+    <h2><i class="fa-brands fa-creative-commons"></i> <span data-i18n="license_title">Licenza e crediti</span></h2>
+    <p data-i18n="license_text">Questo progetto è una versione modificata di <strong>SegnalaOra</strong>, realizzato da:</p>
     <ul class="info-list">
       <li><strong>Giovan Battista Vitrano</strong> — sviluppo tecnico</li>
       <li><strong>Andrea Borruso, Salvatore Fiandaca, Ciro Spataro</strong> — idea originale</li>
       <li><strong>OpenDataSicilia</strong> — comunità promotrice</li>
     </ul>
-    <p>Adattamento per Venezia, sviluppo e personalizzazioni a cura di <strong>Francesco Bragadin</strong>.</p>
-    <p>Il progetto è distribuito con licenza <strong>Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)</strong>.</p>
+    <p data-i18n="adaptation_text">Adattamento per Venezia, sviluppo e personalizzazioni a cura di <strong>Francesco Bragadin</strong>.</p>
+    <p data-i18n="license_cc_text">Il progetto è distribuito con licenza <strong>Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)</strong>.</p>
   </section>
 
   <section class="info-section">
-    <h2><i class="fa-solid fa-shield-halved"></i> Privacy &amp; Cookie</h2>
-    <p>I dati personali (nome, email, posizione, foto) sono utilizzati esclusivamente per la gestione delle segnalazioni civiche, nel rispetto del <strong>GDPR 2016/679</strong>.</p>
+    <h2><i class="fa-solid fa-shield-halved"></i> <span data-i18n="privacy_title">Privacy &amp; Cookie</span></h2>
+    <p data-i18n="privacy_text">I dati personali (nome, email, posizione, foto) sono utilizzati esclusivamente per la gestione delle segnalazioni civiche, nel rispetto del <strong>GDPR 2016/679</strong>.</p>
     <div class="info-links" style="margin-top:0.75rem">
       <a href="privacy.html" class="info-link-card">
         <i class="fa-solid fa-shield-halved"></i>
-        <span>Privacy Policy</span>
+        <span data-i18n="privacy_policy">Privacy Policy</span>
       </a>
     </div>
   </section>
@@ -166,40 +166,40 @@
 <!-- Cookie Banner -->
 <div id="cookieBanner" class="cookie-banner" style="display:none">
   <div class="cookie-banner__content">
-    <p><i class="fa-solid fa-cookie-bite"></i> Utilizziamo cookie analitici per migliorare il sito. Leggi la <a href="privacy.html">Privacy Policy</a>.</p>
+    <p><i class="fa-solid fa-cookie-bite"></i> <span data-i18n="cookie_text">Utilizziamo cookie analitici per migliorare il sito. Leggi la</span> <a href="privacy.html" data-i18n="privacy_policy_link">Privacy Policy</a>.</p>
     <div class="cookie-banner__actions">
-      <button class="cookie-btn cookie-btn--accept" onclick="cookieAccept()">Accetta</button>
-      <button class="cookie-btn cookie-btn--refuse" onclick="cookieRefuse()">Rifiuta</button>
+      <button class="cookie-btn cookie-btn--accept" onclick="cookieAccept()" data-i18n="accept">Accetta</button>
+      <button class="cookie-btn cookie-btn--refuse" onclick="cookieRefuse()" data-i18n="refuse">Rifiuta</button>
     </div>
   </div>
 </div>
 <script src="js/cookie-consent.js"></script>
-  
-  
+
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <a class="bnav-item" href="index.html">
     <i class="fa-solid fa-camera"></i>
-    <span>Segnala</span>
+    <span data-i18n="nav_report">Segnala</span>
   </a>
   <a class="bnav-item" href="mappa.html">
     <i class="fa-solid fa-map-location-dot"></i>
-    <span>Mappa</span>
+    <span data-i18n="nav_map">Mappa</span>
   </a>
   <a class="bnav-item" href="statistiche.html">
     <i class="fa-solid fa-chart-simple"></i>
-    <span>Statistiche e Open Data</span>
+    <span data-i18n="nav_stats">Statistiche e Open Data</span>
   </a>
   <a class="bnav-item" href="profilo.html">
     <i class="fa-solid fa-user"></i>
-    <span>Profilo</span>
+    <span data-i18n="nav_profile">Profilo</span>
   </a>
   <a class="bnav-item bnav-active" href="info.html">
     <i class="fa-solid fa-circle-info"></i>
-    <span>Info</span>
+    <span data-i18n="nav_info">Info</span>
   </a>
 </nav>
-  <!-- LANGUAGE - MULTILINGUA (ultimo) -->
-  <script src="js/language.js"></script>
+
+<!-- LANGUAGE - MULTILINGUA -->
+<script src="js/language.js"></script>
 </body>
 </html>
