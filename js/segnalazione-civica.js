@@ -435,23 +435,33 @@ async function updateAddressFromCoords(lat, lng) {
 
 function getGPS() {
   const geoText = document.getElementById('geoText');
-  
-  let searching = t('gps_searching');
-  if (geoText) geoText.textContent = searching;
+  if (geoText) {
+    geoText.textContent = t('gps_searching');
+    geoText.setAttribute('data-i18n', 'gps_searching');  // ← AGGIUNGI
+  }
   
   if (!navigator.geolocation) {
-    if (geoText) geoText.textContent = t('gps_unavailable');
+    if (geoText) {
+      geoText.textContent = t('gps_unavailable');
+      geoText.setAttribute('data-i18n', 'gps_unavailable');  // ← AGGIUNGI
+    }
     return;
   }
   
   navigator.geolocation.getCurrentPosition(pos => {
     const { latitude: lat, longitude: lng, accuracy } = pos.coords;
     setPosition(lat, lng, 'GPS', Math.round(accuracy));
-    if (geoText) geoText.textContent = t('gps_success', { accuracy: Math.round(accuracy) });
-    console.log('GPS OK:', lat, lng);
+    if (geoText) {
+      const msg = t('gps_success', { accuracy: Math.round(accuracy) });
+      geoText.textContent = msg;
+      geoText.setAttribute('data-i18n', 'gps_success');  // ← AGGIUNGI (importante!)
+      geoText.setAttribute('data-accuracy', Math.round(accuracy));  // ← AGGIUNGI
+    }
   }, () => {
-    if (geoText) geoText.textContent = t('gps_unavailable');
-    console.log('GPS fallito');
+    if (geoText) {
+      geoText.textContent = t('gps_unavailable');
+      geoText.setAttribute('data-i18n', 'gps_unavailable');  // ← AGGIUNGI
+    }
   }, { enableHighAccuracy: true, timeout: 10000 });
 }
 
