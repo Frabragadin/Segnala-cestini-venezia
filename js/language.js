@@ -119,7 +119,14 @@ const translations = {
     cookie_text: "Utilizziamo cookie analitici per migliorare il sito. Leggi la",
     accept: "Accetta",
     refuse: "Rifiuta",
-    mark_resolved: "Segna come risolta"
+    mark_resolved: "Segna come risolta",
+  // Categorie problemi (aggiungi questo blocco)
+   category_full_bins: 'Cestini pieni',
+   category_abandoned_waste: 'Rifiuti abbandonati',
+   category_road_surface: 'Manto stradale',
+   category_street_lighting: 'Illuminazione pubblica',
+   category_green_areas: 'Verde pubblico',
+   category_mobility: 'Mobilità',
   },
   en: {
     app_title: 'Report Full Bins Venice',
@@ -225,7 +232,14 @@ const translations = {
     cookie_text: "We use analytical cookies to improve the site. Read the",
     accept: "Accept",
     refuse: "Refuse",
-    mark_resolved: "Mark as resolved"
+    mark_resolved: "Mark as resolved",
+    // ... altre traduzioni ...
+  category_full_bins: 'Full bins',
+  category_abandoned_waste: 'Abandoned waste',
+  category_road_surface: 'Road surface',
+  category_street_lighting: 'Street lighting',
+  category_green_areas: 'Public green areas',
+  category_mobility: 'Mobility',
   },
   es: {
     app_title: 'Reportar Contenedores Llenos Venecia',
@@ -331,7 +345,13 @@ const translations = {
     cookie_text: "Utilizamos cookies analíticas para mejorar el sitio. Lee la",
     accept: "Aceptar",
     refuse: "Rechazar",
-    mark_resolved: "Marcar como resuelta"
+    mark_resolved: "Marcar como resuelta",
+    category_full_bins: 'Contenedores llenos',
+    category_abandoned_waste: 'Residuos abandonados',
+    category_road_surface: 'Capa de rodadura',
+    category_street_lighting: 'Alumbrado público',
+    category_green_areas: 'Zonas verdes',
+    category_mobility: 'Movilidad',
   },
   fr: {
     app_title: 'Signaler Poubelles Pleines Venise',
@@ -437,7 +457,13 @@ const translations = {
     cookie_text: "Nous utilisons des cookies analytiques pour améliorer le site. Lisez la",
     accept: "Accepter",
     refuse: "Refuser",
-    mark_resolved: "Marquer comme résolu"
+    mark_resolved: "Marquer comme résolu",
+    category_full_bins: 'Poubelles pleines',
+    category_abandoned_waste: 'Déchets abandonnés',
+    category_road_surface: 'Chaussée',
+    category_street_lighting: 'Éclairage public',
+    category_green_areas: 'Espaces verts',
+    category_mobility: 'Mobilité',
   },
   de: {
     app_title: 'Volle Mülleimer Venedig melden',
@@ -543,7 +569,13 @@ const translations = {
     cookie_text: "Wir verwenden analytische Cookies, um die Website zu verbessern. Lesen Sie die",
     accept: "Akzeptieren",
     refuse: "Ablehnen",
-    mark_resolved: "Als erledigt markieren"
+    mark_resolved: "Als erledigt markieren",
+    category_full_bins: 'Volle Mülleimer',
+    category_abandoned_waste: 'Zurückgelassener Abfall',
+    category_road_surface: 'Straßenbelag',
+    category_street_lighting: 'Straßenbeleuchtung',
+    category_green_areas: 'Grünflächen',
+    category_mobility: 'Mobilität',
   },
   vec: {
     app_title: 'Segnala Cestini Venesia',
@@ -649,7 +681,13 @@ const translations = {
     cookie_text: "Doparimo cookie analitici par mejorar el sito. Lesi la",
     accept: "Aceta",
     refuse: "Rifiuta",
-    mark_resolved: "Segna come risolta"
+    mark_resolved: "Segna come risolta",
+    category_full_bins: 'Cestini pieni',
+    category_abandoned_waste: 'Rifiuti abandonà',
+    category_road_surface: 'Manto stradałe',
+    category_street_lighting: 'Inluminassion publica',
+    category_green_areas: 'Verde publico',
+    category_mobility: 'Mobilità',
   }
 };
 
