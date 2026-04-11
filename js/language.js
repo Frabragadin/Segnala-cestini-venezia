@@ -964,14 +964,22 @@ function updateUILanguage() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (translations[currentLang] && translations[currentLang][key]) {
+      let translation = translations[currentLang][key];
+      
+      // Se è un messaggio GPS con accuratezza
+      if (key === 'gps_success' && el.hasAttribute('data-accuracy')) {
+        const accuracy = el.getAttribute('data-accuracy');
+        translation = translation.replace('{accuracy}', accuracy);
+      }
+      
       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
         if (el.placeholder !== undefined) {
-          el.placeholder = translations[currentLang][key];
+          el.placeholder = translation;
         } else {
-          el.value = translations[currentLang][key];
+          el.value = translation;
         }
       } else {
-        el.textContent = translations[currentLang][key];
+        el.textContent = translation;
       }
     }
   });
