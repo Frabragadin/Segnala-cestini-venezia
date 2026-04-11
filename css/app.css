@@ -3821,3 +3821,25 @@ html.dark body.page-profile .btn-theme:hover {
   border-color: var(--amber) !important;
   color: var(--amber) !important;
 }
+/* ============================================
+   FIX HEADER COLORI - VISIBILITÀ
+   ============================================ */
+
+/* Header testi - sempre visibili */
+header h1,
+header p {
+  color: #3d2f1e !important;  /* var(--ink) in RGB */
+}
+
+/* Header in dark mode */
+html.dark header h1,
+html.dark header p {
+  color: #f5f0e8 !important;  /* var(--paper) in RGB */
+}
+
+/* Bottone lingua e tema */
+.btn-lang,
+.btn-theme {
+  color: #3d2f1e !important;
+  border-color: rgba(61, 47, 30, 0.3) !important;
+}
