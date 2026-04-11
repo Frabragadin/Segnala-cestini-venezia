@@ -34,6 +34,21 @@ let reportData = {
 };
 
 // ─────────────────────────────────────────────
+//  FUNZIONE PER TRADURRE TESTI DINAMICI
+// ─────────────────────────────────────────────
+function t(key, params = {}) {
+  if (typeof translations === 'undefined' || !translations[currentLang]) {
+    return key;
+  }
+  let text = translations[currentLang][key] || key;
+  // Sostituisci i parametri {placeholder}
+  for (const [param, value] of Object.entries(params)) {
+    text = text.replace(`{${param}}`, value);
+  }
+  return text;
+}
+
+// ─────────────────────────────────────────────
 //  FUNZIONE PER TRADURRE LE CATEGORIE
 // ─────────────────────────────────────────────
 function translateCategory(categoryName) {
@@ -125,7 +140,7 @@ function buildDestGrid() {
   const expandBtn = document.getElementById('destExpandBtn');
   if (expandBtn && extra > 0) {
     expandBtn.style.display = 'block';
-    expandBtn.textContent = `＋ Mostra altri (${extra})`;
+    expandBtn.textContent = t('show_more', { count: extra }) || `＋ Mostra altri (${extra})`;
   }
 }
 
@@ -134,7 +149,7 @@ function toggleDestExpand() {
   const btn    = document.getElementById('destExpandBtn');
   const isOpen = extras[0] && extras[0].style.display !== 'none';
   extras.forEach(e => e.style.display = isOpen ? 'none' : 'flex');
-  btn.textContent = isOpen ? `＋ Mostra altri (${extras.length})` : '− Meno';
+  btn.textContent = isOpen ? (t('show_less') || `− Meno`) : (t('show_more', { count: extras.length }) || `＋ Mostra altri (${extras.length})`);
 }
 
 function selectDest(id) {
@@ -272,7 +287,7 @@ function renderPhotoGrid() {
     thumb.className = 'photo-thumb';
     thumb.innerHTML = `
       <img src="${p.base64}" alt="Foto ${i + 1}">
-      <button class="photo-thumb-del" type="button" onclick="removePhoto(${i})" title="Rimuovi">
+      <button class="photo-thumb-del" type="button" onclick="removePhoto(${i})" title="${t('remove') || 'Rimuovi'}">
         <i class="fa-solid fa-xmark"></i>
       </button>
       <span class="photo-thumb-num">${i + 1}</span>`;
@@ -288,7 +303,7 @@ function renderPhotoGrid() {
   const info = document.getElementById('photoInfo');
   if (reportData.photos.length > 0) {
     const sizes = reportData.photos.map(p => (p.base64.length * 0.75 / 1024).toFixed(0) + ' KB').join(' · ');
-    info.textContent = `${reportData.photos.length} foto · ${sizes}`;
+    info.textContent = `${reportData.photos.length} ${t('photos') || 'foto'} · ${sizes}`;
     info.classList.add('visible');
     clearFieldError('photoZone');
     document.getElementById('photoZone-error').classList.remove('visible');
@@ -376,6 +391,7 @@ function setPosition(lat, lng, fonte, accuratezza) {
   }
   updateAddressFromCoords(lat, lng);
 }
+
 // Aggiorna l'indirizzo a partire dalle coordinate (in tempo reale)
 async function updateAddressFromCoords(lat, lng) {
   try {
@@ -419,17 +435,17 @@ async function updateAddressFromCoords(lat, lng) {
 
 function getGPS() {
   const geoText = document.getElementById('geoText');
-  if (geoText) geoText.textContent = 'Rilevamento GPS in corso…';
+  if (geoText) geoText.textContent = t('gps_searching');
   if (!navigator.geolocation) {
-    if (geoText) geoText.textContent = 'GPS non disponibile — Clicca sulla mappa per posizionare il marker';
+    if (geoText) geoText.textContent = t('gps_unavailable');
     return;
   }
   navigator.geolocation.getCurrentPosition(pos => {
     const { latitude: lat, longitude: lng, accuracy } = pos.coords;
     setPosition(lat, lng, 'GPS', Math.round(accuracy));
-    if (geoText) geoText.textContent = `✓ Posizione GPS rilevata (±${Math.round(accuracy)} m)`;
+    if (geoText) geoText.textContent = t('gps_success', { accuracy: Math.round(accuracy) });
   }, () => {
-    if (geoText) geoText.textContent = '⚠ GPS non disponibile — Clicca sulla mappa per posizionare il marker';
+    if (geoText) geoText.textContent = t('gps_unavailable');
   }, { enableHighAccuracy: true, timeout: 10000 });
 }
 
@@ -437,9 +453,18 @@ function useExifGps() {
   if (!reportData.exifLat) return;
   setPosition(reportData.exifLat, reportData.exifLng, 'EXIF');
   const geoText = document.getElementById('geoText');
-  if (geoText) geoText.textContent = '✓ Coordinate estratte dai metadati EXIF della foto';
+  if (geoText) geoText.textContent = t('exif_extracted');
   const banner = document.getElementById('exifBanner');
-  if (banner) banner.style.display = 'block';
+  if (banner) {
+    // Traduci anche il contenuto del banner EXIF
+    const bannerStrong = banner.querySelector('strong');
+    if (bannerStrong) bannerStrong.textContent = t('exif_banner_title') + ' ';
+    const bannerText = banner.childNodes[1];
+    if (bannerText) bannerText.textContent = ' ' + t('exif_banner_text');
+    const bannerBtn = banner.querySelector('.exif-banner-btn');
+    if (bannerBtn) bannerBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> ' + t('exif_banner_btn');
+    banner.style.display = 'block';
+  }
 }
 
 function dismissExifBanner() {
@@ -504,11 +529,11 @@ function validateEmailField() {
   }
   if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
     el.classList.remove('invalid'); el.classList.add('valid');
-    errEl.textContent = '✓ Email valida';
+    errEl.textContent = t('valid_email') || '✓ Email valida';
     errEl.classList.remove('visible'); errEl.classList.add('ok');
   } else {
     el.classList.add('invalid'); el.classList.remove('valid');
-    errEl.textContent = 'Inserisci un indirizzo email valido (es: nome@dominio.it).';
+    errEl.textContent = t('email_error') || 'Inserisci un indirizzo email valido (es: nome@dominio.it).';
     errEl.classList.add('visible'); errEl.classList.remove('ok');
   }
 }
@@ -519,7 +544,7 @@ function validateEmailField() {
 async function sendReport() {
   const btn = document.getElementById('sendBtn');
   btn.disabled = true;
-  btn.textContent = '⏳ Controllo in corso…';
+  btn.textContent = t('checking') || '⏳ Controllo in corso…';
 
   // Validazioni
   let hasError = false;
@@ -543,40 +568,40 @@ async function sendReport() {
   if (_selectedDests.some(d => d.custom)) {
     const customEmail = document.getElementById('customEmail').value.trim();
     if (!customEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customEmail)) {
-      showFieldError('customEmail', 'Inserisci un indirizzo email valido.');
+      showFieldError('customEmail', t('email_error'));
       hasError = true;
     } else {
       toEmails.push(customEmail);
     }
     const customCat = document.getElementById('customCat').value.trim();
     if (!customCat) {
-      showFieldError('customCat', 'Descrivi brevemente la categoria del problema.');
+      showFieldError('customCat', t('category_error'));
       hasError = true;
     }
   }
 
   if (!descr) {
-    showFieldError('descr', 'Inserisci una breve descrizione del problema.');
+    showFieldError('descr', t('descr_error'));
     hasError = true;
   }
 
   const nome = document.getElementById('nome').value.trim();
   if (!nome) {
-    showFieldError('nome', 'Inserisci il tuo nome o nickname.');
+    showFieldError('nome', t('name_error'));
     hasError = true;
   }
 
   const emailSegnalante = document.getElementById('email').value.trim();
   if (!emailSegnalante || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailSegnalante)) {
     showFieldError('email', emailSegnalante
-      ? 'Indirizzo email non valido (es: nome@dominio.it).'
-      : 'L\'email è obbligatoria per ricevere la conferma di invio.');
+      ? t('email_invalid')
+      : t('email_required'));
     hasError = true;
   }
 
   if (hasError) {
     btn.disabled = false;
-    btn.textContent = '✉️ Invia Segnalazione';
+    btn.textContent = t('send') || '✉️ Invia Segnalazione';
     return;
   }
 
@@ -589,11 +614,11 @@ async function sendReport() {
       geoStatus.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     btn.disabled = false;
-    btn.textContent = '✉️ Invia Segnalazione';
+    btn.textContent = t('send') || '✉️ Invia Segnalazione';
     return;
   }
 
-  btn.textContent = '⏳ Invio in corso…';
+  btn.textContent = t('sending') || '⏳ Invio in corso…';
 
   const now      = new Date();
   const ticketId = 'SGN-' + now.getTime();
@@ -726,8 +751,8 @@ try {
   formData.append('categoria', cat);
   formData.append('urgenza', urgenza);
   formData.append('note', descr);
-  formData.append('Nome_Segnalante', nome);        // ← Nome corretto per Apps Script
-  formData.append('Email_Segnalante', emailSegnalante);  // ← Nome corretto per Apps Script
+  formData.append('Nome_Segnalante', nome);
+  formData.append('Email_Segnalante', emailSegnalante);
 
    // 📸 AGGIUNGI LE FOTO
 for (let i = 0; i < reportData.photos.length; i++) {
@@ -763,8 +788,7 @@ for (let i = 0; i < reportData.photos.length; i++) {
   document.getElementById('ticketId').textContent     = ticketId;
   document.getElementById('resolveToken').textContent = token;
   document.getElementById('copyReminder').classList.remove('visible');
-  document.getElementById('successDetail').textContent =
-    'Segnalazione registrata nell\'archivio. L\'ufficio competente è stato contattato.';
+  document.getElementById('successDetail').textContent = t('success_detail') || 'Segnalazione registrata nell\'archivio. L\'ufficio competente è stato contattato.';
 
   const badgesEl = document.getElementById('channelsSent');
   badgesEl.innerHTML = channelsBadges.map(b => `<span class="channel-badge">✓ ${b}</span>`).join('');
@@ -794,8 +818,8 @@ function copyTicketId() {
     _ticketCopied = true;
     document.getElementById('copyReminder').classList.remove('visible');
     const btn = document.getElementById('copyIdBtn');
-    btn.textContent = '✓ Copiato';
-    setTimeout(() => { btn.textContent = '📋 Copia'; }, 1800);
+    btn.textContent = t('copied') || '✓ Copiato';
+    setTimeout(() => { btn.textContent = t('copy') || '📋 Copia'; }, 1800);
   });
 }
 
@@ -803,8 +827,8 @@ function copyToken() {
   const token = document.getElementById('resolveToken').textContent;
   navigator.clipboard.writeText(token).then(() => {
     const btn = document.getElementById('copyTokenBtn');
-    btn.textContent = '✓ Copiato';
-    setTimeout(() => { btn.textContent = '📋 Copia'; }, 1800);
+    btn.textContent = t('copied') || '✓ Copiato';
+    setTimeout(() => { btn.textContent = t('copy') || '📋 Copia'; }, 1800);
   });
 }
 
