@@ -859,3 +859,8 @@ document.addEventListener('DOMContentLoaded', function() {
   getGPS();
   setTimeout(initMap, 150);
 });
+
+// AGGIUNGI QUESTA RIGA DOPO - Secondo tentativo
+window.addEventListener('load', function() {
+  setTimeout(getGPS, 300);
+});
