@@ -239,8 +239,7 @@ const translations = {
     accept: "Accept",
     refuse: "Refuse",
     mark_resolved: "Mark as resolved",
-    // ... altre traduzioni ...
-  category_full_bins: 'Full bins',
+    category_full_bins: 'Full bins',
   category_abandoned_waste: 'Abandoned waste',
   category_road_surface: 'Road surface',
   category_street_lighting: 'Street lighting',
