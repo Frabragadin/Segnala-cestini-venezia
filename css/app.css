@@ -3422,28 +3422,7 @@ html.dark .btn-sm:hover {
   to { transform: rotate(360deg); }
 }
 
-/* Gradiente per l'header */
-header,
-.stats-header {
-  background: linear-gradient(135deg, #1a1208 0%, #2d1f10 100%);
-  color: white;
-}
 
-header h1,
-.stats-header h1 {
-  color: white;
-}
-
-header p,
-.stats-header p {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-/* Dark mode header */
-html.dark header,
-html.dark .stats-header {
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-}
 
 /* Pulsanti social moderni */
 .social-chip {
