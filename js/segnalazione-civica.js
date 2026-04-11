@@ -826,6 +826,12 @@ function toggleSocial(platform) {
 // ─────────────────────────────────────────────
 //  INIT
 // ─────────────────────────────────────────────
-loadDestinatari();
-getGPS();
-document.addEventListener('DOMContentLoaded', () => { setTimeout(initMap, 150); });
+// Aspetta che il DOM e la lingua siano pronti
+document.addEventListener('DOMContentLoaded', function() {
+  // Piccolo ritardo per assicurarsi che language.js abbia tradotto
+  setTimeout(function() {
+    loadDestinatari();
+  }, 100);
+  getGPS();
+  setTimeout(initMap, 150);
+});
