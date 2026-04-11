@@ -3843,3 +3843,33 @@ html.dark header p {
   color: #3d2f1e !important;
   border-color: rgba(61, 47, 30, 0.3) !important;
 }
+
+.btn-lang:hover,
+.btn-theme:hover {
+  border-color: #d4820a !important;
+  color: #d4820a !important;
+}
+
+/* Dark mode per bottoni */
+html.dark .btn-lang,
+html.dark .btn-theme {
+  color: #f5f0e8 !important;
+  border-color: rgba(245, 240, 232, 0.3) !important;
+}
+
+html.dark .btn-lang:hover,
+html.dark .btn-theme:hover {
+  border-color: #d4820a !important;
+  color: #d4820a !important;
+}
+
+/* Logo mark - sempre visibile */
+.logo-mark {
+  background: #d4820a !important;
+  color: white !important;
+}
+
+/* Icone nell'header */
+header i {
+  color: inherit;
+}
