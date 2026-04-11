@@ -3630,3 +3630,194 @@ html.dark .btn-lang:hover {
   border-color: var(--amber);
   color: var(--amber);
 }
+
+/* ═══════════════════════════════════════════════════════
+   HEADER ACTIONS - per TUTTE le pagine (map, info, stats, profile)
+   ═══════════════════════════════════════════════════════ */
+
+/* Assicura che header-actions sia all'estrema destra su tutte le pagine */
+body.page-map .header-actions,
+body.page-info .header-actions,
+body.page-stats .header-actions,
+body.page-profile .header-actions {
+  margin-left: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  flex-shrink: 0 !important;
+}
+
+/* Dropdown lingua - uniforme su tutte le pagine */
+body.page-map .lang-dropdown,
+body.page-info .lang-dropdown,
+body.page-stats .lang-dropdown,
+body.page-profile .lang-dropdown {
+  position: relative !important;
+  display: inline-block !important;
+}
+
+body.page-map .btn-lang,
+body.page-info .btn-lang,
+body.page-stats .btn-lang,
+body.page-profile .btn-lang {
+  background: none !important;
+  width: auto !important;
+  min-width: 60px !important;
+  height: 34px !important;
+  border: 1.5px solid rgba(61, 47, 30, 0.18) !important;
+  border-radius: 8px !important;
+  color: #9a8f80 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.4rem !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  transition: border-color 0.2s, color 0.2s !important;
+  flex-shrink: 0 !important;
+  padding: 0 0.8rem !important;
+}
+
+body.page-map .btn-lang:hover,
+body.page-info .btn-lang:hover,
+body.page-stats .btn-lang:hover,
+body.page-profile .btn-lang:hover {
+  border-color: var(--amber) !important;
+  color: var(--amber) !important;
+}
+
+/* Menu a tendina lingua */
+body.page-map .lang-menu,
+body.page-info .lang-menu,
+body.page-stats .lang-menu,
+body.page-profile .lang-menu {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  margin-top: 8px !important;
+  background: var(--paper) !important;
+  border: 1px solid rgba(60, 40, 20, 0.15) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  display: none !important;
+  flex-direction: column !important;
+  min-width: 140px !important;
+  z-index: 1000 !important;
+  overflow: hidden !important;
+}
+
+body.page-map .lang-menu.open,
+body.page-info .lang-menu.open,
+body.page-stats .lang-menu.open,
+body.page-profile .lang-menu.open {
+  display: flex !important;
+}
+
+body.page-map .lang-menu button,
+body.page-info .lang-menu button,
+body.page-stats .lang-menu button,
+body.page-profile .lang-menu button {
+  background: none !important;
+  border: none !important;
+  padding: 0.6rem 1rem !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  font-family: 'Titillium Web', sans-serif !important;
+  font-size: 0.85rem !important;
+  color: var(--ink) !important;
+  transition: background 0.2s !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+body.page-map .lang-menu button:hover,
+body.page-info .lang-menu button:hover,
+body.page-stats .lang-menu button:hover,
+body.page-profile .lang-menu button:hover {
+  background: rgba(212, 130, 10, 0.1) !important;
+  color: var(--amber) !important;
+}
+
+/* Dark mode per tutte le pagine */
+html.dark body.page-map .lang-menu,
+html.dark body.page-info .lang-menu,
+html.dark body.page-stats .lang-menu,
+html.dark body.page-profile .lang-menu {
+  background: #1a1410 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark body.page-map .lang-menu button,
+html.dark body.page-info .lang-menu button,
+html.dark body.page-stats .lang-menu button,
+html.dark body.page-profile .lang-menu button {
+  color: rgba(245, 240, 232, 0.85) !important;
+}
+
+html.dark body.page-map .lang-menu button:hover,
+html.dark body.page-info .lang-menu button:hover,
+html.dark body.page-stats .lang-menu button:hover,
+html.dark body.page-profile .lang-menu button:hover {
+  background: rgba(212, 130, 10, 0.15) !important;
+  color: var(--amber) !important;
+}
+
+html.dark body.page-map .btn-lang,
+html.dark body.page-info .btn-lang,
+html.dark body.page-stats .btn-lang,
+html.dark body.page-profile .btn-lang {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: rgba(245, 240, 232, 0.55) !important;
+}
+
+html.dark body.page-map .btn-lang:hover,
+html.dark body.page-info .btn-lang:hover,
+html.dark body.page-stats .btn-lang:hover,
+html.dark body.page-profile .btn-lang:hover {
+  border-color: var(--amber) !important;
+  color: var(--amber) !important;
+}
+
+/* Fix per il bottone tema su tutte le pagine (stessa altezza del btn-lang) */
+body.page-map .btn-theme,
+body.page-info .btn-theme,
+body.page-stats .btn-theme,
+body.page-profile .btn-theme {
+  width: 34px !important;
+  height: 34px !important;
+  border: 1.5px solid rgba(61, 47, 30, 0.18) !important;
+  border-radius: 8px !important;
+  background: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  color: #9a8f80 !important;
+  transition: border-color 0.2s, color 0.2s !important;
+}
+
+body.page-map .btn-theme:hover,
+body.page-info .btn-theme:hover,
+body.page-stats .btn-theme:hover,
+body.page-profile .btn-theme:hover {
+  border-color: var(--amber) !important;
+  color: var(--amber) !important;
+}
+
+html.dark body.page-map .btn-theme,
+html.dark body.page-info .btn-theme,
+html.dark body.page-stats .btn-theme,
+html.dark body.page-profile .btn-theme {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: rgba(245, 240, 232, 0.55) !important;
+}
+
+html.dark body.page-map .btn-theme:hover,
+html.dark body.page-info .btn-theme:hover,
+html.dark body.page-stats .btn-theme:hover,
+html.dark body.page-profile .btn-theme:hover {
+  border-color: var(--amber) !important;
+  color: var(--amber) !important;
+}
